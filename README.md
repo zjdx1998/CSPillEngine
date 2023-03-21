@@ -15,15 +15,12 @@ You will have some flexibility and creativity in how the overall game making eng
 
 ## Team
 
-Team Name: *Edit this to something cool here*
+Team Name: CSPill💊
 
-*TODO*:
-Update your Team member Names here (Up to 4).
-
-1. *my name is...*
-2. *my name is...*
-3. *my name is...*
-4. *my name is...*
+1. Jiandong (Jeromy) Zhang
+2. Tian Ma
+3. Yuxiao Zou
+4. Chenjie Bei
 
 ## Assignment Milestones
 
