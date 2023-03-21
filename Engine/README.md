@@ -8,7 +8,13 @@
 
 ## Compilation Instructions
 
-*Please edit if there are any special build instructions beyond running `python3 build.py`*
+```shell
+# make sure in Engine folder
+cmake -S . -B build
+cmake --build build
+# Start Our Engine Editor
+cd build && ./Editor
+```
 
 ## Project Hieararchy
 
