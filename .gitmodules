@@ -1,0 +1,11 @@
+[submodule "Engine/thirdparty/imgui"]
+	path = Engine/thirdparty/imgui
+	url = git@github.com:ocornut/imgui.git
+[submodule "Engine/thirdparty/SDL"]
+	path = Engine/thirdparty/SDL
+	url = git@github.com:libsdl-org/SDL.git
+	branch = release-2.26.x
+[submodule "Engine/thirdparty/SDL_ttf"]
+	path = Engine/thirdparty/SDL_ttf
+	url = git@github.com:libsdl-org/SDL_ttf.git
+	branch = SDL2
