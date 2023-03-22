@@ -18,6 +18,9 @@ file(GLOB SRC_IMGUI_BACKEND thirdparty/imgui/backends/imgui_impl_sdlrenderer.cpp
 set(IMGUI_INC thirdparty/imgui)
 set(IMGUI_BACKEND thirdparty/imgui/backends)
 
+# JSON
+add_subdirectory(thirdparty/json)
+
 # Core
 file(GLOB SRC_CORE src/Core/*.cpp)
 set(INC_CORE include/Core)
@@ -25,7 +28,7 @@ list (APPEND CORE_SRCS_DIRS ${SRC_CORE})
 list (APPEND CORE_INC_DIRS ${INC_CORE})
 add_library(Core ${CORE_SRCS_DIRS})
 target_include_directories(Core PUBLIC ${CORE_INC_DIRS})
-target_link_libraries(Core SDL2)
+target_link_libraries(Core SDL2 nlohmann_json::nlohmann_json)
 
 # Editor
 file(GLOB SRC_EDITOR src/Editor/*.cpp)
@@ -40,4 +43,4 @@ list (APPEND EDITOR_SRCS ${SRC_IMGUI_BACKEND})
 
 add_executable(Editor ${EDITOR_SRCS} )
 target_include_directories(Editor PUBLIC ${INCLUDE_DIRS})
-target_link_libraries(Editor SDL2)
+target_link_libraries(Editor SDL2 nlohmann_json::nlohmann_json)

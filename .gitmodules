@@ -9,3 +9,6 @@
 	path = Engine/thirdparty/SDL_ttf
 	url = git@github.com:libsdl-org/SDL_ttf.git
 	branch = SDL2
+[submodule "Engine/thirdparty/json"]
+	path = Engine/thirdparty/json
+	url = git@github.com:nlohmann/json.git
