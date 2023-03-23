@@ -38,3 +38,9 @@ settings.json
 *.exe
 *.out
 *.app
+
+# macOS
+.DS_Store
+
+# doxygen
+docs
