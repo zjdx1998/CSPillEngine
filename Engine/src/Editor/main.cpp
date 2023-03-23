@@ -6,7 +6,9 @@
 // Important to understand: SDL_Renderer is an _optional_ component of SDL. We do not recommend you use SDL_Renderer
 // because it provides a rather limited API to the end-user. We provide this backend for the sake of completeness.
 // For a multi-platform app consider using e.g. SDL+DirectX on Windows and SDL+OpenGL on Linux/OSX.
-
+#ifdef _WIN32
+#define SDL_MAIN_HANDLED
+#endif
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer.h"
