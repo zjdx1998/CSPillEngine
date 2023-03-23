@@ -8,12 +8,24 @@
 
 ## Compilation Instructions
 
+For macOS:
 ```shell
 # make sure in Engine folder
 cmake -S . -B build
 cmake --build build
 # Start Our Engine Editor
 cd build && ./Editor
+```
+
+For windows:
+```shell
+# make sure in Engine folder
+cmake -S . -B build
+cmake --build build
+# Start Our Engine Editor
+cd build
+cp .\thirdparty\SDL\sdl2.dll .
+.\Editor.exe
 ```
 
 ## Project Hieararchy
