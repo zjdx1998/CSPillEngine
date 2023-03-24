@@ -1,0 +1,34 @@
+name: cpplint
+
+on:
+  push:
+    branches: [ "master", "dev", "dev-*", "dev*" ]
+  pull_request:
+    branches: [ "master", "dev" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  cpp-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Clang Format
+        uses: DoozyX/clang-format-lint-action@v0.15
+        with:
+          source: './Engine/src ./Engine/include'
+          exclude: './Engine/thirdparty'
+          extensions: 'h,cpp,c,hpp'
+          clangFormatVersion: 15
+          inplace: True
+          style: Google
+
+      - name: add-and-commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Jeromy Zhang
+          author_email: zjdx1998@gmail.com
+          message: 'Committing clang-format changes'
