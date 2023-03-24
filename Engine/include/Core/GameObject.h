@@ -7,15 +7,17 @@
 
 #include <list>
 #include <unordered_map>
+
 #include "Component.h"
 
 namespace CSPill::EngineCore {
 /**
  * \brief Base class for all entities in CSPill Scenes.
  *
- * GameObject is the minimal unit to represent an object, it can be composed of multiple components.
+ * GameObject is the minimal unit to represent an object, it can be composed of
+ * multiple components.
  */
-class GameObject{
+class GameObject {
  public:
   /**
    * Factory function to create an GameObject.
@@ -61,9 +63,11 @@ class GameObject{
  private:
   GameObject() = default;
   std::list<std::unique_ptr<Component>> components_;
-  std::unordered_map<std::string_view, std::list<std::unique_ptr<Component>>::iterator> component_indices_;
+  std::unordered_map<std::string_view,
+                     std::list<std::unique_ptr<Component>>::iterator>
+      component_indices_;
 };
 
 }  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINECORE_GAMEOBJECT_H_
+#endif  // CSPILLENGINE_ENGINECORE_GAMEOBJECT_H_

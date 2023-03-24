@@ -5,9 +5,10 @@
 #ifndef CSPILLENGINE_ENGINECORE_COMPONENT_H_
 #define CSPILLENGINE_ENGINECORE_COMPONENT_H_
 
-#include <string>
-#include <memory>
 #include <SDL.h>
+
+#include <memory>
+#include <string>
 
 namespace CSPill::EngineCore {
 
@@ -16,9 +17,10 @@ class GameObject;
 /**
  * \brief Component of GameObject.
  *
- * Interface, some existed inherited implementations are PhysicsComponent, ControllerComponent, etc.
+ * Interface, some existed inherited implementations are PhysicsComponent,
+ * ControllerComponent, etc.
  */
-class Component{
+class Component {
  public:
   /**
    * Virtual Destructor.
@@ -26,8 +28,8 @@ class Component{
   virtual ~Component() = default;
 
   /**
-   * Update is called every frame, will notify other component through GameObject.
-   * This function must be implemented in child class.
+   * Update is called every frame, will notify other component through
+   * GameObject. This function must be implemented in child class.
    * @param object The GameObject that current component belongs to.
    */
   virtual void Update(GameObject* object) = 0;
@@ -52,9 +54,9 @@ class Component{
 
  protected:
   std::string name_;
-  explicit Component(std::string_view name="Component");
+  explicit Component(std::string_view name = "Component");
 };
 
 }  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINECORE_COMPONENT_H_
+#endif  // CSPILLENGINE_ENGINECORE_COMPONENT_H_
