@@ -5,11 +5,16 @@ PROJECT(CSPillEngine)
 set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(thirdparty/SDL)
+
+# SDL_ttf
+set(SDL2TTF_VENDORED ON)
 add_subdirectory(thirdparty/SDL_ttf)
 
-#find_package(SDL2 REQUIRED COMPONENTS SDL2)
-#find_package(SDL2_ttf REQUIRED)
-#find_package(SDL2_mixer REQUIRED)
+# SDL_mixer
+set(SDL2MIXER_VENDORED ON)
+set(SDL2MIXER_INSTALL OFF)
+add_subdirectory(thirdparty/SDL_mixer)
+
 
 # imgui
 file(GLOB SRC_IMGUI thirdparty/imgui/*.cpp)
@@ -27,8 +32,9 @@ set(INC_CORE include/Core)
 list (APPEND CORE_SRCS_DIRS ${SRC_CORE})
 list (APPEND CORE_INC_DIRS ${INC_CORE})
 add_library(Core ${CORE_SRCS_DIRS})
+add_dependencies(Core SDL2 nlohmann_json SDL2_ttf SDL2_mixer)
 target_include_directories(Core PUBLIC ${CORE_INC_DIRS})
-target_link_libraries(Core SDL2 nlohmann_json)
+target_link_libraries(Core SDL2 nlohmann_json SDL2_ttf SDL2_mixer)
 
 # Editor
 file(GLOB SRC_EDITOR src/Editor/*.cpp)
@@ -43,4 +49,5 @@ list (APPEND EDITOR_SRCS ${SRC_IMGUI_BACKEND})
 
 add_executable(Editor ${EDITOR_SRCS} )
 target_include_directories(Editor PUBLIC ${INCLUDE_DIRS})
+add_dependencies(Editor SDL2 nlohmann_json)
 target_link_libraries(Editor SDL2 nlohmann_json)

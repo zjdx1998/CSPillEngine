@@ -12,3 +12,7 @@
 [submodule "Engine/thirdparty/json"]
 	path = Engine/thirdparty/json
 	url = git@github.com:nlohmann/json.git
+[submodule "Engine/thirdparty/SDL_mixer"]
+	path = Engine/thirdparty/SDL_mixer
+	url = https://github.com/libsdl-org/SDL_mixer
+	branch = release-2.6.x
