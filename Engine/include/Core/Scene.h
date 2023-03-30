@@ -5,9 +5,9 @@
 #ifndef CSPILLENGINE_ENGINE_INCLUDE_CORE_SCENE_H_
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_SCENE_H_
 
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
@@ -48,7 +48,8 @@ class Layer {
  */
 class Tileset {
  public:
-  Tileset(std::string name, int image_width, int image_height, int tile_width, int tile_height);
+  Tileset(std::string name, int image_width, int image_height, int tile_width,
+          int tile_height);
   [[nodiscard]] std::string_view GetName() const;
   void SetName(const std::string &name);
   [[nodiscard]] int GetImageWidth() const;
@@ -59,6 +60,7 @@ class Tileset {
   void SetTileWidth(int tile_width);
   [[nodiscard]] int GetTileHeight() const;
   void SetTileHeight(int tile_height);
+
  private:
   std::string name_;
   int image_width_;
@@ -70,7 +72,8 @@ class Tileset {
 class Scene {
  public:
   Scene(int canvas_width, int canvas_height);
-  Scene(const std::vector<Layer> &layers, const std::vector<Tileset> &tile_sets, int canvas_width, int canvas_height);
+  Scene(const std::vector<Layer> &layers, const std::vector<Tileset> &tile_sets,
+        int canvas_width, int canvas_height);
   [[nodiscard]] const std::vector<Layer> &GetLayers() const;
   void SetLayers(const std::vector<Layer> &layers);
   [[nodiscard]] const std::vector<Tileset> &GetTileSets() const;
@@ -79,6 +82,7 @@ class Scene {
   void SetCanvasWidth(int canvas_width);
   [[nodiscard]] int GetCanvasHeight() const;
   void SetCanvasHeight(int canvas_height);
+
  private:
   std::vector<Layer> layers_;
   std::vector<Tileset> tile_sets_;
@@ -88,4 +92,4 @@ class Scene {
 
 }  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINE_INCLUDE_CORE_SCENE_H_
+#endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_SCENE_H_
