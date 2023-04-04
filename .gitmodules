@@ -16,3 +16,6 @@
 	path = Engine/thirdparty/SDL_mixer
 	url = https://github.com/libsdl-org/SDL_mixer
 	branch = release-2.6.x
+[submodule "Engine/thirdparty/pybind11"]
+	path = Engine/thirdparty/pybind11
+	url = https://github.com/pybind/pybind11.git

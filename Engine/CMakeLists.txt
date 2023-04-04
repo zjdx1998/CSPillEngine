@@ -15,6 +15,10 @@ set(SDL2MIXER_VENDORED ON)
 set(SDL2MIXER_INSTALL OFF)
 add_subdirectory(thirdparty/SDL_mixer)
 
+# Pybind11
+add_subdirectory(thirdparty/pybind11)
+file(GLOB SRC_PYBIND src/pybind/*.cpp)
+pybind11_add_module(PyCSPillEngine ${SRC_PYBIND})
 
 # imgui
 file(GLOB SRC_IMGUI thirdparty/imgui/*.cpp)
