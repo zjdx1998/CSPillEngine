@@ -12,14 +12,16 @@
 #ifdef _WIN32
 #define SDL_MAIN_HANDLED
 #endif
-#include <Component.h>
 #include <SDL.h>
+#include <SDL_image.h>
 
 #include <cstdio>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
+#include <Scene.h>
 
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
@@ -116,11 +118,18 @@ int main(int, char **) {
   // selected resource index
   int selected_resource_index = -1;
 
+  // Num of tiles for each row in Resources widget
+  const int RESOURCES_NUM_COLS = 3;
   const int SCENE_NUM_ROWS = 10;
   const int SCENE_NUM_COLS = 10;
   const int SCENE_BLOCK_SIZE = 50;
+  // Textures in Scene widget
   SDL_Texture *scene_textures[SCENE_NUM_ROWS * SCENE_NUM_COLS] = {NULL};
-  ;
+  // Textures in Resources widget
+  std::vector<SDL_Texture*> resource_textures;
+
+  // Loaded tilesets
+  std::vector<CSPill::EngineCore::Tileset> resource_tilesets;
 
   // Main loop
   bool done = false;
@@ -204,60 +213,106 @@ int main(int, char **) {
     // Show resources widget
     ImGui::Begin("Resources");
 
-    // Specify the folder containing the image files
-    // std::string folder_path = "../demo/resources/images";
-    std::string folder_path = "../demo/resources/images";
-
-    // Get a list of all the image files in the folder
-    std::vector<std::string> file_paths;
-    for (const auto &entry : std::filesystem::directory_iterator(folder_path)) {
-      if (entry.path().extension() == ".png" ||
-          entry.path().extension() == ".jpg") {
-        file_paths.push_back(entry.path().string());
-      }
+    // Add Tileset button
+    if (ImGui::Button("Add Tileset"))
+    {
+      ImGui::OpenPopup("Add Tileset Popup");
     }
 
-    // Calculate the number of rows and columns needed to display the images
-    const int RESOURCES_NUM_COLS = 3;
-    int num_rows = static_cast<int>(
-        std::ceil(static_cast<double>(file_paths.size()) / RESOURCES_NUM_COLS));
+    // Add Tileset popup
+    if (ImGui::BeginPopup("Add Tileset Popup"))
+    {
+      static char file_path[256] = {0};
+      static int tile_width = 0;
+      static int tile_height = 0;
 
-    SDL_Texture *resource_textures[file_paths.size()];
+      ImGui::InputText("File Path", file_path, sizeof(file_path));
+      // std::string file_path_str(file_path);
+      ImGui::SameLine();
+      if (ImGui::Button("Browse")) {
+          // Handle browse button click
+      }
+
+      // Tile width input
+      ImGui::InputInt("Tile Width", &tile_width);
+
+      // Tile height input
+      ImGui::InputInt("Tile Height", &tile_height);
+
+      // Confirm button
+      if (ImGui::Button("Confirm"))
+      {
+        // Load texture
+        SDL_Surface* surface = IMG_Load(file_path);
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+
+        // Get the size of the texture
+        int texture_width, texture_height;
+        SDL_QueryTexture(texture, NULL, NULL, &texture_width, &texture_height);
+
+        // Add texture to resource textures array
+        resource_textures.push_back(texture);
+
+        // Add tileset to tilesets array
+        resource_tilesets.push_back(CSPill::EngineCore::Tileset(file_path, texture_width, texture_height, tile_width, tile_height));
+
+        ImGui::CloseCurrentPopup();
+      }
+
+      ImGui::EndPopup();
+    }
 
     // Load and display the images in a grid
-    for (int row = 0; row < num_rows; row++) {
-      for (int col = 0; col < RESOURCES_NUM_COLS; col++) {
-        int file_index = row * RESOURCES_NUM_COLS + col;
-        if (file_index < file_paths.size()) {
-          // Render scene component to SDL texture
-          std::string image_filename =
-              "../demo/resources/sprites/adventurer-v1.5-Sheet.bmp";
-          SDL_Surface *mSurface = SDL_LoadBMP(image_filename.c_str());
-          SDL_Texture *mTexture =
-              SDL_CreateTextureFromSurface(renderer, mSurface);
-          resource_textures[row * RESOURCES_NUM_COLS + col] = mTexture;
-
-          // Display the image in the ImGUI window
-          ImGui::PushID(file_index);
-          ImGui::Image(mTexture, ImVec2(100, 100));
-          ImGui::PopID();
-
-          if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
-            selected_resource_index = row * RESOURCES_NUM_COLS + col;
-            std::cout << "clicked resource: " << row * RESOURCES_NUM_COLS + col
-                      << std::endl;
-          }
-        } else {
-          // If there are no more image files, display an empty space
-          ImGui::Dummy(ImVec2(100, 100));
-        }
-
-        // Add a same-line separator to align images horizontally
-        if (col < RESOURCES_NUM_COLS - 1) {
-          ImGui::SameLine();
-        }
+    for (int i = 0; i < resource_tilesets.size(); i++) {
+      // Display the image in the ImGUI window
+      ImGui::PushID(i);
+      ImGui::Image(resource_textures.at(i), ImVec2(100, 100));
+      ImGui::PopID();
+      if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
+        selected_resource_index = i;
+        std::cout << "clicked resource: " << i
+                  << std::endl;
+      }
+      // Add a same-line separator to align images horizontally
+      if (i % RESOURCES_NUM_COLS != 0) {
+        ImGui::SameLine();
       }
     }
+
+    // for (int row = 0; row < num_rows; row++) {
+    //   for (int col = 0; col < RESOURCES_NUM_COLS; col++) {
+    //     int file_index = row * RESOURCES_NUM_COLS + col;
+    //     if (file_index < file_paths.size()) {
+    //       // Render scene component to SDL texture
+    //       std::string image_filename =
+    //           "../demo/resources/sprites/adventurer-v1.5-Sheet.bmp";
+    //       SDL_Surface *mSurface = SDL_LoadBMP(image_filename.c_str());
+    //       SDL_Texture *mTexture =
+    //           SDL_CreateTextureFromSurface(renderer, mSurface);
+    //       resource_textures[row * RESOURCES_NUM_COLS + col] = mTexture;
+
+    //       // Display the image in the ImGUI window
+    //       ImGui::PushID(file_index);
+    //       ImGui::Image(mTexture, ImVec2(100, 100));
+    //       ImGui::PopID();
+
+    //       if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
+    //         selected_resource_index = row * RESOURCES_NUM_COLS + col;
+    //         std::cout << "clicked resource: " << row * RESOURCES_NUM_COLS + col
+    //                   << std::endl;
+    //       }
+    //     } else {
+    //       // If there are no more image files, display an empty space
+    //       ImGui::Dummy(ImVec2(100, 100));
+    //     }
+
+    //     // Add a same-line separator to align images horizontally
+    //     if (col < RESOURCES_NUM_COLS - 1) {
+    //       ImGui::SameLine();
+    //     }
+    //   }
+    // }
 
     ImGui::End();
 
