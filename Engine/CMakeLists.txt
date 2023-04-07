@@ -48,7 +48,7 @@ target_link_libraries(Core SDL2 nlohmann_json SDL2_ttf SDL2_mixer)
 # Editor
 file(GLOB SRC_EDITOR src/Editor/*.cpp)
 
-list(APPEND INCLUDE_DIRS include)
+list(APPEND INCLUDE_DIRS include/Editor)
 list(APPEND INCLUDE_DIRS ${IMGUI_INC})
 list(APPEND INCLUDE_DIRS ${IMGUI_BACKEND})
 

@@ -13,15 +13,13 @@
 #define SDL_MAIN_HANDLED
 #endif
 #include <SDL.h>
-#include <SDL_image.h>
 
 #include <cstdio>
-#include <filesystem>
 #include <iostream>
+#include <Component.h>
+#include <filesystem>
 #include <string>
 #include <vector>
-#include <cmath>
-#include <Scene.h>
 
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
@@ -51,14 +49,14 @@ int main(int, char **) {
 #endif
 
   // Create window with SDL_Renderer graphics context
-  SDL_WindowFlags window_flags =
-      (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+  auto window_flags =
+      (SDL_WindowFlags) (SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
   SDL_Window *window =
       SDL_CreateWindow("CSPill Engine Editor", SDL_WINDOWPOS_CENTERED,
                        SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
   SDL_Renderer *renderer = SDL_CreateRenderer(
       window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-  if (renderer == NULL) {
+  if (renderer == nullptr) {
     SDL_Log("Error creating SDL_Renderer!");
     return 0;
   }
@@ -70,11 +68,14 @@ int main(int, char **) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void)io;
+  (void) io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
+
+  // Enable docking
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
@@ -118,18 +119,10 @@ int main(int, char **) {
   // selected resource index
   int selected_resource_index = -1;
 
-  // Num of tiles for each row in Resources widget
-  const int RESOURCES_NUM_COLS = 3;
   const int SCENE_NUM_ROWS = 10;
   const int SCENE_NUM_COLS = 10;
   const int SCENE_BLOCK_SIZE = 50;
-  // Textures in Scene widget
-  SDL_Texture *scene_textures[SCENE_NUM_ROWS * SCENE_NUM_COLS] = {NULL};
-  // Textures in Resources widget
-  std::vector<SDL_Texture*> resource_textures;
-
-  // Loaded tilesets
-  std::vector<CSPill::EngineCore::Tileset> resource_tilesets;
+  SDL_Texture *scene_textures[SCENE_NUM_ROWS * SCENE_NUM_COLS] = {nullptr};;
 
   // Main loop
   bool done = false;
@@ -158,6 +151,7 @@ int main(int, char **) {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
+    ImGui::DockSpaceOverViewport();
     // 1. Show the big demo window (Most of the sample code is in
     // ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear
     // ImGui!).
@@ -184,10 +178,10 @@ int main(int, char **) {
           1.0f);  // Edit 1 float using a slider from 0.0f to 1.0f
       ImGui::ColorEdit3(
           "clear color",
-          (float *)&clear_color);  // Edit 3 floats representing a color
+          (float *) &clear_color);  // Edit 3 floats representing a color
 
       if (ImGui::Button(
-              "Button"))  // Buttons return true when clicked (most widgets
+          "Button"))  // Buttons return true when clicked (most widgets
         // return true when edited/activated)
         counter++;
       ImGui::SameLine();
@@ -213,114 +207,62 @@ int main(int, char **) {
     // Show resources widget
     ImGui::Begin("Resources");
 
-    // Add Tileset button
-    if (ImGui::Button("Add Tileset"))
-    {
-      ImGui::OpenPopup("Add Tileset Popup");
+    // Specify the folder containing the image files
+    // std::string folder_path = "../demo/resources/images";
+    std::string folder_path = "../demo/resources/images";
+
+    // Get a list of all the image files in the folder
+    std::vector<std::string> file_paths;
+    for (const auto &entry : std::filesystem::directory_iterator(folder_path)) {
+      if (entry.path().extension() == ".png" || entry.path().extension() == ".jpg") {
+        file_paths.push_back(entry.path().string());
+      }
     }
 
-    // Add Tileset popup
-    if (ImGui::BeginPopup("Add Tileset Popup"))
-    {
-      static char file_path[256] = {0};
-      static int tile_width = 0;
-      static int tile_height = 0;
+    // Calculate the number of rows and columns needed to display the images
+    const int RESOURCES_NUM_COLS = 3;
+    int num_rows = static_cast<int>(std::ceil(static_cast<double>(file_paths.size()) / RESOURCES_NUM_COLS));
 
-      ImGui::InputText("File Path", file_path, sizeof(file_path));
-      // std::string file_path_str(file_path);
-      ImGui::SameLine();
-      if (ImGui::Button("Browse")) {
-          // Handle browse button click
-      }
-
-      // Tile width input
-      ImGui::InputInt("Tile Width", &tile_width);
-
-      // Tile height input
-      ImGui::InputInt("Tile Height", &tile_height);
-
-      // Confirm button
-      if (ImGui::Button("Confirm"))
-      {
-        // Load texture
-        SDL_Surface* surface = IMG_Load(file_path);
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-
-        // Get the size of the texture
-        int texture_width, texture_height;
-        SDL_QueryTexture(texture, NULL, NULL, &texture_width, &texture_height);
-
-        // Add texture to resource textures array
-        resource_textures.push_back(texture);
-
-        // Add tileset to tilesets array
-        resource_tilesets.push_back(CSPill::EngineCore::Tileset(file_path, texture_width, texture_height, tile_width, tile_height));
-
-        ImGui::CloseCurrentPopup();
-      }
-
-      ImGui::EndPopup();
-    }
+    SDL_Texture *resource_textures[file_paths.size()];
 
     // Load and display the images in a grid
-    for (int i = 0; i < resource_tilesets.size(); i++) {
-      // Display the image in the ImGUI window
-      ImGui::PushID(i);
-      ImGui::Image(resource_textures.at(i), ImVec2(100, 100));
-      ImGui::PopID();
-      if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
-        selected_resource_index = i;
-        std::cout << "clicked resource: " << i
-                  << std::endl;
-      }
-      // Add a same-line separator to align images horizontally
-      if (i % RESOURCES_NUM_COLS != 0) {
-        ImGui::SameLine();
+    for (int row = 0; row < num_rows; row++) {
+      for (int col = 0; col < RESOURCES_NUM_COLS; col++) {
+        int file_index = row * RESOURCES_NUM_COLS + col;
+        if (file_index < file_paths.size()) {
+          // Render scene component to SDL texture
+          std::string image_filename = "../demo/resources/sprites/adventurer-v1.5-Sheet.bmp";
+          SDL_Surface *mSurface = SDL_LoadBMP(image_filename.c_str());
+          SDL_Texture *mTexture = SDL_CreateTextureFromSurface(renderer, mSurface);
+          resource_textures[row * RESOURCES_NUM_COLS + col] = mTexture;
+
+          // Display the image in the ImGUI window
+          ImGui::PushID(file_index);
+          ImGui::Image(mTexture, ImVec2(100, 100));
+          ImGui::PopID();
+
+          if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
+            selected_resource_index = row * RESOURCES_NUM_COLS + col;
+            std::cout << "clicked resource: " << row * RESOURCES_NUM_COLS + col << std::endl;
+          }
+        } else {
+          // If there are no more image files, display an empty space
+          ImGui::Dummy(ImVec2(100, 100));
+        }
+
+        // Add a same-line separator to align images horizontally
+        if (col < RESOURCES_NUM_COLS - 1) {
+          ImGui::SameLine();
+        }
       }
     }
-
-    // for (int row = 0; row < num_rows; row++) {
-    //   for (int col = 0; col < RESOURCES_NUM_COLS; col++) {
-    //     int file_index = row * RESOURCES_NUM_COLS + col;
-    //     if (file_index < file_paths.size()) {
-    //       // Render scene component to SDL texture
-    //       std::string image_filename =
-    //           "../demo/resources/sprites/adventurer-v1.5-Sheet.bmp";
-    //       SDL_Surface *mSurface = SDL_LoadBMP(image_filename.c_str());
-    //       SDL_Texture *mTexture =
-    //           SDL_CreateTextureFromSurface(renderer, mSurface);
-    //       resource_textures[row * RESOURCES_NUM_COLS + col] = mTexture;
-
-    //       // Display the image in the ImGUI window
-    //       ImGui::PushID(file_index);
-    //       ImGui::Image(mTexture, ImVec2(100, 100));
-    //       ImGui::PopID();
-
-    //       if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
-    //         selected_resource_index = row * RESOURCES_NUM_COLS + col;
-    //         std::cout << "clicked resource: " << row * RESOURCES_NUM_COLS + col
-    //                   << std::endl;
-    //       }
-    //     } else {
-    //       // If there are no more image files, display an empty space
-    //       ImGui::Dummy(ImVec2(100, 100));
-    //     }
-
-    //     // Add a same-line separator to align images horizontally
-    //     if (col < RESOURCES_NUM_COLS - 1) {
-    //       ImGui::SameLine();
-    //     }
-    //   }
-    // }
 
     ImGui::End();
 
     // test SDL rendering to widget
     ImGui::Begin("Scene");
     // Render scene component to SDL texture
-    std::string image_filename =
-        "../demo/resources/sprites/adventurer-v1.5-Sheet.bmp";
+    std::string image_filename = "../demo/resources/sprites/adventurer-v1.5-Sheet.bmp";
     SDL_Surface *mSurface = SDL_LoadBMP(image_filename.c_str());
     SDL_Texture *mTexture = SDL_CreateTextureFromSurface(renderer, mSurface);
 
@@ -332,22 +274,23 @@ int main(int, char **) {
     for (int row = 0; row < SCENE_NUM_ROWS; row++) {
       for (int col = 0; col < SCENE_NUM_COLS; col++) {
         int block_index = row * SCENE_NUM_COLS + col;
-        if (scene_textures[block_index] != NULL) {
+        if (scene_textures[block_index] != nullptr) {
           continue;
         }
         // Calculate the position and color of the block
-        SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE, row * SCENE_BLOCK_SIZE,
-                               SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE};
-        SDL_Texture *block_texture = SDL_CreateTexture(
-            renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
-            SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE);
+        SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE, row * SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE};
+        SDL_Texture *block_texture = SDL_CreateTexture(renderer,
+                                                       SDL_PIXELFORMAT_RGBA8888,
+                                                       SDL_TEXTUREACCESS_TARGET,
+                                                       SCENE_BLOCK_SIZE,
+                                                       SCENE_BLOCK_SIZE);
 
         // Render the BMP texture to the block texture using SDL
         SDL_SetRenderTarget(renderer, block_texture);
         SDL_Rect frame_rect = {0, 0, frame_width, frame_height};
         SDL_Rect dest_rect = {0, 0, SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE};
-        SDL_RenderCopy(renderer, mTexture, &frame_rect, NULL);
-        SDL_SetRenderTarget(renderer, NULL);
+        SDL_RenderCopy(renderer, mTexture, &frame_rect, nullptr);
+        SDL_SetRenderTarget(renderer, nullptr);
 
         // Store the block texture in the array
         scene_textures[block_index] = block_texture;
@@ -360,29 +303,22 @@ int main(int, char **) {
     for (int row = 0; row < SCENE_NUM_ROWS; row++) {
       for (int col = 0; col < SCENE_NUM_COLS; col++) {
         // Calculate the position and size of the block
-        SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE, row * SCENE_BLOCK_SIZE,
-                               SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE};
+        SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE, row * SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE};
 
-        ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE + block_offset.x,
-                                   row * SCENE_BLOCK_SIZE + block_offset.y));
+        ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE + block_offset.x, row * SCENE_BLOCK_SIZE + block_offset.y));
         // Display the block texture in the ImGUI window
-        ImGui::Image(
-            (void *)(intptr_t)scene_textures[row * SCENE_NUM_COLS + col],
-            ImVec2(SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE));
+        ImGui::Image((void *) (intptr_t) scene_textures[row * SCENE_NUM_COLS + col],
+                     ImVec2(SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE));
         // Check if a block was clicked
         if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
           std::cout << "clicked: " << row * SCENE_NUM_COLS + col << std::endl;
           if (selected_resource_index != -1) {
-            std::cout << "replace with resource: " << selected_resource_index
-                      << std::endl;
-            scene_textures[row * SCENE_NUM_COLS + col] =
-                resource_textures[selected_resource_index];
-            ImGui::SetCursorPos(
-                ImVec2(col * SCENE_BLOCK_SIZE + block_offset.x,
-                       row * SCENE_BLOCK_SIZE + block_offset.y));
-            ImGui::Image(
-                (void *)(intptr_t)resource_textures[selected_resource_index],
-                ImVec2(SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE));
+            std::cout << "replace with resource: " << selected_resource_index << std::endl;
+            scene_textures[row * SCENE_NUM_COLS + col] = resource_textures[selected_resource_index];
+            ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE + block_offset.x,
+                                       row * SCENE_BLOCK_SIZE + block_offset.y));
+            ImGui::Image((void *) (intptr_t) resource_textures[selected_resource_index],
+                         ImVec2(SCENE_BLOCK_SIZE, SCENE_BLOCK_SIZE));
           }
         }
       }
@@ -395,8 +331,8 @@ int main(int, char **) {
     SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
     SDL_SetRenderDrawColor(
-        renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255),
-        (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
+        renderer, (Uint8) (clear_color.x * 255), (Uint8) (clear_color.y * 255),
+        (Uint8) (clear_color.z * 255), (Uint8) (clear_color.w * 255));
     SDL_RenderClear(renderer);
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(renderer);

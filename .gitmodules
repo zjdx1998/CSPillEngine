@@ -1,7 +1,7 @@
 [submodule "Engine/thirdparty/imgui"]
 	path = Engine/thirdparty/imgui
 	url = git@github.com:ocornut/imgui.git
-	branch = master
+	branch = docking
 [submodule "Engine/thirdparty/SDL"]
 	path = Engine/thirdparty/SDL
 	url = git@github.com:libsdl-org/SDL.git
