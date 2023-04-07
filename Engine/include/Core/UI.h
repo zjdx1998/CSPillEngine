@@ -24,6 +24,7 @@ class UI {
   [[nodiscard]] bool IsDisplay() const;
   void SetDisplay(bool display);
   virtual void Render() = 0;
+
  private:
   std::string title_;
   int width_;
@@ -33,4 +34,4 @@ class UI {
 
 }  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINE_INCLUDE_CORE_UI_H_
+#endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_UI_H_

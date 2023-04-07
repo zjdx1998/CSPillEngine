@@ -3,6 +3,7 @@
 //
 
 #include "ResourceManager.h"
+
 #include <filesystem>
 #include <iostream>
 
@@ -12,11 +13,13 @@ namespace fs = std::filesystem;
 
 ResourceManager::ResourceManager() {
   if (TTF_Init() == -1) {
-    std::cerr << "Could not initialize SDL2_ttf, error: " << TTF_GetError() << std::endl;
+    std::cerr << "Could not initialize SDL2_ttf, error: " << TTF_GetError()
+              << std::endl;
     return;
   }
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-    std::cerr << "Could not initialize SDL2_mixer, error: " << Mix_GetError() << std::endl;
+    std::cerr << "Could not initialize SDL2_mixer, error: " << Mix_GetError()
+              << std::endl;
     return;
   }
 }
@@ -61,10 +64,8 @@ TTF_Font *ResourceManager::LoadFont(const std::string &font_name) {
 }
 
 void ResourceManager::ReleaseAll() {
-  for (const auto &font : fonts_)
-    TTF_CloseFont(font.second);
-  for (const auto &audio : audios_)
-    Mix_FreeChunk(audio.second);
+  for (const auto &font : fonts_) TTF_CloseFont(font.second);
+  for (const auto &audio : audios_) Mix_FreeChunk(audio.second);
   fonts_.clear();
   audios_.clear();
 }
@@ -76,4 +77,4 @@ ResourceManager::~ResourceManager() {
   Mix_Quit();
 }
 
-}  // namespace Game
+}  // namespace CSPill::EngineCore

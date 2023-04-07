@@ -3,6 +3,7 @@
 //
 
 #include "EditorScene.h"
+
 #include "imgui.h"
 
 namespace CSPill::Editor {
@@ -12,8 +13,6 @@ void SceneUI::Render() {
 
   ImGui::End();
 }
-void SceneUI::LoadScene(std::string_view scene_name) {
-
-}
+void SceneUI::LoadScene(std::string_view scene_name) {}
 
 }  // namespace CSPill::Editor
