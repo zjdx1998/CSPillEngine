@@ -8,8 +8,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "SDL_ttf.h"
 #include "SDL_mixer.h"
+#include "SDL_ttf.h"
 
 namespace CSPill::EngineCore {
 
@@ -26,6 +26,7 @@ class ResourceManager {
   ~ResourceManager();
   Mix_Chunk *LoadAudio(const std::string &audio_name);
   TTF_Font *LoadFont(const std::string &font_name);
+
  private:
   ResourceManager();
   std::unordered_map<std::string, TTF_Font *> fonts_;
@@ -34,4 +35,4 @@ class ResourceManager {
 
 }  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINE_INCLUDE_CORE_RESOURCEMANAGER_H_
+#endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_RESOURCEMANAGER_H_
