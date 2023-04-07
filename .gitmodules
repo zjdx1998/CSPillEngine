@@ -1,6 +1,7 @@
 [submodule "Engine/thirdparty/imgui"]
 	path = Engine/thirdparty/imgui
 	url = git@github.com:ocornut/imgui.git
+	branch = master
 [submodule "Engine/thirdparty/SDL"]
 	path = Engine/thirdparty/SDL
 	url = git@github.com:libsdl-org/SDL.git
@@ -12,6 +13,7 @@
 [submodule "Engine/thirdparty/json"]
 	path = Engine/thirdparty/json
 	url = git@github.com:nlohmann/json.git
+	branch = master
 [submodule "Engine/thirdparty/SDL_mixer"]
 	path = Engine/thirdparty/SDL_mixer
 	url = https://github.com/libsdl-org/SDL_mixer
@@ -19,3 +21,7 @@
 [submodule "Engine/thirdparty/pybind11"]
 	path = Engine/thirdparty/pybind11
 	url = https://github.com/pybind/pybind11.git
+[submodule "Engine/thirdparty/SDL_image"]
+	path = Engine/thirdparty/SDL_image
+	url = https://github.com/libsdl-org/SDL_image.git
+	branch = release-2.6.x
