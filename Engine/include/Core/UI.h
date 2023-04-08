@@ -8,6 +8,7 @@
 #include <SDL.h>
 
 #include <string>
+#include <SDL.h>
 
 namespace CSPill::EngineCore {
 
