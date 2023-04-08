@@ -4,9 +4,11 @@
 
 #include "EditorScene.h"
 
-#include "imgui.h"
-#include <iostream>
 #include <SDL_image.h>
+
+#include <iostream>
+
+#include "imgui.h"
 
 namespace CSPill::Editor {
 
@@ -18,18 +20,19 @@ int SceneUI::SCENE_BLOCK_SIZE_ = 50;
 // Resources
 int ResourcesUI::selected_resource_index_ = -1;
 int ResourcesUI::RESOURCES_NUM_COLS_ = 3;
-std::vector<SDL_Texture*> ResourcesUI::resource_textures_;
+std::vector<SDL_Texture *> ResourcesUI::resource_textures_;
 std::vector<CSPill::EngineCore::Tileset> ResourcesUI::resource_tilesets_;
 
 SceneUI::SceneUI(std::string title, int width, int height)
     : CSPill::EngineCore::UI(title, width, height) {
-    // allocate memory for the textures
-    scene_textures_ = std::make_unique<SDL_Texture*[]>(SCENE_NUM_ROWS_ * SCENE_NUM_COLS_);
+  // allocate memory for the textures
+  scene_textures_ =
+      std::make_unique<SDL_Texture *[]>(SCENE_NUM_ROWS_ * SCENE_NUM_COLS_);
 
-    // initialize each texture to nullptr
-    for (int i = 0; i < SCENE_NUM_ROWS_ * SCENE_NUM_COLS_; ++i) {
-        scene_textures_[i] = nullptr;
-    }
+  // initialize each texture to nullptr
+  for (int i = 0; i < SCENE_NUM_ROWS_ * SCENE_NUM_COLS_; ++i) {
+    scene_textures_[i] = nullptr;
+  }
 }
 
 void SceneUI::Render(SDL_Renderer *renderer) {
@@ -41,8 +44,8 @@ void SceneUI::Render(SDL_Renderer *renderer) {
   SDL_Texture *mTexture = SDL_CreateTextureFromSurface(renderer, mSurface);
 
   // Calculate the width and height of each frame in the BMP file
-  int frame_width = mSurface-> w / 7;
-  int frame_height = mSurface-> h / 16;
+  int frame_width = mSurface->w / 7;
+  int frame_height = mSurface->h / 16;
 
   // Test rendering blocks individually
   for (int row = 0; row < SCENE_NUM_ROWS_; row++) {
@@ -53,7 +56,7 @@ void SceneUI::Render(SDL_Renderer *renderer) {
       }
       // Calculate the position and color of the block
       SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE_, row * SCENE_BLOCK_SIZE_,
-                              SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_};
+                             SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_};
       SDL_Texture *block_texture = SDL_CreateTexture(
           renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
           SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_);
@@ -77,10 +80,10 @@ void SceneUI::Render(SDL_Renderer *renderer) {
     for (int col = 0; col < SCENE_NUM_COLS_; col++) {
       // Calculate the position and size of the block
       SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE_, row * SCENE_BLOCK_SIZE_,
-                              SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_};
+                             SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_};
 
       ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE_ + block_offset.x,
-                                  row * SCENE_BLOCK_SIZE_ + block_offset.y));
+                                 row * SCENE_BLOCK_SIZE_ + block_offset.y));
       // Display the block texture in the ImGUI window
       ImGui::Image(
           (void *)(intptr_t)scene_textures_[row * SCENE_NUM_COLS_ + col],
@@ -89,16 +92,15 @@ void SceneUI::Render(SDL_Renderer *renderer) {
       if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
         std::cout << "clicked: " << row * SCENE_NUM_COLS_ + col << std::endl;
         if (ResourcesUI::GetSelectedResourceIndex() != -1) {
-          std::cout << "replace with resource: " << ResourcesUI::GetSelectedResourceIndex()
-                    << std::endl;
-          SDL_Texture* current_resource = ResourcesUI::GetResourceTexture(ResourcesUI::GetSelectedResourceIndex());
+          std::cout << "replace with resource: "
+                    << ResourcesUI::GetSelectedResourceIndex() << std::endl;
+          SDL_Texture *current_resource = ResourcesUI::GetResourceTexture(
+              ResourcesUI::GetSelectedResourceIndex());
           scene_textures_[row * SCENE_NUM_COLS_ + col] = current_resource;
-          ImGui::SetCursorPos(
-              ImVec2(col * SCENE_BLOCK_SIZE_ + block_offset.x,
-                      row * SCENE_BLOCK_SIZE_ + block_offset.y));
-          ImGui::Image(
-              (void *)(intptr_t)current_resource,
-              ImVec2(SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_));
+          ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE_ + block_offset.x,
+                                     row * SCENE_BLOCK_SIZE_ + block_offset.y));
+          ImGui::Image((void *)(intptr_t)current_resource,
+                       ImVec2(SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_));
         }
       }
     }
@@ -110,11 +112,9 @@ void SceneUI::LoadScene(std::string_view scene_name) {}
 ResourcesUI::ResourcesUI(std::string title, int width, int height)
     : CSPill::EngineCore::UI(title, width, height) {}
 
-int ResourcesUI::GetSelectedResourceIndex() {
-  return selected_resource_index_;
-}
+int ResourcesUI::GetSelectedResourceIndex() { return selected_resource_index_; }
 
-SDL_Texture* ResourcesUI::GetResourceTexture(int index) {
+SDL_Texture *ResourcesUI::GetResourceTexture(int index) {
   return resource_textures_.at(index);
 }
 
@@ -122,14 +122,12 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
   ImGui::Begin(this->GetTitle().c_str());
 
   // Add Tileset button
-  if (ImGui::Button("Add Tileset"))
-  {
+  if (ImGui::Button("Add Tileset")) {
     ImGui::OpenPopup("Add Tileset Popup");
   }
 
   // Add Tileset popup
-  if (ImGui::BeginPopup("Add Tileset Popup"))
-  {
+  if (ImGui::BeginPopup("Add Tileset Popup")) {
     static char file_path[256] = {0};
     static int tile_width = 0;
     static int tile_height = 0;
@@ -138,7 +136,7 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
     // std::string file_path_str(file_path);
     ImGui::SameLine();
     if (ImGui::Button("Browse")) {
-        // TODO: File explorer
+      // TODO: File explorer
     }
 
     // Tile width input
@@ -148,11 +146,10 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
     ImGui::InputInt("Tile Height", &tile_height);
 
     // Confirm button
-    if (ImGui::Button("Confirm"))
-    {
+    if (ImGui::Button("Confirm")) {
       // Load texture
-      SDL_Surface* surface = IMG_Load(file_path);
-      SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+      SDL_Surface *surface = IMG_Load(file_path);
+      SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
       SDL_FreeSurface(surface);
 
       // Get the size of the texture
@@ -163,7 +160,8 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
       resource_textures_.push_back(texture);
 
       // Add tileset to tilesets array
-      resource_tilesets_.push_back(CSPill::EngineCore::Tileset(file_path, texture_width, texture_height, tile_width, tile_height));
+      resource_tilesets_.push_back(CSPill::EngineCore::Tileset(
+          file_path, texture_width, texture_height, tile_width, tile_height));
 
       ImGui::CloseCurrentPopup();
     }
@@ -179,8 +177,7 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
     ImGui::PopID();
     if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
       selected_resource_index_ = i;
-      std::cout << "clicked resource: " << i
-                << std::endl;
+      std::cout << "clicked resource: " << i << std::endl;
     }
     // Add a same-line separator to align images horizontally
     if (i % RESOURCES_NUM_COLS_ != 0) {
@@ -190,7 +187,5 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
 
   ImGui::End();
 }
-
-
 
 }  // namespace CSPill::Editor

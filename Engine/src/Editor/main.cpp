@@ -12,17 +12,17 @@
 #ifdef _WIN32
 #define SDL_MAIN_HANDLED
 #endif
+#include <EditorScene.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <Scene.h>
 
+#include <cmath>
 #include <cstdio>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cmath>
-#include <Scene.h>
-#include <EditorScene.h>
 
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"

@@ -5,8 +5,9 @@
 #ifndef CSPILLENGINE_ENGINE_INCLUDE_CORE_UI_H_
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_UI_H_
 
-#include <string>
 #include <SDL.h>
+
+#include <string>
 
 namespace CSPill::EngineCore {
 
