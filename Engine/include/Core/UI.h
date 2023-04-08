@@ -6,6 +6,7 @@
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_UI_H_
 
 #include <string>
+#include <SDL.h>
 
 namespace CSPill::EngineCore {
 
@@ -23,7 +24,7 @@ class UI {
   void SetHeight(int height);
   [[nodiscard]] bool IsDisplay() const;
   void SetDisplay(bool display);
-  virtual void Render() = 0;
+  virtual void Render(SDL_Renderer *renderer) = 0;
 
  private:
   std::string title_;
