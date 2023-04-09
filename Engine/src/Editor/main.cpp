@@ -13,10 +13,10 @@
 #define SDL_MAIN_HANDLED
 #endif
 #include <EditorScene.h>
+#include <ResourceManager.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <Scene.h>
-#include <ResourceManager.h>
 
 #include <cmath>
 #include <cstdio>
@@ -129,7 +129,8 @@ int main(int, char **) {
   CSPill::Editor::SceneUI scene_widget("Scene", 800, 600);
 
   // Init ResourceManagerUI
-  CSPill::Editor::ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
+  CSPill::Editor::ResourceManagerUI resource_manager_widget("Resource Manager",
+                                                            600, 300);
 
   // Main loop
   bool done = false;

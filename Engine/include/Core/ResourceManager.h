@@ -6,8 +6,8 @@
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_RESOURCEMANAGER_H_
 
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "SDL_mixer.h"
 #include "SDL_ttf.h"

@@ -4,13 +4,13 @@
 
 #include "EditorScene.h"
 
-#include <SDL_image.h>
+#include <ImGuiFileDialog.h>
 #include <ResourceManager.h>
+#include <SDL_image.h>
 
 #include <iostream>
 
 #include "imgui.h"
-#include <ImGuiFileDialog.h>
 
 namespace CSPill::Editor {
 
@@ -196,7 +196,7 @@ ResourceManagerUI::ResourceManagerUI(std::string title, int width, int height)
 void ResourceManagerUI::Render(SDL_Renderer *renderer) {
   ImGui::Begin(this->GetTitle().c_str());
 
-  CSPill::EngineCore::ResourceManager& resource_manager = 
+  CSPill::EngineCore::ResourceManager &resource_manager =
       CSPill::EngineCore::ResourceManager::GetInstance();
 
   if (ImGui::Button("Add Asset")) {
@@ -210,14 +210,13 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
     ImGui::SameLine();
     if (ImGui::Button("Browse")) {
       // open Dialog Simple
-      ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder", nullptr, ".");
+      ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder",
+                                              nullptr, ".");
     }
 
     // Display file browser
-    if (ImGuiFileDialog::Instance()->Display("FileBrowser")) 
-    {
-      if (ImGuiFileDialog::Instance()->IsOk())
-      {
+    if (ImGuiFileDialog::Instance()->Display("FileBrowser")) {
+      if (ImGuiFileDialog::Instance()->IsOk()) {
         file_path = ImGuiFileDialog::Instance()->GetFilePathName();
       }
       ImGuiFileDialog::Instance()->Close();
@@ -235,7 +234,7 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
 
     ImGui::EndPopup();
   }
-  
+
   // Show font resources
   std::vector<std::string> font_names = resource_manager.GetFontResourceNames();
   if (!font_names.empty()) {
@@ -250,7 +249,8 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
   }
 
   // Show audio resources
-  std::vector<std::string> audio_names = resource_manager.GetAudioResourceNames();
+  std::vector<std::string> audio_names =
+      resource_manager.GetAudioResourceNames();
   if (!audio_names.empty()) {
     if (ImGui::TreeNode("Audio:")) {
       for (std::string audio : audio_names) {

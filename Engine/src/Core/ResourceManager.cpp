@@ -65,7 +65,7 @@ TTF_Font *ResourceManager::LoadFont(const std::string &font_name) {
 
 std::vector<std::string> ResourceManager::GetAudioResourceNames() {
   std::vector<std::string> audio_names;
-  for (const auto& [name, audio] : audios_) {
+  for (const auto &[name, audio] : audios_) {
     audio_names.push_back(name);
   }
   return audio_names;
@@ -73,7 +73,7 @@ std::vector<std::string> ResourceManager::GetAudioResourceNames() {
 
 std::vector<std::string> ResourceManager::GetFontResourceNames() {
   std::vector<std::string> font_names;
-  for (const auto& [name, font] : fonts_) {
+  for (const auto &[name, font] : fonts_) {
     font_names.push_back(name);
   }
   return font_names;
