@@ -6,6 +6,7 @@
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_RESOURCEMANAGER_H_
 
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 #include "SDL_mixer.h"
@@ -26,6 +27,8 @@ class ResourceManager {
   ~ResourceManager();
   Mix_Chunk *LoadAudio(const std::string &audio_name);
   TTF_Font *LoadFont(const std::string &font_name);
+  std::vector<std::string> GetAudioResourceNames();
+  std::vector<std::string> GetFontResourceNames();
 
  private:
   ResourceManager();

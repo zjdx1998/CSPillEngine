@@ -16,6 +16,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <Scene.h>
+#include <ResourceManager.h>
 
 #include <cmath>
 #include <cstdio>
@@ -127,6 +128,9 @@ int main(int, char **) {
   // scene_widget.LoadScene();
   CSPill::Editor::SceneUI scene_widget("Scene", 800, 600);
 
+  // Init ResourceManagerUI
+  CSPill::Editor::ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
+
   // Main loop
   bool done = false;
   while (!done) {
@@ -213,6 +217,9 @@ int main(int, char **) {
     // Render Scene widget
     scene_widget.Render(renderer);
 
+    // Render Resource Manager widget
+    resource_manager_widget.Render(renderer);
+
     // Rendering
     ImGui::Render();
     SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x,
@@ -229,6 +236,7 @@ int main(int, char **) {
   ImGui_ImplSDLRenderer_Shutdown();
   ImGui_ImplSDL2_Shutdown();
   ImGui::DestroyContext();
+  CSPill::EngineCore::ResourceManager::GetInstance().ReleaseAll();
 
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);

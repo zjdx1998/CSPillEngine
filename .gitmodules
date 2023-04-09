@@ -25,3 +25,7 @@
 	path = Engine/thirdparty/SDL_image
 	url = https://github.com/libsdl-org/SDL_image.git
 	branch = release-2.6.x
+[submodule "Engine/thirdparty/ImGuiFileDialog"]
+	path = Engine/thirdparty/ImGuiFileDialog
+	url = https://github.com/aiekick/ImGuiFileDialog.git
+	branch = Lib_Only

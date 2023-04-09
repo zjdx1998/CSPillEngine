@@ -29,6 +29,10 @@ pybind11_add_module(PyCSPillEngine ${SRC_PYBIND})
 file(GLOB SRC_IMGUI thirdparty/imgui/*.cpp)
 file(GLOB SRC_IMGUI_BACKEND thirdparty/imgui/backends/imgui_impl_sdlrenderer.cpp thirdparty/imgui/backends/imgui_impl_sdl2.cpp)
 
+# ImGuiFileDialog
+set(INC_IMGUI_FILE_DIALOG thirdparty/ImGuiFileDialog/)
+set(SRC_IMGUI_FILE_DIALOG thirdparty/ImGuiFileDialog/ImGuiFileDialog.cpp)
+
 set(IMGUI_INC thirdparty/imgui)
 set(IMGUI_BACKEND thirdparty/imgui/backends)
 
@@ -51,10 +55,12 @@ file(GLOB SRC_EDITOR src/Editor/*.cpp)
 list(APPEND INCLUDE_DIRS include/Editor)
 list(APPEND INCLUDE_DIRS ${IMGUI_INC})
 list(APPEND INCLUDE_DIRS ${IMGUI_BACKEND})
+list(APPEND INCLUDE_DIRS ${INC_IMGUI_FILE_DIALOG})
 
 list(APPEND EDITOR_SRCS ${SRC_EDITOR})
 list(APPEND EDITOR_SRCS ${SRC_IMGUI})
 list(APPEND EDITOR_SRCS ${SRC_IMGUI_BACKEND})
+list(APPEND EDITOR_SRCS ${SRC_IMGUI_FILE_DIALOG})
 
 add_executable(Editor ${EDITOR_SRCS})
 target_include_directories(Editor PUBLIC ${INCLUDE_DIRS})

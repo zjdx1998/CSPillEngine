@@ -5,10 +5,12 @@
 #include "EditorScene.h"
 
 #include <SDL_image.h>
+#include <ResourceManager.h>
 
 #include <iostream>
 
 #include "imgui.h"
+#include <ImGuiFileDialog.h>
 
 namespace CSPill::Editor {
 
@@ -182,6 +184,81 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
     // Add a same-line separator to align images horizontally
     if (i % RESOURCES_NUM_COLS_ != 0) {
       ImGui::SameLine();
+    }
+  }
+
+  ImGui::End();
+}
+
+ResourceManagerUI::ResourceManagerUI(std::string title, int width, int height)
+    : CSPill::EngineCore::UI(title, width, height) {}
+
+void ResourceManagerUI::Render(SDL_Renderer *renderer) {
+  ImGui::Begin(this->GetTitle().c_str());
+
+  CSPill::EngineCore::ResourceManager& resource_manager = 
+      CSPill::EngineCore::ResourceManager::GetInstance();
+
+  if (ImGui::Button("Add Asset")) {
+    ImGui::OpenPopup("Add Asset");
+  }
+  // Add resource popup
+  if (ImGui::BeginPopup("Add Asset")) {
+    static std::string file_path = "";
+
+    ImGui::InputText("File Path", file_path.data(), file_path.capacity());
+    ImGui::SameLine();
+    if (ImGui::Button("Browse")) {
+      // open Dialog Simple
+      ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder", nullptr, ".");
+    }
+
+    // Display file browser
+    if (ImGuiFileDialog::Instance()->Display("FileBrowser")) 
+    {
+      if (ImGuiFileDialog::Instance()->IsOk())
+      {
+        file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+      }
+      ImGuiFileDialog::Instance()->Close();
+    }
+
+    // Confirm button
+    if (ImGui::Button("Confirm")) {
+      resource_manager.LoadResources(file_path);
+      ImGui::CloseCurrentPopup();
+    }
+
+    if (ImGui::Button("Cancel")) {
+      ImGui::CloseCurrentPopup();
+    }
+
+    ImGui::EndPopup();
+  }
+  
+  // Show font resources
+  std::vector<std::string> font_names = resource_manager.GetFontResourceNames();
+  if (!font_names.empty()) {
+    if (ImGui::TreeNode("Font:")) {
+      for (std::string font : font_names) {
+        if (ImGui::Selectable(font.c_str())) {
+          // TODO: click event
+        }
+      }
+      ImGui::TreePop();
+    }
+  }
+
+  // Show audio resources
+  std::vector<std::string> audio_names = resource_manager.GetAudioResourceNames();
+  if (!audio_names.empty()) {
+    if (ImGui::TreeNode("Audio:")) {
+      for (std::string audio : audio_names) {
+        if (ImGui::Selectable(audio.c_str())) {
+          // TODO: click event
+        }
+      }
+      ImGui::TreePop();
     }
   }
 

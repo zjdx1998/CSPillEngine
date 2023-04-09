@@ -40,6 +40,12 @@ class ResourcesUI : public EngineCore::UI {
   static std::vector<CSPill::EngineCore::Tileset> resource_tilesets_;
 };
 
+class ResourceManagerUI : public EngineCore::UI {
+ public:
+  ResourceManagerUI(std::string title, int width, int height);
+  void Render(SDL_Renderer *renderer) override;
+};
+
 }  // namespace CSPill::Editor
 
 #endif  // CSPILLENGINE_ENGINE_INCLUDE_EDITOR_EDITORSCENE_H_
