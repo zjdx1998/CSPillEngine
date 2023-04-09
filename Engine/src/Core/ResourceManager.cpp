@@ -4,6 +4,7 @@
 
 #include "ResourceManager.h"
 
+#include <fstream>
 #include <filesystem>
 #include <iostream>
 
@@ -42,6 +43,14 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
         if (audios_.find(filename) != audios_.end()) continue;
         audios_[filename] = Mix_LoadWAV(directory.path().c_str());
       }
+      if (extension == ".scene") {
+        if (scenes_.find(filename) != scenes_.end()) continue;
+        std::ifstream scene_in(directory.path().c_str());
+        json scene_json;
+        scene_in >> scene_json;
+        scenes_[filename] = std::make_unique<Scene>(scene_json.get<Scene>());
+        scene_in.close();
+      }
     }
   }
 }
@@ -77,6 +86,14 @@ std::vector<std::string> ResourceManager::GetFontResourceNames() {
     font_names.push_back(name);
   }
   return font_names;
+}
+
+Scene *ResourceManager::LoadScene(const std::string &scene_name) {
+  if (scenes_.find(scene_name) == scenes_.end()) {
+    std::cerr << "Not found " << scene_name << "!" << std::endl;
+    return nullptr;
+  }
+  return scenes_[scene_name].get();
 }
 
 void ResourceManager::ReleaseAll() {

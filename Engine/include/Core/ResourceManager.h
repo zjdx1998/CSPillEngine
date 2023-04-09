@@ -11,6 +11,7 @@
 
 #include "SDL_mixer.h"
 #include "SDL_ttf.h"
+#include "Scene.h"
 
 namespace CSPill::EngineCore {
 
@@ -29,11 +30,13 @@ class ResourceManager {
   TTF_Font *LoadFont(const std::string &font_name);
   std::vector<std::string> GetAudioResourceNames();
   std::vector<std::string> GetFontResourceNames();
+  Scene *LoadScene(const std::string &scene_name);
 
  private:
   ResourceManager();
   std::unordered_map<std::string, TTF_Font *> fonts_;
   std::unordered_map<std::string, Mix_Chunk *> audios_;
+  std::unordered_map<std::string, std::unique_ptr<Scene>> scenes_;
 };
 
 }  // namespace CSPill::EngineCore

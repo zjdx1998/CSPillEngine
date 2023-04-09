@@ -54,7 +54,7 @@ int main(int, char **) {
 
   // Create window with SDL_Renderer graphics context
   auto window_flags =
-      (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+      (SDL_WindowFlags) (SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
   SDL_Window *window =
       SDL_CreateWindow("CSPill Engine Editor", SDL_WINDOWPOS_CENTERED,
                        SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
@@ -72,7 +72,7 @@ int main(int, char **) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void)io;
+  (void) io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
@@ -186,10 +186,10 @@ int main(int, char **) {
           1.0f);  // Edit 1 float using a slider from 0.0f to 1.0f
       ImGui::ColorEdit3(
           "clear color",
-          (float *)&clear_color);  // Edit 3 floats representing a color
+          (float *) &clear_color);  // Edit 3 floats representing a color
 
       if (ImGui::Button(
-              "Button"))  // Buttons return true when clicked (most widgets
+          "Button"))  // Buttons return true when clicked (most widgets
         // return true when edited/activated)
         counter++;
       ImGui::SameLine();
@@ -226,8 +226,8 @@ int main(int, char **) {
     SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
     SDL_SetRenderDrawColor(
-        renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255),
-        (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
+        renderer, (Uint8) (clear_color.x * 255), (Uint8) (clear_color.y * 255),
+        (Uint8) (clear_color.z * 255), (Uint8) (clear_color.w * 255));
     SDL_RenderClear(renderer);
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(renderer);

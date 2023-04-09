@@ -12,14 +12,16 @@
 
 namespace CSPill::Editor {
 
+using EngineCore::Scene;
+
 class SceneUI : public EngineCore::UI {
  public:
   SceneUI(std::string title, int width, int height);
-  void LoadScene(std::string_view scene_name);
+  bool LoadScene(const std::string &scene_name);
   void Render(SDL_Renderer *renderer) override;
 
  private:
-  std::unique_ptr<EngineCore::Scene> scene_;
+  Scene *scene_;
   static int SCENE_NUM_ROWS_;
   static int SCENE_NUM_COLS_;
   static int SCENE_BLOCK_SIZE_;
@@ -32,8 +34,10 @@ class ResourcesUI : public EngineCore::UI {
   void Render(SDL_Renderer *renderer) override;
   static int GetSelectedResourceIndex();
   static SDL_Texture *GetResourceTexture(int index);
+  bool LoadScene(const std::string &scene_name);
 
  private:
+  Scene *scene_;
   static int selected_resource_index_;
   static int RESOURCES_NUM_COLS_;
   static std::vector<SDL_Texture *> resource_textures_;

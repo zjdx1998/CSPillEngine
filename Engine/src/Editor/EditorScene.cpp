@@ -7,12 +7,17 @@
 #include <ImGuiFileDialog.h>
 #include <ResourceManager.h>
 #include <SDL_image.h>
-
 #include <iostream>
-
 #include "imgui.h"
 
+#include "EditorScene.h"
+#include "ResourceManager.h"
+#include "Utils.h"
+
 namespace CSPill::Editor {
+
+using EngineCore::ResourceManager;
+using EngineCore::Tileset;
 
 // Scene
 int SceneUI::SCENE_NUM_ROWS_ = 10;
@@ -88,7 +93,7 @@ void SceneUI::Render(SDL_Renderer *renderer) {
                                  row * SCENE_BLOCK_SIZE_ + block_offset.y));
       // Display the block texture in the ImGUI window
       ImGui::Image(
-          (void *)(intptr_t)scene_textures_[row * SCENE_NUM_COLS_ + col],
+          (void *) (intptr_t) scene_textures_[row * SCENE_NUM_COLS_ + col],
           ImVec2(SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_));
       // Check if a block was clicked
       if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
@@ -101,7 +106,7 @@ void SceneUI::Render(SDL_Renderer *renderer) {
           scene_textures_[row * SCENE_NUM_COLS_ + col] = current_resource;
           ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE_ + block_offset.x,
                                      row * SCENE_BLOCK_SIZE_ + block_offset.y));
-          ImGui::Image((void *)(intptr_t)current_resource,
+          ImGui::Image((void *) (intptr_t) current_resource,
                        ImVec2(SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_));
         }
       }
@@ -109,7 +114,14 @@ void SceneUI::Render(SDL_Renderer *renderer) {
   }
   ImGui::End();
 }
-void SceneUI::LoadScene(std::string_view scene_name) {}
+bool SceneUI::LoadScene(const std::string &scene_name) {
+  Scene *loaded_scene = ResourceManager::GetInstance().LoadScene(scene_name);
+  if (loaded_scene == nullptr) {
+    return false;
+  }
+  scene_ = loaded_scene;
+  return true;
+}
 
 ResourcesUI::ResourcesUI(std::string title, int width, int height)
     : CSPill::EngineCore::UI(title, width, height) {}
@@ -120,9 +132,17 @@ SDL_Texture *ResourcesUI::GetResourceTexture(int index) {
   return resource_textures_.at(index);
 }
 
+bool ResourcesUI::LoadScene(const std::string &scene_name) {
+  Scene *loaded_scene = ResourceManager::GetInstance().LoadScene(scene_name);
+  if (loaded_scene == nullptr) {
+    return false;
+  }
+  scene_ = loaded_scene;
+  return true;
+}
+
 void ResourcesUI::Render(SDL_Renderer *renderer) {
   ImGui::Begin(this->GetTitle().c_str());
-
   // Add Tileset button
   if (ImGui::Button("Add Tileset")) {
     ImGui::OpenPopup("Add Tileset Popup");
@@ -130,11 +150,15 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
 
   // Add Tileset popup
   if (ImGui::BeginPopup("Add Tileset Popup")) {
-    static char file_path[256] = {0};
-    static int tile_width = 0;
-    static int tile_height = 0;
+    char *file_path = new char[255];
+    int tile_width = 0;
+    int tile_height = 0;
+    int width = 0;
+    int height = 0;
+    char *tileset_name = new char[127];
 
     ImGui::InputText("File Path", file_path, sizeof(file_path));
+    ImGui::InputText("Name", tileset_name, sizeof(tileset_name));
     // std::string file_path_str(file_path);
     ImGui::SameLine();
     if (ImGui::Button("Browse")) {
@@ -146,6 +170,12 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
 
     // Tile height input
     ImGui::InputInt("Tile Height", &tile_height);
+
+    // Tileset width input
+    ImGui::InputInt("Tileset Width", &width);
+
+    // Tileset height input
+    ImGui::InputInt("Tileset Height", &height);
 
     // Confirm button
     if (ImGui::Button("Confirm")) {
@@ -165,6 +195,9 @@ void ResourcesUI::Render(SDL_Renderer *renderer) {
       resource_tilesets_.push_back(CSPill::EngineCore::Tileset(
           file_path, texture_width, texture_height, tile_width, tile_height));
 
+      if (scene_) {
+        scene_->AddTileSet(Tileset(std::string(tileset_name), width, height, tile_width, tile_height));
+      }
       ImGui::CloseCurrentPopup();
     }
 

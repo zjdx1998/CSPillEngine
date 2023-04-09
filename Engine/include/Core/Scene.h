@@ -78,6 +78,7 @@ class Scene {
   void SetLayers(const std::vector<Layer> &layers);
   [[nodiscard]] const std::vector<Tileset> &GetTileSets() const;
   void SetTileSets(const std::vector<Tileset> &tile_sets);
+  void AddTileSet(Tileset &&t);
   [[nodiscard]] int GetCanvasWidth() const;
   void SetCanvasWidth(int canvas_width);
   [[nodiscard]] int GetCanvasHeight() const;
@@ -91,5 +92,51 @@ class Scene {
 };
 
 }  // namespace CSPill::EngineCore
+
+namespace nlohmann {
+template<>
+struct adl_serializer<CSPill::EngineCore::Layer> {
+  static CSPill::EngineCore::Layer from_json(const json &j) {
+    return {j.at("name"), j.at("tileset"), j.at("data")};
+  }
+
+  static void to_json(json &j, const CSPill::EngineCore::Layer &l) {
+    j["name"] = l.GetName();
+    j["tileset"] = l.GetTileset();
+    j["data"] = l.GetData();
+  }
+};
+
+template<>
+struct adl_serializer<CSPill::EngineCore::Tileset> {
+  static CSPill::EngineCore::Tileset from_json(const json &j) {
+    return {j.at("name"), j.at("imagewidth"), j.at("imageheight"),
+            j.at("tilewidth"), j.at("tileheight")};
+  }
+
+  static void to_json(json &j, const CSPill::EngineCore::Tileset &t) {
+    j["name"] = t.GetName();
+    j["imagewidth"] = t.GetImageWidth();
+    j["imageheight"] = t.GetImageHeight();
+    j["tilewidth"] = t.GetTileWidth();
+    j["tileheight"] = t.GetTileHeight();
+  }
+};
+
+template<>
+struct adl_serializer<CSPill::EngineCore::Scene> {
+  static CSPill::EngineCore::Scene from_json(const json &j) {
+    return {j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),
+            j.at("canvas").at("height")};
+  }
+
+  static void to_json(json &j, const CSPill::EngineCore::Scene &s) {
+    j["layers"] = s.GetLayers();
+    j["tilesets"] = s.GetTileSets();
+    j["canvas"]["width"] = s.GetCanvasWidth();
+    j["canvas"]["height"] = s.GetCanvasHeight();
+  }
+};
+}  // namespace nlohmann
 
 #endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_SCENE_H_
