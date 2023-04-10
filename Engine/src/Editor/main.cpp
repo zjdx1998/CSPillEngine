@@ -137,9 +137,12 @@ int main(int, char **) {
   // Init ResourceManagerUI
   ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
 
-
   bool dockspace_open = true;
-  ImGuiWindowFlags docking_window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoMove;
+  ImGuiWindowFlags docking_window_flags =
+      ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking |
+      ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
+      ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize |
+      ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoMove;
 
   // Main loop
   bool done = false;
@@ -168,7 +171,7 @@ int main(int, char **) {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGuiViewport *viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(viewport->Pos);
     ImGui::SetNextWindowSize(viewport->Size);
     ImGui::SetNextWindowViewport(viewport->ID);
@@ -178,8 +181,10 @@ int main(int, char **) {
 
     ImGuiID dockspace_id = ImGui::GetID("DefaultDockSpace");
     const ImVec2 dockspace_size = ImGui::GetContentRegionAvail();
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_NoCloseButton);
-    
+    ImGui::DockSpace(
+        dockspace_id, ImVec2(0.0f, 0.0f),
+        ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_NoCloseButton);
+
     // Render Resources widget
     layers_widget.Render(renderer);
 
@@ -200,10 +205,12 @@ int main(int, char **) {
       ImGui::DockBuilderSetNodeSize(dockspace_id, dockspace_size);
 
       ImGuiID dock_main_id = dockspace_id;
-      ImGuiID dock_left_id = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.25f, nullptr, &dock_main_id);
+      ImGuiID dock_left_id = ImGui::DockBuilderSplitNode(
+          dock_main_id, ImGuiDir_Left, 0.25f, nullptr, &dock_main_id);
       // Set TileSets panel
       ImGui::DockBuilderDockWindow("TileSets", dock_left_id);
-      ImGuiID dock_left_bottom_id = ImGui::DockBuilderSplitNode(dock_left_id, ImGuiDir_Down, 0.5f, nullptr, &dock_left_id);
+      ImGuiID dock_left_bottom_id = ImGui::DockBuilderSplitNode(
+          dock_left_id, ImGuiDir_Down, 0.5f, nullptr, &dock_left_id);
       // Set Resource Manager panel
       ImGui::DockBuilderDockWindow("Resource Manager", dock_left_bottom_id);
       // Set Scene panel
@@ -214,7 +221,7 @@ int main(int, char **) {
     }
 
     ImGui::End();
-    
+
     // Rendering
     ImGui::Render();
     SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x,
