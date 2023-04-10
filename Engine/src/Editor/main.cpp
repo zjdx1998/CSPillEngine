@@ -28,6 +28,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer.h"
+#include "imgui_internal.h"
 
 #if !SDL_VERSION_ATLEAST(2, 0, 17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -136,6 +137,10 @@ int main(int, char **) {
   // Init ResourceManagerUI
   ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
 
+
+  bool dockspace_open = true;
+  ImGuiWindowFlags docking_window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoMove;
+
   // Main loop
   bool done = false;
   while (!done) {
@@ -163,8 +168,18 @@ int main(int, char **) {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::DockSpaceOverViewport();
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->Pos);
+    ImGui::SetNextWindowSize(viewport->Size);
+    ImGui::SetNextWindowViewport(viewport->ID);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::Begin("MainWindow", &dockspace_open, docking_window_flags);
+    ImGui::PopStyleVar();
 
+    ImGuiID dockspace_id = ImGui::GetID("DefaultDockSpace");
+    const ImVec2 dockspace_size = ImGui::GetContentRegionAvail();
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_NoCloseButton);
+    
     // Render Resources widget
     layers_widget.Render(renderer);
 
@@ -174,6 +189,32 @@ int main(int, char **) {
     // Render Resource Manager widget
     resource_manager_widget.Render(renderer);
 
+    static bool docking_init = true;
+    // Set up docking
+    if (docking_init) {
+      std::cout << "init dockspace" << std::endl;
+      docking_init = false;
+      // Clear previous docking layout
+      ImGui::DockBuilderRemoveNode(dockspace_id);
+      ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_None);
+      ImGui::DockBuilderSetNodeSize(dockspace_id, dockspace_size);
+
+      ImGuiID dock_main_id = dockspace_id;
+      ImGuiID dock_left_id = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.25f, nullptr, &dock_main_id);
+      // Set TileSets panel
+      ImGui::DockBuilderDockWindow("TileSets", dock_left_id);
+      ImGuiID dock_left_bottom_id = ImGui::DockBuilderSplitNode(dock_left_id, ImGuiDir_Down, 0.5f, nullptr, &dock_left_id);
+      // Set Resource Manager panel
+      ImGui::DockBuilderDockWindow("Resource Manager", dock_left_bottom_id);
+      // Set Scene panel
+      ImGui::DockBuilderDockWindow("Scene", dock_main_id);
+
+      // Finalize the dock layout
+      ImGui::DockBuilderFinish(dockspace_id);
+    }
+
+    ImGui::End();
+    
     // Rendering
     ImGui::Render();
     SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x,

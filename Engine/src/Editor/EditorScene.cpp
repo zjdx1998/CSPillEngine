@@ -20,6 +20,9 @@ namespace CSPill::Editor {
 using EngineCore::ResourceManager;
 using EngineCore::Tileset;
 
+const float FILE_BROWSER_WIDTH = 400;
+const float FILE_BROWSER_HEIGHT = 300;
+
 // Scene
 int SceneUI::SCENE_NUM_ROWS_ = 20;
 int SceneUI::SCENE_NUM_COLS_ = 50;
@@ -44,6 +47,7 @@ SceneUI::SceneUI(std::string title, int width, int height)
 }
 
 void SceneUI::Render(SDL_Renderer *renderer) {
+  ImGui::SetNextWindowSize(ImVec2(this->GetWidth(), this->GetHeight()));
   ImGui::Begin(this->GetTitle().c_str());
   // Render scene component to SDL texture
   std::string image_filename =
@@ -129,6 +133,7 @@ SDL_Texture *TileSetEditorUI::GetResourceTexture(int index) {
 }
 
 void TileSetEditorUI::Render(SDL_Renderer *renderer) {
+  ImGui::SetNextWindowSize(ImVec2(this->GetWidth(), this->GetHeight()));
   ImGui::Begin(this->GetTitle().c_str());
   // Add Tileset button
   if (ImGui::Button("Add Tileset")) {
@@ -292,6 +297,7 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
 }
 
 void ResourceManagerUI::Render(SDL_Renderer *renderer) {
+  ImGui::SetNextWindowSize(ImVec2(this->GetWidth(), this->GetHeight()));
   ImGui::Begin(this->GetTitle().c_str());
 
   CSPill::EngineCore::ResourceManager &resource_manager =
@@ -308,6 +314,7 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
     ImGui::SameLine();
     if (ImGui::Button("Browse")) {
       // open Dialog Simple
+      ImGui::SetNextWindowSize(ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
       ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder",
                                               nullptr, ".");
     }
