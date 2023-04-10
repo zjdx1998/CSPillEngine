@@ -382,12 +382,10 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
             nullptr, &texture_size.x, &texture_size.y);
         ImGui::Image(ResourceManager::GetInstance().LoadImage(selected_image_),
                      ImVec2(texture_size.x, texture_size.y));
-        SDL_QueryTexture(resource_manager.LoadImage(selected_image_),
-                         nullptr,
-                         nullptr,
-                         &texture_size.x,
-                         &texture_size.y);
-        ImGui::Image(resource_manager.LoadImage(selected_image_), ImVec2(texture_size.x, texture_size.y));
+        SDL_QueryTexture(resource_manager.LoadImage(selected_image_), nullptr,
+                         nullptr, &texture_size.x, &texture_size.y);
+        ImGui::Image(resource_manager.LoadImage(selected_image_),
+                     ImVec2(texture_size.x, texture_size.y));
         ImGui::EndPopup();
       }
       ImGui::TreePop();

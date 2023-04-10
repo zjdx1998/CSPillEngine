@@ -5,8 +5,8 @@
 #ifndef CSPILLENGINE_ENGINE_INCLUDE_CORE_UTILS_H_
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_UTILS_H_
 
-#include <string>
 #include <optional>
+#include <string>
 
 namespace EngineCore::Utils {
 

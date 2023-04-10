@@ -180,9 +180,7 @@ void ResourceManager::SetActiveLayer(const std::string &active_layer) {
   active_layer_ = active_layer;
 }
 
-std::string ResourceManager::GetActiveLayer() const {
-  return active_layer_;
-}
+std::string ResourceManager::GetActiveLayer() const { return active_layer_; }
 
 void ResourceManager::ReleaseAll() {
   for (const auto &font : fonts_) TTF_CloseFont(font.second);
