@@ -23,6 +23,7 @@ namespace CSPill::EngineCore {
 class Layer {
  public:
   Layer(std::string name, std::string tileset, const std::vector<double> &data);
+  Layer(std::string name, const std::vector<double> &data);
   [[nodiscard]] std::string_view GetName() const;
   void SetName(const std::string &name);
   [[nodiscard]] std::string_view GetTileset() const;
@@ -48,7 +49,7 @@ class Layer {
  */
 class Tileset {
  public:
-  Tileset(std::string name, int image_width, int image_height, int tile_width,
+  Tileset(std::string name, std::string image, int image_width, int image_height, int tile_width,
           int tile_height);
   [[nodiscard]] std::string_view GetName() const;
   void SetName(const std::string &name);
@@ -60,9 +61,12 @@ class Tileset {
   void SetTileWidth(int tile_width);
   [[nodiscard]] int GetTileHeight() const;
   void SetTileHeight(int tile_height);
+  [[nodiscard]] const std::string &GetImage() const;
+  void SetImage(const std::string &image);
 
  private:
   std::string name_;
+  std::string image_;
   int image_width_;
   int image_height_;
   int tile_width_;
@@ -97,6 +101,10 @@ namespace nlohmann {
 template<>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   static CSPill::EngineCore::Layer from_json(const json &j) {
+    json tileset;
+    if (!j.contains("tileset")) {
+      return {j.at("name"), j.at("data")};
+    }
     return {j.at("name"), j.at("tileset"), j.at("data")};
   }
 
@@ -110,7 +118,7 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
 template<>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   static CSPill::EngineCore::Tileset from_json(const json &j) {
-    return {j.at("name"), j.at("imagewidth"), j.at("imageheight"),
+    return {j.at("name"), j.at("image"), j.at("imagewidth"), j.at("imageheight"),
             j.at("tilewidth"), j.at("tileheight")};
   }
 

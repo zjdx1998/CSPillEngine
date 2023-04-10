@@ -12,6 +12,8 @@ Layer::Layer(std::string name, std::string tileset,
              const std::vector<double> &data)
     : name_(std::move(name)), tileset_(std::move(tileset)), data_(data) {}
 
+Layer::Layer(std::string name, const std::vector<double> &data) : name_(std::move(name)), data_(data) {}
+
 std::string_view Layer::GetName() const { return name_; }
 
 void Layer::SetName(const std::string &name) { name_ = name; }
@@ -26,9 +28,10 @@ void Layer::SetData(const std::vector<double> &data) { data_ = data; }
 bool Layer::IsVisible() const { return visible_; }
 void Layer::SetVisible(bool visible) { visible_ = visible; }
 
-Tileset::Tileset(std::string name, int image_width, int image_height,
+Tileset::Tileset(std::string name, std::string image, int image_width, int image_height,
                  int tile_width, int tile_height)
     : name_(std::move(name)),
+      image_(std::move(image)),
       image_width_(image_width),
       image_height_(image_height),
       tile_width_(tile_width),
@@ -43,6 +46,12 @@ int Tileset::GetTileWidth() const { return tile_width_; }
 void Tileset::SetTileWidth(int tile_width) { tile_width_ = tile_width; }
 int Tileset::GetTileHeight() const { return tile_height_; }
 void Tileset::SetTileHeight(int tile_height) { tile_height_ = tile_height; }
+const std::string &Tileset::GetImage() const {
+  return image_;
+}
+void Tileset::SetImage(const std::string &image) {
+  image_ = image;
+}
 
 Scene::Scene(int canvas_width, int canvas_height)
     : canvas_width_(canvas_width), canvas_height_(canvas_height) {}

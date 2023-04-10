@@ -3,10 +3,12 @@
 //
 
 #include "ResourceManager.h"
+#include "Utils.h"
 
 #include <fstream>
 #include <filesystem>
 #include <iostream>
+#include "SDL_image.h"
 
 namespace CSPill::EngineCore {
 
@@ -18,11 +20,22 @@ ResourceManager::ResourceManager() {
               << std::endl;
     return;
   }
-  if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+  if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) != (IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)) {
+    std::cerr << "Failed to initialize SDL_image: " << IMG_GetError() << std::endl;
+    return;
+  }
+  int Mix_flags = MIX_INIT_MP3 | MIX_INIT_FLAC;
+  int Mix_initted = Mix_Init(Mix_flags);
+  if ((Mix_initted & Mix_flags) != Mix_flags) {
+    std::cerr << "Mix_Init: Failed to init required ogg and mod support!\n";
+    std::cerr << "Mix_Init: %s\n" << Mix_GetError() << std::endl;
+  }
+  if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     std::cerr << "Could not initialize SDL2_mixer, error: " << Mix_GetError()
               << std::endl;
     return;
   }
+  renderer_ = nullptr;
 }
 
 ResourceManager &ResourceManager::GetInstance() {
@@ -30,7 +43,19 @@ ResourceManager &ResourceManager::GetInstance() {
   return instance;
 }
 
+SDL_Renderer *ResourceManager::GetRenderer() {
+  return renderer_;
+}
+
+void ResourceManager::SetRenderer(SDL_Renderer *renderer) {
+  this->renderer_ = renderer;
+}
+
 void ResourceManager::LoadResources(std::string_view folder_path) {
+  if (!fs::exists(folder_path)) {
+    std::cerr << "Path: " << folder_path << " is not valid!" << std::endl;
+    return;
+  }
   for (const auto &directory : fs::recursive_directory_iterator(folder_path)) {
     if (fs::is_regular_file(directory)) {
       const auto &extension = directory.path().extension();
@@ -50,6 +75,20 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
         scene_in >> scene_json;
         scenes_[filename] = std::make_unique<Scene>(scene_json.get<Scene>());
         scene_in.close();
+      }
+      if (extension == ".bmp") {
+        if (images_.find(filename) != images_.end()) continue;
+        if (SDL_Surface *bmp_surface = SDL_LoadBMP(directory.path().c_str())) {
+          images_[filename] = SDL_CreateTextureFromSurface(renderer_, bmp_surface);
+          SDL_FreeSurface(bmp_surface);
+        }
+      }
+      if (::EngineCore::Utils::isIn(extension, ".png", ".jpg", ".tif")) {
+        if (images_.find(filename) != images_.end()) continue;
+        if (SDL_Surface *surface = IMG_Load(directory.path().c_str())) {
+          images_[filename] = SDL_CreateTextureFromSurface(renderer_, surface);
+          SDL_FreeSurface(surface);
+        }
       }
     }
   }
@@ -88,19 +127,62 @@ std::vector<std::string> ResourceManager::GetFontResourceNames() {
   return font_names;
 }
 
+std::vector<std::string> ResourceManager::GetSceneNames() {
+  std::vector<std::string> scene_names;
+  for (const auto &[name, scene] : scenes_) {
+    scene_names.push_back(name);
+  }
+  return std::move(scene_names);
+}
+
+std::vector<std::string> ResourceManager::GetImageNames() {
+  std::vector<std::string> image_names;
+  for (const auto &[name, scene] : images_) {
+    image_names.push_back(name);
+  }
+  return std::move(image_names);
+}
+
 Scene *ResourceManager::LoadScene(const std::string &scene_name) {
   if (scenes_.find(scene_name) == scenes_.end()) {
-    std::cerr << "Not found " << scene_name << "!" << std::endl;
+    std::cerr << "Scene: " << scene_name << " Not Found!" << std::endl;
     return nullptr;
   }
   return scenes_[scene_name].get();
 }
 
+SDL_Texture *ResourceManager::LoadImage(const std::string &image_name) {
+  if (images_.find(image_name) == images_.end()) {
+    std::cerr << "Image: " << image_name << " Not Found!" << std::endl;
+    return nullptr;
+  }
+  return images_[image_name];
+}
+
+Scene *ResourceManager::ActiveScene() {
+  return LoadScene(active_scene_);
+}
+
+bool ResourceManager::SetActiveScene(const std::string &scene_name) {
+  if (scenes_.find(scene_name) == scenes_.end()) {
+    std::cerr << "Scene " << scene_name << "Not Found!" << std::endl;
+    return false;
+  }
+  active_scene_ = scene_name;
+  return true;
+}
+
+std::string ResourceManager::GetActiveSceneName() const {
+  return active_scene_;
+}
+
 void ResourceManager::ReleaseAll() {
   for (const auto &font : fonts_) TTF_CloseFont(font.second);
   for (const auto &audio : audios_) Mix_FreeChunk(audio.second);
+  for (const auto &image : images_) SDL_DestroyTexture(image.second);
   fonts_.clear();
   audios_.clear();
+  images_.clear();
 }
 
 ResourceManager::~ResourceManager() {
@@ -108,6 +190,7 @@ ResourceManager::~ResourceManager() {
   TTF_Quit();
   Mix_CloseAudio();
   Mix_Quit();
+  IMG_Quit();
 }
 
 }  // namespace CSPill::EngineCore

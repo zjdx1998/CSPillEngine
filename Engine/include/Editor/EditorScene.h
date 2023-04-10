@@ -17,27 +17,23 @@ using EngineCore::Scene;
 class SceneUI : public EngineCore::UI {
  public:
   SceneUI(std::string title, int width, int height);
-  bool LoadScene(const std::string &scene_name);
   void Render(SDL_Renderer *renderer) override;
 
  private:
-  Scene *scene_;
   static int SCENE_NUM_ROWS_;
   static int SCENE_NUM_COLS_;
   static int SCENE_BLOCK_SIZE_;
   std::unique_ptr<SDL_Texture *[]> scene_textures_;
 };
 
-class ResourcesUI : public EngineCore::UI {
+class TileSetEditorUI : public EngineCore::UI {
  public:
-  ResourcesUI(std::string title, int width, int height);
+  TileSetEditorUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
   static int GetSelectedResourceIndex();
   static SDL_Texture *GetResourceTexture(int index);
-  bool LoadScene(const std::string &scene_name);
 
  private:
-  Scene *scene_;
   static int selected_resource_index_;
   static int RESOURCES_NUM_COLS_;
   static std::vector<SDL_Texture *> resource_textures_;
@@ -48,6 +44,10 @@ class ResourceManagerUI : public EngineCore::UI {
  public:
   ResourceManagerUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
+ private:
+  void ResourceManagerRenderSceneLevels();
+  void ResourceManagerRenderTextures();
+  std::string selected_image_;
 };
 
 }  // namespace CSPill::Editor

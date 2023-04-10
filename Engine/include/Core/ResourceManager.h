@@ -28,15 +28,27 @@ class ResourceManager {
   ~ResourceManager();
   Mix_Chunk *LoadAudio(const std::string &audio_name);
   TTF_Font *LoadFont(const std::string &font_name);
+  SDL_Texture *LoadImage(const std::string &image_name);
+  Scene *LoadScene(const std::string &scene_name);
+  Scene *ActiveScene();
+  [[nodiscard]] std::string GetActiveSceneName() const;
+  bool SetActiveScene(const std::string &scene_name);
+  void SetRenderer(SDL_Renderer *renderer);
+  SDL_Renderer *GetRenderer();
+
   std::vector<std::string> GetAudioResourceNames();
   std::vector<std::string> GetFontResourceNames();
-  Scene *LoadScene(const std::string &scene_name);
+  std::vector<std::string> GetSceneNames();
+  std::vector<std::string> GetImageNames();
 
  private:
+  SDL_Renderer *renderer_;
   ResourceManager();
+  std::string active_scene_ = "default.scene";
   std::unordered_map<std::string, TTF_Font *> fonts_;
   std::unordered_map<std::string, Mix_Chunk *> audios_;
   std::unordered_map<std::string, std::unique_ptr<Scene>> scenes_;
+  std::unordered_map<std::string, SDL_Texture *> images_;
 };
 
 }  // namespace CSPill::EngineCore

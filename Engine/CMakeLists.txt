@@ -47,7 +47,7 @@ list(APPEND CORE_INC_DIRS ${INC_CORE})
 add_library(Core ${CORE_SRCS_DIRS})
 target_include_directories(Core PUBLIC ${CORE_INC_DIRS})
 add_dependencies(Core SDL2 nlohmann_json SDL2_ttf SDL2_mixer)
-target_link_libraries(Core SDL2 nlohmann_json SDL2_ttf SDL2_mixer)
+target_link_libraries(Core SDL2 nlohmann_json SDL2_ttf SDL2_mixer SDL2_image)
 
 # Editor
 file(GLOB SRC_EDITOR src/Editor/*.cpp)
