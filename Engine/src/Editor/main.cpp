@@ -138,8 +138,7 @@ int main(int, char **) {
   ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
 
   bool dockspace_open = true;
-  ImGuiWindowFlags docking_window_flags =
-      ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking |
+  ImGuiWindowFlags docking_window_flags = ImGuiWindowFlags_NoDocking |
       ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
       ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize |
       ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoMove;
