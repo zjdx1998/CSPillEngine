@@ -30,11 +30,15 @@ class ResourceManager {
   TTF_Font *LoadFont(const std::string &font_name);
   SDL_Texture *LoadImage(const std::string &image_name);
   Scene *LoadScene(const std::string &scene_name);
+  SDL_Renderer *GetRenderer();
+
   Scene *ActiveScene();
   [[nodiscard]] std::string GetActiveSceneName() const;
   bool SetActiveScene(const std::string &scene_name);
   void SetRenderer(SDL_Renderer *renderer);
-  SDL_Renderer *GetRenderer();
+
+  void SetActiveLayer(const std::string &active_layer);
+  std::string GetActiveLayer() const;
 
   std::vector<std::string> GetAudioResourceNames();
   std::vector<std::string> GetFontResourceNames();
@@ -44,11 +48,14 @@ class ResourceManager {
  private:
   SDL_Renderer *renderer_;
   ResourceManager();
-  std::string active_scene_ = "default.scene";
   std::unordered_map<std::string, TTF_Font *> fonts_;
   std::unordered_map<std::string, Mix_Chunk *> audios_;
   std::unordered_map<std::string, std::unique_ptr<Scene>> scenes_;
   std::unordered_map<std::string, SDL_Texture *> images_;
+
+  // Global Scene Helper Variables
+  std::string active_scene_ = "default.scene";
+  std::string active_layer_;
 };
 
 }  // namespace CSPill::EngineCore

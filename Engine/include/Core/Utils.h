@@ -6,6 +6,7 @@
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_UTILS_H_
 
 #include <string>
+#include <optional>
 
 namespace EngineCore::Utils {
 
