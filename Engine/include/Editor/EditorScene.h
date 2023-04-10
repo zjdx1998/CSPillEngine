@@ -44,6 +44,7 @@ class ResourceManagerUI : public EngineCore::UI {
  public:
   ResourceManagerUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
+
  private:
   void ResourceManagerRenderSceneLevels();
   void ResourceManagerRenderTextures();

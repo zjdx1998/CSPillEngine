@@ -33,9 +33,9 @@
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
 
-using CSPill::Editor::TileSetEditorUI;
-using CSPill::Editor::SceneUI;
 using CSPill::Editor::ResourceManagerUI;
+using CSPill::Editor::SceneUI;
+using CSPill::Editor::TileSetEditorUI;
 
 // Main code
 int main(int, char **) {
@@ -58,7 +58,7 @@ int main(int, char **) {
 
   // Create window with SDL_Renderer graphics context
   auto window_flags =
-      (SDL_WindowFlags) (SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+      (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
   SDL_Window *window =
       SDL_CreateWindow("CSPill Engine Editor", SDL_WINDOWPOS_CENTERED,
                        SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
@@ -77,7 +77,7 @@ int main(int, char **) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void) io;
+  (void)io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
@@ -134,8 +134,7 @@ int main(int, char **) {
   SceneUI scene_widget("Scene", 800, 600);
 
   // Init ResourceManagerUI
-  ResourceManagerUI resource_manager_widget("Resource Manager",
-                                            600, 300);
+  ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
 
   // Main loop
   bool done = false;
@@ -180,8 +179,8 @@ int main(int, char **) {
     SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
     SDL_SetRenderDrawColor(
-        renderer, (Uint8) (clear_color.x * 255), (Uint8) (clear_color.y * 255),
-        (Uint8) (clear_color.z * 255), (Uint8) (clear_color.w * 255));
+        renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255),
+        (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
     SDL_RenderClear(renderer);
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(renderer);

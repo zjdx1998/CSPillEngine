@@ -3,12 +3,13 @@
 //
 
 #include "ResourceManager.h"
-#include "Utils.h"
 
-#include <fstream>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
+
 #include "SDL_image.h"
+#include "Utils.h"
 
 namespace CSPill::EngineCore {
 
@@ -20,8 +21,10 @@ ResourceManager::ResourceManager() {
               << std::endl;
     return;
   }
-  if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) != (IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)) {
-    std::cerr << "Failed to initialize SDL_image: " << IMG_GetError() << std::endl;
+  if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) !=
+      (IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)) {
+    std::cerr << "Failed to initialize SDL_image: " << IMG_GetError()
+              << std::endl;
     return;
   }
   int Mix_flags = MIX_INIT_MP3 | MIX_INIT_FLAC;
@@ -43,9 +46,7 @@ ResourceManager &ResourceManager::GetInstance() {
   return instance;
 }
 
-SDL_Renderer *ResourceManager::GetRenderer() {
-  return renderer_;
-}
+SDL_Renderer *ResourceManager::GetRenderer() { return renderer_; }
 
 void ResourceManager::SetRenderer(SDL_Renderer *renderer) {
   this->renderer_ = renderer;
@@ -79,7 +80,8 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (extension == ".bmp") {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *bmp_surface = SDL_LoadBMP(directory.path().c_str())) {
-          images_[filename] = SDL_CreateTextureFromSurface(renderer_, bmp_surface);
+          images_[filename] =
+              SDL_CreateTextureFromSurface(renderer_, bmp_surface);
           SDL_FreeSurface(bmp_surface);
         }
       }
@@ -159,9 +161,7 @@ SDL_Texture *ResourceManager::LoadImage(const std::string &image_name) {
   return images_[image_name];
 }
 
-Scene *ResourceManager::ActiveScene() {
-  return LoadScene(active_scene_);
-}
+Scene *ResourceManager::ActiveScene() { return LoadScene(active_scene_); }
 
 bool ResourceManager::SetActiveScene(const std::string &scene_name) {
   if (scenes_.find(scene_name) == scenes_.end()) {
