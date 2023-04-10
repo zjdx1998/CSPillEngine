@@ -142,17 +142,27 @@ void TileSetEditorUI::Render(SDL_Renderer *renderer) {
 
   // Add Tileset popup
   if (ImGui::BeginPopup("Add Tileset Popup")) {
-    char *file_path = new char[255];
-    int tile_width = 0;
-    int tile_height = 0;
-    int width = 0;
-    int height = 0;
-    char *tileset_name = new char[127];
-
-    ImGui::InputText("File Path", file_path, sizeof(file_path));
+    static std::string file_path;
+    static int tile_width = 0;
+    static int tile_height = 0;
+    static int width = 0;
+    static int height = 0;
+    static char *tileset_name = new char[127];
+    ImGui::InputText("File Path", file_path.data(), file_path.capacity());
     ImGui::SameLine();
     if (ImGui::Button("Browse")) {
-      // TODO: File explorer
+      // open Dialog Simple
+      ImGui::SetNextWindowSize(ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
+      ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose File",
+                                              ".*", ".");
+    }
+
+    // Display file browser
+    if (ImGuiFileDialog::Instance()->Display("FileBrowser")) {
+      if (ImGuiFileDialog::Instance()->IsOk()) {
+        file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+      }
+      ImGuiFileDialog::Instance()->Close();
     }
     ImGui::InputText("Name", tileset_name, sizeof(tileset_name));
     // std::string file_path_str(file_path);
@@ -172,7 +182,7 @@ void TileSetEditorUI::Render(SDL_Renderer *renderer) {
     // Confirm button
     if (ImGui::Button("Confirm")) {
       // Load texture
-      SDL_Surface *surface = IMG_Load(file_path);
+      SDL_Surface *surface = IMG_Load(file_path.c_str());
       SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
       SDL_FreeSurface(surface);
 
