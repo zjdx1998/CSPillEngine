@@ -176,13 +176,44 @@ std::string ResourceManager::GetActiveSceneName() const {
   return active_scene_;
 }
 
-void ResourceManager::SetActiveLayer(const std::string &active_layer) {
-  active_layer_ = active_layer;
+void ResourceManager::SetActiveTileset(const std::string &active_name) {
+  active_tileset_ = active_name;
 }
 
-std::string ResourceManager::GetActiveLayer() const { return active_layer_; }
+Tileset *ResourceManager::ActiveTileset() {
+  if (active_tileset_.empty()) return nullptr;
+  for (auto &i : ActiveScene()->GetTileSets()) {
+    if (i.GetName() == active_tileset_) return &i;
+  }
+  return nullptr;
+}
+
+std::string ResourceManager::GetActiveTilesetName() const { return active_tileset_; }
+
+Layer *ResourceManager::ActiveLayer() {
+  if (active_tileset_.empty()) return nullptr;
+  for (auto &i : ActiveScene()->Layers()) {
+    if (i.GetTileset() == active_tileset_) return &i;
+  }
+  return nullptr;
+}
+
+void ResourceManager::AddTile(std::string_view name, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> tile) {
+  tiles_.insert({name.data(), std::move(tile)});
+}
+
+SDL_Texture *ResourceManager::QueryTexture(std::string_view name) {
+  if (tiles_.find(name.data()) != tiles_.end()) return tiles_.at(name.data()).get();
+  return nullptr;
+}
+
+void ResourceManager::ClearTiles() {
+//  for (const auto &tile : tiles_) SDL_DestroyTexture(tile.second.get());
+  tiles_.clear();
+}
 
 void ResourceManager::ReleaseAll() {
+  ClearTiles();
   for (const auto &font : fonts_) TTF_CloseFont(font.second);
   for (const auto &audio : audios_) Mix_FreeChunk(audio.second);
   for (const auto &image : images_) SDL_DestroyTexture(image.second);

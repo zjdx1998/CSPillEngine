@@ -30,20 +30,30 @@ class ResourceManager {
   TTF_Font *LoadFont(const std::string &font_name);
   SDL_Texture *LoadImage(const std::string &image_name);
   Scene *LoadScene(const std::string &scene_name);
-  SDL_Renderer *GetRenderer();
-
-  Scene *ActiveScene();
-  [[nodiscard]] std::string GetActiveSceneName() const;
-  bool SetActiveScene(const std::string &scene_name);
-  void SetRenderer(SDL_Renderer *renderer);
-
-  void SetActiveLayer(const std::string &active_layer);
-  std::string GetActiveLayer() const;
 
   std::vector<std::string> GetAudioResourceNames();
   std::vector<std::string> GetFontResourceNames();
   std::vector<std::string> GetSceneNames();
   std::vector<std::string> GetImageNames();
+
+  SDL_Renderer *GetRenderer();
+  void SetRenderer(SDL_Renderer *renderer);
+
+  // Editor Only Below
+
+  Scene *ActiveScene();
+  [[nodiscard]] std::string GetActiveSceneName() const;
+  bool SetActiveScene(const std::string &scene_name);
+
+  Layer *ActiveLayer();
+
+  Tileset *ActiveTileset();
+  void SetActiveTileset(const std::string &active_name);
+  [[nodiscard]] std::string GetActiveTilesetName() const;
+
+  void AddTile(std::string_view name, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> tile);
+  SDL_Texture *QueryTexture(std::string_view name);
+  void ClearTiles();
 
  private:
   SDL_Renderer *renderer_;
@@ -53,9 +63,12 @@ class ResourceManager {
   std::unordered_map<std::string, std::unique_ptr<Scene>> scenes_;
   std::unordered_map<std::string, SDL_Texture *> images_;
 
-  // Global Scene Helper Variables
+  // Editor Only
+  std::unordered_map<std::string, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>> tiles_;
+
+  // Global Editor Scene Helper Variables
   std::string active_scene_ = "default.scene";
-  std::string active_layer_;
+  std::string active_tileset_;
 };
 
 }  // namespace CSPill::EngineCore

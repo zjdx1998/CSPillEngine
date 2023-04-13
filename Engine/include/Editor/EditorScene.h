@@ -18,26 +18,17 @@ class SceneUI : public EngineCore::UI {
  public:
   SceneUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
-
+  ~SceneUI();
  private:
-  static int SCENE_NUM_ROWS_;
-  static int SCENE_NUM_COLS_;
-  static int SCENE_BLOCK_SIZE_;
-  std::unique_ptr<SDL_Texture *[]> scene_textures_;
+  SDL_Texture *active_scene_texture_;
 };
 
 class TileSetEditorUI : public EngineCore::UI {
  public:
   TileSetEditorUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
-  static int GetSelectedResourceIndex();
-  static SDL_Texture *GetResourceTexture(int index);
-
  private:
-  static int selected_resource_index_;
-  static int RESOURCES_NUM_COLS_;
-  static std::vector<SDL_Texture *> resource_textures_;
-  static std::vector<CSPill::EngineCore::Tileset> resource_tilesets_;
+  SDL_Rect src_rect_;
 };
 
 class ResourceManagerUI : public EngineCore::UI {
@@ -47,7 +38,6 @@ class ResourceManagerUI : public EngineCore::UI {
 
  private:
   void ResourceManagerRenderSceneLevels();
-  void ResourceManagerRenderTextures();
   std::string selected_image_;
 };
 

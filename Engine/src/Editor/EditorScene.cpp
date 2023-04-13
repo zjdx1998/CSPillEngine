@@ -17,104 +17,82 @@
 
 namespace CSPill::Editor {
 
+namespace {
+
+constexpr float FILE_BROWSER_WIDTH = 400;
+constexpr float FILE_BROWSER_HEIGHT = 300;
+static int selected_tileset_row = 0;
+static int selected_tileset_col = 0;
+
 using EngineCore::ResourceManager;
 using EngineCore::Tileset;
 
-const float FILE_BROWSER_WIDTH = 400;
-const float FILE_BROWSER_HEIGHT = 300;
+void UICenterRadioButton(std::string_view label, bool active) {
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,
+                      ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+  ImGui::SameLine(ImGui::GetWindowWidth() -
+      ImGui::GetTextLineHeightWithSpacing() -
+      ImGui::GetStyle().ItemInnerSpacing.x);
+  ImGui::RadioButton(label.data(), active);
+  ImGui::PopStyleVar(2);
+}
 
-// Scene
-int SceneUI::SCENE_NUM_ROWS_ = 20;
-int SceneUI::SCENE_NUM_COLS_ = 50;
-int SceneUI::SCENE_BLOCK_SIZE_ = 50;
+}  // namespace
 
-// Resources
-int TileSetEditorUI::selected_resource_index_ = -1;
-int TileSetEditorUI::RESOURCES_NUM_COLS_ = 3;
-std::vector<SDL_Texture *> TileSetEditorUI::resource_textures_;
-std::vector<CSPill::EngineCore::Tileset> TileSetEditorUI::resource_tilesets_;
+
 
 SceneUI::SceneUI(std::string title, int width, int height)
-    : CSPill::EngineCore::UI(std::move(title), width, height) {
-  // allocate memory for the textures
-  scene_textures_ =
-      std::make_unique<SDL_Texture *[]>(SCENE_NUM_ROWS_ * SCENE_NUM_COLS_);
+    : CSPill::EngineCore::UI(std::move(title), width, height), active_scene_texture_(nullptr) {}
 
-  // initialize each texture to nullptr
-  for (int i = 0; i < SCENE_NUM_ROWS_ * SCENE_NUM_COLS_; ++i) {
-    scene_textures_[i] = nullptr;
-  }
+SceneUI::~SceneUI() {
+  SDL_DestroyTexture(active_scene_texture_);
 }
 
 void SceneUI::Render(SDL_Renderer *renderer) {
-  ImGui::SetNextWindowSize(ImVec2(this->GetWidth(), this->GetHeight()));
+  ImGui::SetNextWindowSize(ImVec2(static_cast<float>(this->GetWidth()), static_cast<float>(this->GetHeight())));
   ImGui::Begin(this->GetTitle().c_str());
-  // Render scene component to SDL texture
-  std::string image_filename =
-      "../demo/resources/sprites/adventurer-v1.5-Sheet.bmp";
-  SDL_Surface *mSurface = SDL_LoadBMP(image_filename.c_str());
-  SDL_Texture *mTexture = SDL_CreateTextureFromSurface(renderer, mSurface);
-
-  // Calculate the width and height of each frame in the BMP file
-  int frame_width = mSurface->w / 7;
-  int frame_height = mSurface->h / 16;
-
-  // Test rendering blocks individually
-  for (int row = 0; row < SCENE_NUM_ROWS_; row++) {
-    for (int col = 0; col < SCENE_NUM_COLS_; col++) {
-      int block_index = row * SCENE_NUM_COLS_ + col;
-      if (scene_textures_[block_index] != nullptr) {
-        continue;
+  auto scene = ResourceManager::GetInstance().ActiveScene();
+  auto layer = ResourceManager::GetInstance().ActiveLayer();
+  auto tileset = ResourceManager::GetInstance().ActiveTileset();
+  if (scene and layer and tileset) {
+    // Do not Destroy
+    auto texture = scene->Render(renderer, layer, tileset);
+    if (texture) {
+      SDL_SetRenderTarget(renderer, texture);
+      SDL_SetRenderDrawColor(renderer, 128, 128, 128, 128);
+      for (int x = 0; x < scene->GetCanvasWidth(); x += tileset->GetTileWidth()) {
+        SDL_RenderDrawLine(renderer, x, 0, x, scene->GetCanvasHeight());
       }
-      // Calculate the position and color of the block
-      SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE_, row * SCENE_BLOCK_SIZE_,
-                             SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_};
-      SDL_Texture *block_texture = SDL_CreateTexture(
-          renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
-          SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_);
 
-      // Render the BMP texture to the block texture using SDL
-      SDL_SetRenderTarget(renderer, block_texture);
-      SDL_Rect frame_rect = {0, 0, frame_width, frame_height};
-      SDL_Rect dest_rect = {0, 0, SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_};
-      SDL_RenderCopy(renderer, mTexture, &frame_rect, nullptr);
+      for (int y = 0; y < scene->GetCanvasHeight(); y += tileset->GetTileHeight()) {
+        SDL_RenderDrawLine(renderer, 0, y, scene->GetCanvasWidth(), y);
+      }
       SDL_SetRenderTarget(renderer, nullptr);
+      ImGui::Image(texture, ImVec2(scene->GetCanvasWidth(), scene->GetCanvasHeight()));
+      if (ImGui::IsItemHovered()) {
+        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsMouseClicked(0)) {
+          // get global mouse position
+          ImVec2 mouse_pos_global = ImGui::GetMousePos();
 
-      // Store the block texture in the array
-      scene_textures_[block_index] = block_texture;
-    }
-  }
+          // get window pos and size
+          ImVec2 item_pos = ImGui::GetItemRectMin();
+          ImVec2 item_size = ImGui::GetItemRectSize();
 
-  SDL_FreeSurface(mSurface);
-  ImVec2 block_offset(0, 20);
-
-  // Display the block textures in the ImGUI window
-  for (int row = 0; row < SCENE_NUM_ROWS_; row++) {
-    for (int col = 0; col < SCENE_NUM_COLS_; col++) {
-      // Calculate the position and size of the block
-      SDL_Rect block_rect = {col * SCENE_BLOCK_SIZE_, row * SCENE_BLOCK_SIZE_,
-                             SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_};
-
-      ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE_ + block_offset.x,
-                                 row * SCENE_BLOCK_SIZE_ + block_offset.y));
-      // Display the block texture in the ImGUI window
-      ImGui::Image(
-          (void *)(intptr_t)scene_textures_[row * SCENE_NUM_COLS_ + col],
-          ImVec2(SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_));
-      // Check if a block was clicked
-      if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
-        std::cout << "clicked: " << row * SCENE_NUM_COLS_ + col << std::endl;
-        if (TileSetEditorUI::GetSelectedResourceIndex() != -1) {
-          std::cout << "replace with resource: "
-                    << TileSetEditorUI::GetSelectedResourceIndex() << std::endl;
-          SDL_Texture *current_resource = TileSetEditorUI::GetResourceTexture(
-              TileSetEditorUI::GetSelectedResourceIndex());
-          scene_textures_[row * SCENE_NUM_COLS_ + col] = current_resource;
-          ImGui::SetCursorPos(ImVec2(col * SCENE_BLOCK_SIZE_ + block_offset.x,
-                                     row * SCENE_BLOCK_SIZE_ + block_offset.y));
-          ImGui::Image((void *)(intptr_t)current_resource,
-                       ImVec2(SCENE_BLOCK_SIZE_, SCENE_BLOCK_SIZE_));
+          ImVec2 mouse_pos = ImVec2(
+              fmodf(mouse_pos_global.x - item_pos.x, item_size.x),
+              fmodf(mouse_pos_global.y - item_pos.y, item_size.y)
+          );
+          int col = mouse_pos.x / tileset->GetTileWidth(), row = mouse_pos.y / tileset->GetTileHeight();
+          std::pair<int, int> row_and_col(selected_tileset_row, selected_tileset_col);
+          layer->Data()[row * scene->GetCanvasWidth() / tileset->GetTileWidth() + col] =
+              ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col);
+//          std::cout << row << " , " << col << " , " << ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col)
+//                    << " , data index: " << row * scene->GetCanvasWidth() / tileset->GetTileWidth() + col
+//                    << std::endl;
         }
+
       }
     }
   }
@@ -124,114 +102,78 @@ void SceneUI::Render(SDL_Renderer *renderer) {
 TileSetEditorUI::TileSetEditorUI(std::string title, int width, int height)
     : CSPill::EngineCore::UI(std::move(title), width, height) {}
 
-int TileSetEditorUI::GetSelectedResourceIndex() {
-  return selected_resource_index_;
-}
-
-SDL_Texture *TileSetEditorUI::GetResourceTexture(int index) {
-  return resource_textures_.at(index);
-}
-
 void TileSetEditorUI::Render(SDL_Renderer *renderer) {
   ImGui::SetNextWindowSize(ImVec2(this->GetWidth(), this->GetHeight()));
-  ImGui::Begin(this->GetTitle().c_str());
-  // Add Tileset button
-  if (ImGui::Button("Add Tileset")) {
-    ImGui::OpenPopup("Add Tileset Popup");
-  }
+  ImGui::Begin(this->GetTitle().c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar);
 
-  // Add Tileset popup
-  if (ImGui::BeginPopup("Add Tileset Popup")) {
-    static std::string file_path;
-    static int tile_width = 0;
-    static int tile_height = 0;
-    static int width = 0;
-    static int height = 0;
-    static char *tileset_name = new char[127];
-    ImGui::InputText("File Path", file_path.data(), file_path.capacity());
-    ImGui::SameLine();
-    if (ImGui::Button("Browse")) {
-      // open Dialog Simple
-      ImGui::SetNextWindowSize(ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
-      ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose File",
-                                              ".*", ".");
-    }
+  if (!ResourceManager::GetInstance().GetActiveTilesetName().empty()) {
+    if (auto active_layer =
+        ResourceManager::GetInstance().LoadImage(ResourceManager::GetInstance().GetActiveTilesetName())) {
+      SDL_Point active_layer_size;
+      SDL_QueryTexture(active_layer, nullptr, nullptr, &active_layer_size.x, &active_layer_size.y);
+      SDL_Texture *lined_texture = SDL_CreateTexture(renderer,
+                                                     SDL_PIXELFORMAT_RGBA8888,
+                                                     SDL_TEXTUREACCESS_TARGET,
+                                                     active_layer_size.x,
+                                                     active_layer_size.y);
+      SDL_SetRenderTarget(renderer, lined_texture);
+      SDL_RenderCopy(renderer, active_layer, nullptr, nullptr);
+      SDL_SetRenderDrawColor(renderer, 128, 128, 128, 128);
 
-    // Display file browser
-    if (ImGuiFileDialog::Instance()->Display("FileBrowser")) {
-      if (ImGuiFileDialog::Instance()->IsOk()) {
-        file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+      EngineCore::Tileset *tileset = ResourceManager::GetInstance().ActiveTileset();
+      if (tileset->GetImageWidth() != active_layer_size.x or tileset->GetImageHeight() != active_layer_size.y) {
+        tileset->SetImageWidth(active_layer_size.x);
+        tileset->SetImageHeight(active_layer_size.y);
       }
-      ImGuiFileDialog::Instance()->Close();
-    }
-    ImGui::InputText("Name", tileset_name, sizeof(tileset_name));
-    // std::string file_path_str(file_path);
-
-    // Tile width input
-    ImGui::InputInt("Tile Width", &tile_width);
-
-    // Tile height input
-    ImGui::InputInt("Tile Height", &tile_height);
-
-    // Tileset width input
-    ImGui::InputInt("Tileset Width", &width);
-
-    // Tileset height input
-    ImGui::InputInt("Tileset Height", &height);
-
-    // Confirm button
-    if (ImGui::Button("Confirm")) {
-      // Load texture
-      SDL_Surface *surface = IMG_Load(file_path.c_str());
-      SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-      SDL_FreeSurface(surface);
-
-      // Get the size of the texture
-      int texture_width, texture_height;
-      SDL_QueryTexture(texture, nullptr, nullptr, &texture_width,
-                       &texture_height);
-
-      // Add texture to resource textures array
-      resource_textures_.push_back(texture);
-
-      // Add tileset to tilesets array
-      resource_tilesets_.emplace_back(tileset_name, file_path, texture_width,
-                                      texture_height, tile_width, tile_height);
-
-      if (ResourceManager::GetInstance().ActiveScene()) {
-        ResourceManager::GetInstance().ActiveScene()->AddTileSet(Tileset(
-            tileset_name, file_path, width, height, tile_width, tile_height));
+      for (int x = 0; x < tileset->GetImageWidth(); x += tileset->GetTileWidth()) {
+        SDL_RenderDrawLine(renderer, x, 0, x, tileset->GetImageHeight());
       }
-      ImGui::CloseCurrentPopup();
-    }
 
-    if (ResourceManager::GetInstance().ActiveScene()) {
-      int active_tileset = -1;
-      ImGui::BeginChild("TileSets");
-      for (const auto &tileset :
-           ResourceManager::GetInstance().ActiveScene()->GetTileSets()) {
-        ImGui::Text("%s", tileset.GetName().data());
-        ImGui::RadioButton(tileset.GetName().data(), &active_tileset, 0);
+      for (int y = 0; y < tileset->GetImageHeight(); y += tileset->GetTileHeight()) {
+        SDL_RenderDrawLine(renderer, 0, y, tileset->GetImageWidth(), y);
       }
-      ImGui::EndChild();
-    }
+      SDL_SetRenderTarget(renderer, nullptr);
+      ImGui::Image(lined_texture, ImVec2(active_layer_size.x, active_layer_size.y));
+      if (ImGui::IsItemHovered()) {
+        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsMouseClicked(0)) {
+          // get global mouse position
+          ImVec2 mouse_pos_global = ImGui::GetMousePos();
 
-    ImGui::EndPopup();
-  }
+          // get window pos and size
+          ImVec2 item_pos = ImGui::GetItemRectMin();
+          ImVec2 item_size = ImGui::GetItemRectSize();
 
-  // Load and display the images in a grid
-  for (int i = 0; i < resource_tilesets_.size(); i++) {
-    // Display the image in the ImGUI window
-    ImGui::PushID(i);
-    ImGui::Image(resource_textures_.at(i), ImVec2(100, 100));
-    ImGui::PopID();
-    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
-      selected_resource_index_ = i;
-      std::cout << "clicked resource: " << i << std::endl;
-    }
-    // Add a same-line separator to align images horizontally
-    if (i % RESOURCES_NUM_COLS_ != 0) {
-      ImGui::SameLine();
+          ImVec2 mouse_pos = ImVec2(
+              fmodf(mouse_pos_global.x - item_pos.x, item_size.x),
+              fmodf(mouse_pos_global.y - item_pos.y, item_size.y)
+          );
+          selected_tileset_col = mouse_pos.x / tileset->GetTileWidth();
+          selected_tileset_row = mouse_pos.y / tileset->GetTileHeight();
+          src_rect_ = {selected_tileset_col * tileset->GetTileWidth(), selected_tileset_row * tileset->GetTileHeight(),
+                       tileset->GetTileWidth(),
+                       tileset->GetTileHeight()};
+          ImGui::OpenPopup("Tile");
+        }
+      }
+      if (ImGui::BeginPopup("Tile", ImGuiWindowFlags_AlwaysAutoResize)) {
+        SDL_Texture *cropped_texture = nullptr;
+        std::pair<int, int> row_and_col = std::pair<int, int>(selected_tileset_row,
+                                                              selected_tileset_col);
+        auto current_brush = std::string(tileset->GetName()) + "-cropped-"
+            + std::to_string(::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+        if (auto query_texture = ResourceManager::GetInstance().QueryTexture(current_brush)) {
+          cropped_texture = query_texture;
+        } else {
+          auto cropped = ::EngineCore::Utils::CropTexture(renderer, active_layer, src_rect_);
+          ResourceManager::GetInstance().AddTile(current_brush, std::move(cropped));
+          cropped_texture = cropped.get();
+        }
+        if (cropped_texture) {
+          ImGui::Image(cropped_texture, ImVec2(src_rect_.w, src_rect_.h));
+        }
+        ImGui::EndPopup();
+      }
     }
   }
   ImGui::End();
@@ -251,47 +193,45 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
           resource_manager.SetActiveScene(scene_name);
         }
 
-        bool is_selected = scene_name == resource_manager.GetActiveSceneName();
-
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,
-                            ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-        ImGui::SameLine(ImGui::GetWindowWidth() -
-                        ImGui::GetTextLineHeightWithSpacing() -
-                        ImGui::GetStyle().ItemInnerSpacing.x);
-        ImGui::RadioButton("", is_selected);
-        ImGui::PopStyleVar(2);
+        bool is_scene_selected = scene_name == resource_manager.GetActiveSceneName();
+        UICenterRadioButton("", is_scene_selected);
         if (scene_name == resource_manager.GetActiveSceneName()) {
           if (auto scene = ResourceManager::GetInstance().ActiveScene()) {
-            std::unordered_map<std::string, const Tileset *> tilesets;
-            for (const auto &tileset : scene->GetTileSets()) {
+            std::unordered_map<std::string, Tileset *> tilesets;
+            for (auto &tileset : scene->GetTileSets()) {
               tilesets[tileset.GetName().data()] = &tileset;
             }
             if (ImGui::TreeNode("Layers")) {
-              for (const auto &layer : scene->GetLayers()) {
+              for (const auto &layer : scene->Layers()) {
                 if (ImGui::TreeNode(layer.GetName().data())) {
+                  bool is_layer_selected = layer.GetTileset() == resource_manager.GetActiveTilesetName();
+                  UICenterRadioButton("", is_layer_selected);
                   if (ImGui::TreeNode(layer.GetTileset().empty()
-                                          ? "N/A"
-                                          : layer.GetTileset().data())) {
+                                      ? "N/A"
+                                      : layer.GetTileset().data())) {
                     if (!layer.GetTileset().empty()) {
                       ImGui::Text("File: %s",
                                   tilesets[layer.GetTileset().data()]
-                                      ->GetImage()
-                                      .c_str());
+                                      ->GetName().data());
+                      ImGui::SliderInt("Width: %d",
+                                       &tilesets[layer.GetTileset().data()]->TileWidth(),
+                                       2,
+                                       tilesets[layer.GetTileset().data()]->GetImageWidth());
+                      ImGui::SliderInt("Height: %d",
+                                       &tilesets[layer.GetTileset().data()]->TileHeight(),
+                                       2,
+                                       tilesets[layer.GetTileset().data()]->GetImageHeight());
                       ImGui::Text(
                           "Width: %d",
                           tilesets[layer.GetTileset().data()]->GetImageWidth());
                       ImGui::Text("Height: %d",
                                   tilesets[layer.GetTileset().data()]
                                       ->GetImageHeight());
-                      ImGui::Text(
-                          "Tile Width: %d",
-                          tilesets[layer.GetTileset().data()]->GetTileWidth());
-                      ImGui::Text(
-                          "Tile Height: %d",
-                          tilesets[layer.GetTileset().data()]->GetTileHeight());
                     }
                     ImGui::TreePop();
+                  }
+                  if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
+                    resource_manager.SetActiveTileset(layer.GetTileset().data());
                   }
                   ImGui::TreePop();
                 }
@@ -398,10 +338,6 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
             ResourceManager::GetInstance().LoadImage(selected_image_), nullptr,
             nullptr, &texture_size.x, &texture_size.y);
         ImGui::Image(ResourceManager::GetInstance().LoadImage(selected_image_),
-                     ImVec2(texture_size.x, texture_size.y));
-        SDL_QueryTexture(resource_manager.LoadImage(selected_image_), nullptr,
-                         nullptr, &texture_size.x, &texture_size.y);
-        ImGui::Image(resource_manager.LoadImage(selected_image_),
                      ImVec2(texture_size.x, texture_size.y));
         ImGui::EndPopup();
       }
