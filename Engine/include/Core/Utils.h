@@ -5,9 +5,9 @@
 #ifndef CSPILLENGINE_ENGINE_INCLUDE_CORE_UTILS_H_
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_UTILS_H_
 
+#include <memory>
 #include <optional>
 #include <string>
-#include <memory>
 
 #include "SDL.h"
 
