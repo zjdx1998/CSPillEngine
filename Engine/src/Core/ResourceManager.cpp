@@ -188,7 +188,9 @@ Tileset *ResourceManager::ActiveTileset() {
   return nullptr;
 }
 
-std::string ResourceManager::GetActiveTilesetName() const { return active_tileset_; }
+std::string ResourceManager::GetActiveTilesetName() const {
+  return active_tileset_;
+}
 
 Layer *ResourceManager::ActiveLayer() {
   if (active_tileset_.empty()) return nullptr;
@@ -198,17 +200,20 @@ Layer *ResourceManager::ActiveLayer() {
   return nullptr;
 }
 
-void ResourceManager::AddTile(std::string_view name, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> tile) {
+void ResourceManager::AddTile(
+    std::string_view name,
+    std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> tile) {
   tiles_.insert({name.data(), std::move(tile)});
 }
 
 SDL_Texture *ResourceManager::QueryTexture(std::string_view name) {
-  if (tiles_.find(name.data()) != tiles_.end()) return tiles_.at(name.data()).get();
+  if (tiles_.find(name.data()) != tiles_.end())
+    return tiles_.at(name.data()).get();
   return nullptr;
 }
 
 void ResourceManager::ClearTiles() {
-//  for (const auto &tile : tiles_) SDL_DestroyTexture(tile.second.get());
+  //  for (const auto &tile : tiles_) SDL_DestroyTexture(tile.second.get());
   tiles_.clear();
 }
 

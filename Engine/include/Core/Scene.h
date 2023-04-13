@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
+
 #include "SDL.h"
 
 using json = nlohmann::json;
@@ -49,8 +50,8 @@ class Layer {
  */
 class Tileset {
  public:
-  Tileset(std::string name, int image_width,
-          int image_height, int tile_width, int tile_height);
+  Tileset(std::string name, int image_width, int image_height, int tile_width,
+          int tile_height);
   [[nodiscard]] std::string_view GetName() const;
   void SetName(const std::string &name);
   [[nodiscard]] int GetImageWidth() const;
@@ -89,7 +90,8 @@ class Scene {
   [[nodiscard]] int GetCanvasHeight() const;
   void SetCanvasHeight(int canvas_height);
 
-  SDL_Texture *Render(SDL_Renderer *renderer, Layer *layer, Tileset *tileset, bool accumulate = false);
+  SDL_Texture *Render(SDL_Renderer *renderer, Layer *layer, Tileset *tileset,
+                      bool accumulate = false);
   void Render(SDL_Renderer *renderer);
 
  private:
@@ -104,7 +106,7 @@ class Scene {
 }  // namespace CSPill::EngineCore
 
 namespace nlohmann {
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   static CSPill::EngineCore::Layer from_json(const json &j) {
     if (!j.contains("tileset")) {
@@ -120,11 +122,11 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
   }
 };
 
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   static CSPill::EngineCore::Tileset from_json(const json &j) {
-    return {j.at("name"), j.at("imagewidth"),
-            j.at("imageheight"), j.at("tilewidth"), j.at("tileheight")};
+    return {j.at("name"), j.at("imagewidth"), j.at("imageheight"),
+            j.at("tilewidth"), j.at("tileheight")};
   }
 
   static void to_json(json &j, const CSPill::EngineCore::Tileset &t) {
@@ -136,7 +138,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
   }
 };
 
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   static CSPill::EngineCore::Scene from_json(const json &j) {
     return {j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),

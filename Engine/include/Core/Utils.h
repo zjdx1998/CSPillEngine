@@ -7,6 +7,7 @@
 
 #include <optional>
 #include <string>
+
 #include "SDL.h"
 
 namespace EngineCore::Utils {
@@ -31,9 +32,8 @@ std::pair<int, int> GetRowAndCol(int data);
  */
 int GetDataFromRowAndCol(const std::pair<int, int> &row_and_col);
 
-std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> CropTexture(SDL_Renderer *renderer,
-                                                                        SDL_Texture *texture,
-                                                                        SDL_Rect &src_rect);
+std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> CropTexture(
+    SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect &src_rect);
 
 }  // namespace EngineCore::Utils
 

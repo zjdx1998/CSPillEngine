@@ -32,25 +32,23 @@ void UICenterRadioButton(std::string_view label, bool active) {
                       ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
   ImGui::SameLine(ImGui::GetWindowWidth() -
-      ImGui::GetTextLineHeightWithSpacing() -
-      ImGui::GetStyle().ItemInnerSpacing.x);
+                  ImGui::GetTextLineHeightWithSpacing() -
+                  ImGui::GetStyle().ItemInnerSpacing.x);
   ImGui::RadioButton(label.data(), active);
   ImGui::PopStyleVar(2);
 }
 
 }  // namespace
 
-
-
 SceneUI::SceneUI(std::string title, int width, int height)
-    : CSPill::EngineCore::UI(std::move(title), width, height), active_scene_texture_(nullptr) {}
+    : CSPill::EngineCore::UI(std::move(title), width, height),
+      active_scene_texture_(nullptr) {}
 
-SceneUI::~SceneUI() {
-  SDL_DestroyTexture(active_scene_texture_);
-}
+SceneUI::~SceneUI() { SDL_DestroyTexture(active_scene_texture_); }
 
 void SceneUI::Render(SDL_Renderer *renderer) {
-  ImGui::SetNextWindowSize(ImVec2(static_cast<float>(this->GetWidth()), static_cast<float>(this->GetHeight())));
+  ImGui::SetNextWindowSize(ImVec2(static_cast<float>(this->GetWidth()),
+                                  static_cast<float>(this->GetHeight())));
   ImGui::Begin(this->GetTitle().c_str());
   auto scene = ResourceManager::GetInstance().ActiveScene();
   auto layer = ResourceManager::GetInstance().ActiveLayer();
@@ -61,15 +59,18 @@ void SceneUI::Render(SDL_Renderer *renderer) {
     if (texture) {
       SDL_SetRenderTarget(renderer, texture);
       SDL_SetRenderDrawColor(renderer, 128, 128, 128, 128);
-      for (int x = 0; x < scene->GetCanvasWidth(); x += tileset->GetTileWidth()) {
+      for (int x = 0; x < scene->GetCanvasWidth();
+           x += tileset->GetTileWidth()) {
         SDL_RenderDrawLine(renderer, x, 0, x, scene->GetCanvasHeight());
       }
 
-      for (int y = 0; y < scene->GetCanvasHeight(); y += tileset->GetTileHeight()) {
+      for (int y = 0; y < scene->GetCanvasHeight();
+           y += tileset->GetTileHeight()) {
         SDL_RenderDrawLine(renderer, 0, y, scene->GetCanvasWidth(), y);
       }
       SDL_SetRenderTarget(renderer, nullptr);
-      ImGui::Image(texture, ImVec2(scene->GetCanvasWidth(), scene->GetCanvasHeight()));
+      ImGui::Image(texture,
+                   ImVec2(scene->GetCanvasWidth(), scene->GetCanvasHeight()));
       if (ImGui::IsItemHovered()) {
         ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
         if (ImGui::IsMouseClicked(0)) {
@@ -80,19 +81,24 @@ void SceneUI::Render(SDL_Renderer *renderer) {
           ImVec2 item_pos = ImGui::GetItemRectMin();
           ImVec2 item_size = ImGui::GetItemRectSize();
 
-          ImVec2 mouse_pos = ImVec2(
-              fmodf(mouse_pos_global.x - item_pos.x, item_size.x),
-              fmodf(mouse_pos_global.y - item_pos.y, item_size.y)
-          );
-          int col = mouse_pos.x / tileset->GetTileWidth(), row = mouse_pos.y / tileset->GetTileHeight();
-          std::pair<int, int> row_and_col(selected_tileset_row, selected_tileset_col);
-          layer->Data()[row * scene->GetCanvasWidth() / tileset->GetTileWidth() + col] =
+          ImVec2 mouse_pos =
+              ImVec2(fmodf(mouse_pos_global.x - item_pos.x, item_size.x),
+                     fmodf(mouse_pos_global.y - item_pos.y, item_size.y));
+          int col = mouse_pos.x / tileset->GetTileWidth(),
+              row = mouse_pos.y / tileset->GetTileHeight();
+          std::pair<int, int> row_and_col(selected_tileset_row,
+                                          selected_tileset_col);
+          layer
+              ->Data()[row * scene->GetCanvasWidth() / tileset->GetTileWidth() +
+                       col] =
               ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col);
-//          std::cout << row << " , " << col << " , " << ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col)
-//                    << " , data index: " << row * scene->GetCanvasWidth() / tileset->GetTileWidth() + col
-//                    << std::endl;
+          //          std::cout << row << " , " << col << " , " <<
+          //          ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col)
+          //                    << " , data index: " << row *
+          //                    scene->GetCanvasWidth() /
+          //                    tileset->GetTileWidth() + col
+          //                    << std::endl;
         }
-
       }
     }
   }
@@ -104,36 +110,41 @@ TileSetEditorUI::TileSetEditorUI(std::string title, int width, int height)
 
 void TileSetEditorUI::Render(SDL_Renderer *renderer) {
   ImGui::SetNextWindowSize(ImVec2(this->GetWidth(), this->GetHeight()));
-  ImGui::Begin(this->GetTitle().c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar);
+  ImGui::Begin(this->GetTitle().c_str(), nullptr,
+               ImGuiWindowFlags_HorizontalScrollbar);
 
   if (!ResourceManager::GetInstance().GetActiveTilesetName().empty()) {
-    if (auto active_layer =
-        ResourceManager::GetInstance().LoadImage(ResourceManager::GetInstance().GetActiveTilesetName())) {
+    if (auto active_layer = ResourceManager::GetInstance().LoadImage(
+            ResourceManager::GetInstance().GetActiveTilesetName())) {
       SDL_Point active_layer_size;
-      SDL_QueryTexture(active_layer, nullptr, nullptr, &active_layer_size.x, &active_layer_size.y);
-      SDL_Texture *lined_texture = SDL_CreateTexture(renderer,
-                                                     SDL_PIXELFORMAT_RGBA8888,
-                                                     SDL_TEXTUREACCESS_TARGET,
-                                                     active_layer_size.x,
-                                                     active_layer_size.y);
+      SDL_QueryTexture(active_layer, nullptr, nullptr, &active_layer_size.x,
+                       &active_layer_size.y);
+      SDL_Texture *lined_texture = SDL_CreateTexture(
+          renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+          active_layer_size.x, active_layer_size.y);
       SDL_SetRenderTarget(renderer, lined_texture);
       SDL_RenderCopy(renderer, active_layer, nullptr, nullptr);
       SDL_SetRenderDrawColor(renderer, 128, 128, 128, 128);
 
-      EngineCore::Tileset *tileset = ResourceManager::GetInstance().ActiveTileset();
-      if (tileset->GetImageWidth() != active_layer_size.x or tileset->GetImageHeight() != active_layer_size.y) {
+      EngineCore::Tileset *tileset =
+          ResourceManager::GetInstance().ActiveTileset();
+      if (tileset->GetImageWidth() != active_layer_size.x or
+          tileset->GetImageHeight() != active_layer_size.y) {
         tileset->SetImageWidth(active_layer_size.x);
         tileset->SetImageHeight(active_layer_size.y);
       }
-      for (int x = 0; x < tileset->GetImageWidth(); x += tileset->GetTileWidth()) {
+      for (int x = 0; x < tileset->GetImageWidth();
+           x += tileset->GetTileWidth()) {
         SDL_RenderDrawLine(renderer, x, 0, x, tileset->GetImageHeight());
       }
 
-      for (int y = 0; y < tileset->GetImageHeight(); y += tileset->GetTileHeight()) {
+      for (int y = 0; y < tileset->GetImageHeight();
+           y += tileset->GetTileHeight()) {
         SDL_RenderDrawLine(renderer, 0, y, tileset->GetImageWidth(), y);
       }
       SDL_SetRenderTarget(renderer, nullptr);
-      ImGui::Image(lined_texture, ImVec2(active_layer_size.x, active_layer_size.y));
+      ImGui::Image(lined_texture,
+                   ImVec2(active_layer_size.x, active_layer_size.y));
       if (ImGui::IsItemHovered()) {
         ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
         if (ImGui::IsMouseClicked(0)) {
@@ -144,29 +155,33 @@ void TileSetEditorUI::Render(SDL_Renderer *renderer) {
           ImVec2 item_pos = ImGui::GetItemRectMin();
           ImVec2 item_size = ImGui::GetItemRectSize();
 
-          ImVec2 mouse_pos = ImVec2(
-              fmodf(mouse_pos_global.x - item_pos.x, item_size.x),
-              fmodf(mouse_pos_global.y - item_pos.y, item_size.y)
-          );
+          ImVec2 mouse_pos =
+              ImVec2(fmodf(mouse_pos_global.x - item_pos.x, item_size.x),
+                     fmodf(mouse_pos_global.y - item_pos.y, item_size.y));
           selected_tileset_col = mouse_pos.x / tileset->GetTileWidth();
           selected_tileset_row = mouse_pos.y / tileset->GetTileHeight();
-          src_rect_ = {selected_tileset_col * tileset->GetTileWidth(), selected_tileset_row * tileset->GetTileHeight(),
-                       tileset->GetTileWidth(),
-                       tileset->GetTileHeight()};
+          src_rect_ = {selected_tileset_col * tileset->GetTileWidth(),
+                       selected_tileset_row * tileset->GetTileHeight(),
+                       tileset->GetTileWidth(), tileset->GetTileHeight()};
           ImGui::OpenPopup("Tile");
         }
       }
       if (ImGui::BeginPopup("Tile", ImGuiWindowFlags_AlwaysAutoResize)) {
         SDL_Texture *cropped_texture = nullptr;
-        std::pair<int, int> row_and_col = std::pair<int, int>(selected_tileset_row,
-                                                              selected_tileset_col);
-        auto current_brush = std::string(tileset->GetName()) + "-cropped-"
-            + std::to_string(::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
-        if (auto query_texture = ResourceManager::GetInstance().QueryTexture(current_brush)) {
+        std::pair<int, int> row_and_col =
+            std::pair<int, int>(selected_tileset_row, selected_tileset_col);
+        auto current_brush =
+            std::string(tileset->GetName()) + "-cropped-" +
+            std::to_string(
+                ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+        if (auto query_texture =
+                ResourceManager::GetInstance().QueryTexture(current_brush)) {
           cropped_texture = query_texture;
         } else {
-          auto cropped = ::EngineCore::Utils::CropTexture(renderer, active_layer, src_rect_);
-          ResourceManager::GetInstance().AddTile(current_brush, std::move(cropped));
+          auto cropped = ::EngineCore::Utils::CropTexture(
+              renderer, active_layer, src_rect_);
+          ResourceManager::GetInstance().AddTile(current_brush,
+                                                 std::move(cropped));
           cropped_texture = cropped.get();
         }
         if (cropped_texture) {
@@ -193,7 +208,8 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
           resource_manager.SetActiveScene(scene_name);
         }
 
-        bool is_scene_selected = scene_name == resource_manager.GetActiveSceneName();
+        bool is_scene_selected =
+            scene_name == resource_manager.GetActiveSceneName();
         UICenterRadioButton("", is_scene_selected);
         if (scene_name == resource_manager.GetActiveSceneName()) {
           if (auto scene = ResourceManager::GetInstance().ActiveScene()) {
@@ -204,23 +220,27 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
             if (ImGui::TreeNode("Layers")) {
               for (const auto &layer : scene->Layers()) {
                 if (ImGui::TreeNode(layer.GetName().data())) {
-                  bool is_layer_selected = layer.GetTileset() == resource_manager.GetActiveTilesetName();
+                  bool is_layer_selected =
+                      layer.GetTileset() ==
+                      resource_manager.GetActiveTilesetName();
                   UICenterRadioButton("", is_layer_selected);
                   if (ImGui::TreeNode(layer.GetTileset().empty()
-                                      ? "N/A"
-                                      : layer.GetTileset().data())) {
+                                          ? "N/A"
+                                          : layer.GetTileset().data())) {
                     if (!layer.GetTileset().empty()) {
                       ImGui::Text("File: %s",
                                   tilesets[layer.GetTileset().data()]
-                                      ->GetName().data());
-                      ImGui::SliderInt("Width: %d",
-                                       &tilesets[layer.GetTileset().data()]->TileWidth(),
-                                       2,
-                                       tilesets[layer.GetTileset().data()]->GetImageWidth());
-                      ImGui::SliderInt("Height: %d",
-                                       &tilesets[layer.GetTileset().data()]->TileHeight(),
-                                       2,
-                                       tilesets[layer.GetTileset().data()]->GetImageHeight());
+                                      ->GetName()
+                                      .data());
+                      ImGui::SliderInt(
+                          "Width: %d",
+                          &tilesets[layer.GetTileset().data()]->TileWidth(), 2,
+                          tilesets[layer.GetTileset().data()]->GetImageWidth());
+                      ImGui::SliderInt(
+                          "Height: %d",
+                          &tilesets[layer.GetTileset().data()]->TileHeight(), 2,
+                          tilesets[layer.GetTileset().data()]
+                              ->GetImageHeight());
                       ImGui::Text(
                           "Width: %d",
                           tilesets[layer.GetTileset().data()]->GetImageWidth());
@@ -231,7 +251,8 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                     ImGui::TreePop();
                   }
                   if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
-                    resource_manager.SetActiveTileset(layer.GetTileset().data());
+                    resource_manager.SetActiveTileset(
+                        layer.GetTileset().data());
                   }
                   ImGui::TreePop();
                 }

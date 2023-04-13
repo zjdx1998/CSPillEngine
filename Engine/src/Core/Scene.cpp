@@ -1,9 +1,10 @@
 //
 // Created by Jeromy Zhang on 3/28/23.
 //
+#include "Scene.h"
+
 #include <utility>
 
-#include "Scene.h"
 #include "ResourceManager.h"
 #include "Utils.h"
 
@@ -29,8 +30,8 @@ const std::vector<int> &Layer::GetData() const { return data_; }
 
 void Layer::SetData(const std::vector<int> &data) { data_ = data; }
 
-Tileset::Tileset(std::string name, int image_width,
-                 int image_height, int tile_width, int tile_height)
+Tileset::Tileset(std::string name, int image_width, int image_height,
+                 int tile_width, int tile_height)
     : name_(std::move(name)),
       image_width_(image_width),
       image_height_(image_height),
@@ -73,23 +74,23 @@ void Scene::SetCanvasHeight(int canvas_height) {
   canvas_height_ = canvas_height;
 }
 
-Scene::~Scene() {
-  SDL_DestroyTexture(scene_texture_);
-}
+Scene::~Scene() { SDL_DestroyTexture(scene_texture_); }
 
-SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer, Tileset *tileset, bool accumulate) {
-  int canvas_width = this->canvas_width_,
-      canvas_height = this->canvas_height_;
+SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
+                           Tileset *tileset, bool accumulate) {
+  int canvas_width = this->canvas_width_, canvas_height = this->canvas_height_;
   int tile_width = tileset->GetTileWidth(),
       tile_height = tileset->GetTileHeight();
   if (this->scene_texture_ == nullptr) {
-    this->scene_texture_ =
-        SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, canvas_width, canvas_height);
+    this->scene_texture_ = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+                                             SDL_TEXTUREACCESS_TARGET,
+                                             canvas_width, canvas_height);
   }
 
   SDL_SetRenderTarget(renderer, this->scene_texture_);
   if (!accumulate) {
-    SDL_Surface *surface = SDL_CreateRGBSurface(0, canvas_width, canvas_height, 32, 0, 0, 0, 0);
+    SDL_Surface *surface =
+        SDL_CreateRGBSurface(0, canvas_width, canvas_height, 32, 0, 0, 0, 0);
     SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 255, 255, 255));
     auto white_bkg = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
@@ -97,26 +98,33 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer, Tileset *tilese
     SDL_DestroyTexture(white_bkg);
   }
   if (layer) {
-    if (layer->Data().size() != canvas_width * canvas_height / tile_width / tile_height) {
-      layer->Data().resize(canvas_width * canvas_height / tile_width / tile_height);
+    if (layer->Data().size() !=
+        canvas_width * canvas_height / tile_width / tile_height) {
+      layer->Data().resize(canvas_width * canvas_height / tile_width /
+                           tile_height);
     }
     for (int i = 0; i < layer->Data().size(); i++) {
       if (layer->Data()[i] == -1) continue;
-      int row = i / (canvas_width / tile_width), col = i % (canvas_width / tile_width);
-      std::pair<int, int> row_and_col = ::EngineCore::Utils::GetRowAndCol(layer->Data()[i]);
-      auto current_brush = std::string(tileset->GetName()) + "-cropped-"
-          + std::to_string(::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
-      SDL_Rect dst_rect = {col * tileset->GetTileWidth(), row * tileset->GetTileHeight(), tileset->GetTileWidth(),
-                           tileset->GetTileHeight()};
-      SDL_RenderCopy(renderer, ResourceManager::GetInstance().QueryTexture(current_brush), nullptr, &dst_rect);
+      int row = i / (canvas_width / tile_width),
+          col = i % (canvas_width / tile_width);
+      std::pair<int, int> row_and_col =
+          ::EngineCore::Utils::GetRowAndCol(layer->Data()[i]);
+      auto current_brush =
+          std::string(tileset->GetName()) + "-cropped-" +
+          std::to_string(
+              ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+      SDL_Rect dst_rect = {col * tileset->GetTileWidth(),
+                           row * tileset->GetTileHeight(),
+                           tileset->GetTileWidth(), tileset->GetTileHeight()};
+      SDL_RenderCopy(renderer,
+                     ResourceManager::GetInstance().QueryTexture(current_brush),
+                     nullptr, &dst_rect);
     }
   }
   SDL_SetRenderTarget(renderer, nullptr);
   return this->scene_texture_;
 }
 
-void Scene::Render(SDL_Renderer *renderer) {
-
-}
+void Scene::Render(SDL_Renderer *renderer) {}
 
 }  // namespace CSPill::EngineCore

@@ -5,8 +5,9 @@
 #include "Utils.h"
 
 #include <filesystem>
-#include "SDL.h"
 #include <memory>
+
+#include "SDL.h"
 
 namespace EngineCore::Utils {
 
@@ -36,19 +37,12 @@ int GetDataFromRowAndCol(const std::pair<int, int> &row_and_col) {
   return row_and_col.first * 1000 + row_and_col.second;
 }
 
-std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> CropTexture(SDL_Renderer *renderer,
-                                                                        SDL_Texture *texture,
-                                                                        SDL_Rect &src_rect) {
+std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> CropTexture(
+    SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect &src_rect) {
   auto cropped = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>(
-      SDL_CreateTexture(renderer,
-                        SDL_PIXELFORMAT_RGBA8888,
-                        SDL_TEXTUREACCESS_TARGET,
-                        src_rect.w,
-                        src_rect.h),
-      [](SDL_Texture *t) {
-        SDL_DestroyTexture(t);
-      }
-  );
+      SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+                        SDL_TEXTUREACCESS_TARGET, src_rect.w, src_rect.h),
+      [](SDL_Texture *t) { SDL_DestroyTexture(t); });
   SDL_SetRenderTarget(renderer, cropped.get());
   SDL_RenderCopy(renderer, texture, &src_rect, nullptr);
   SDL_SetRenderTarget(renderer, nullptr);

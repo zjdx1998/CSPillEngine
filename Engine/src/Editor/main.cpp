@@ -25,12 +25,11 @@
 #include <string>
 #include <vector>
 
+#include "Engine.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer.h"
 #include "imgui_internal.h"
-
-#include "Engine.h"
 
 #if !SDL_VERSION_ATLEAST(2, 0, 17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -50,17 +49,16 @@ int main(int argc, char **argv) {
 #ifdef SDL_HINT_IME_SHOW_UI
   SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 #endif
-  
+
   if (argc > 1) {
     CSPill::EngineCore::ResourceManager::GetInstance().LoadResources(argv[1]);
   }
-
 
   // Setup Dear ImGui context
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void) io;
+  (void)io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
@@ -122,9 +120,9 @@ int main(int argc, char **argv) {
   bool dockspace_open = true;
   ImGuiWindowFlags docking_window_flags =
       ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse |
-          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
-          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
-          ImGuiWindowFlags_NoMove;
+      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
+      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
+      ImGuiWindowFlags_NoMove;
 
   // Main loop
   bool done = false;
@@ -207,9 +205,10 @@ int main(int argc, char **argv) {
     ImGui::Render();
     SDL_RenderSetScale(engine->GetRenderer(), io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
-    SDL_SetRenderDrawColor(
-        engine->GetRenderer(), (Uint8) (clear_color.x * 255), (Uint8) (clear_color.y * 255),
-        (Uint8) (clear_color.z * 255), (Uint8) (clear_color.w * 255));
+    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8)(clear_color.x * 255),
+                           (Uint8)(clear_color.y * 255),
+                           (Uint8)(clear_color.z * 255),
+                           (Uint8)(clear_color.w * 255));
     SDL_RenderClear(engine->GetRenderer());
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(engine->GetRenderer());
@@ -221,9 +220,9 @@ int main(int argc, char **argv) {
   ImGui::DestroyContext();
   CSPill::EngineCore::ResourceManager::GetInstance().ReleaseAll();
 
-//  SDL_DestroyRenderer(engine->GetRender);
-//  SDL_DestroyWindow(window);
-//  SDL_Quit();
+  //  SDL_DestroyRenderer(engine->GetRender);
+  //  SDL_DestroyWindow(window);
+  //  SDL_Quit();
 
   return 0;
 }

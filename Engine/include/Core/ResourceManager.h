@@ -51,7 +51,9 @@ class ResourceManager {
   void SetActiveTileset(const std::string &active_name);
   [[nodiscard]] std::string GetActiveTilesetName() const;
 
-  void AddTile(std::string_view name, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> tile);
+  void AddTile(
+      std::string_view name,
+      std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> tile);
   SDL_Texture *QueryTexture(std::string_view name);
   void ClearTiles();
 
@@ -64,7 +66,9 @@ class ResourceManager {
   std::unordered_map<std::string, SDL_Texture *> images_;
 
   // Editor Only
-  std::unordered_map<std::string, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>> tiles_;
+  std::unordered_map<
+      std::string, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>>
+      tiles_;
 
   // Global Editor Scene Helper Variables
   std::string active_scene_ = "default.scene";

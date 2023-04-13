@@ -19,6 +19,7 @@ class SceneUI : public EngineCore::UI {
   SceneUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
   ~SceneUI();
+
  private:
   SDL_Texture *active_scene_texture_;
 };
@@ -27,6 +28,7 @@ class TileSetEditorUI : public EngineCore::UI {
  public:
   TileSetEditorUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
+
  private:
   SDL_Rect src_rect_;
 };
