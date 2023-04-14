@@ -74,7 +74,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
         std::ifstream scene_in(directory.path().c_str());
         json scene_json;
         scene_in >> scene_json;
-        scenes_[filename] = std::make_unique<Scene>(scene_json.get<Scene>());
+        scenes_[filename] = {directory.path().string(), std::make_unique<Scene>(scene_json.get<Scene>())};
         scene_in.close();
       }
       if (extension == ".bmp") {
@@ -150,7 +150,7 @@ Scene *ResourceManager::LoadScene(const std::string &scene_name) {
     std::cerr << "Scene: " << scene_name << " Not Found!" << std::endl;
     return nullptr;
   }
-  return scenes_[scene_name].get();
+  return scenes_[scene_name].second.get();
 }
 
 SDL_Texture *ResourceManager::LoadImage(const std::string &image_name) {
@@ -182,7 +182,7 @@ void ResourceManager::SetActiveTileset(const std::string &active_name) {
 
 Tileset *ResourceManager::ActiveTileset() {
   if (active_tileset_.empty()) return nullptr;
-  for (auto &i : ActiveScene()->GetTileSets()) {
+  for (auto &i : ActiveScene()->TileSets()) {
     if (i.GetName() == active_tileset_) return &i;
   }
   return nullptr;
