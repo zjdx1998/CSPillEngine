@@ -76,12 +76,16 @@ void MenuBar(bool &done) {
       static char name[256] = "untitled";
       ImGui::InputText("Name", name, IM_ARRAYSIZE(name));
 
-      auto default_path = std::getenv("HOME") + std::string("/CSPillEngineProjects/");
-      ImGui::InputText("Save Location", default_path.data(), default_path.size());
+      auto default_path =
+          std::getenv("HOME") + std::string("/CSPillEngineProjects/");
+      ImGui::InputText("Save Location", default_path.data(),
+                       default_path.size());
 
       if (ImGui::Button("Create")) {
         std::string folder_path = std::string(default_path) + name;
-        folder_path.erase(std::remove(folder_path.begin(), folder_path.end(), '\n'), folder_path.end());
+        folder_path.erase(
+            std::remove(folder_path.begin(), folder_path.end(), '\n'),
+            folder_path.end());
         std::cout << folder_path << std::endl;
         if (!std::filesystem::exists(folder_path)) {
           std::cout << CreateFolder(folder_path) << std::endl;
@@ -130,7 +134,7 @@ int main(int argc, char **argv) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void) io;
+  (void)io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
@@ -164,14 +168,13 @@ int main(int argc, char **argv) {
   bool dockspace_open = true;
   ImGuiWindowFlags docking_window_flags =
       ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse |
-          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
-          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
-          ImGuiWindowFlags_NoMove;
+      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
+      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
+      ImGuiWindowFlags_NoMove;
 
   // Main loop
   bool done = false;
   while (!done) {
-
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       ImGui_ImplSDL2_ProcessEvent(&event);
@@ -243,10 +246,10 @@ int main(int argc, char **argv) {
     ImGui::Render();
     SDL_RenderSetScale(engine->GetRenderer(), io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
-    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8) (clear_color.x * 255),
-                           (Uint8) (clear_color.y * 255),
-                           (Uint8) (clear_color.z * 255),
-                           (Uint8) (clear_color.w * 255));
+    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8)(clear_color.x * 255),
+                           (Uint8)(clear_color.y * 255),
+                           (Uint8)(clear_color.z * 255),
+                           (Uint8)(clear_color.w * 255));
     SDL_RenderClear(engine->GetRenderer());
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(engine->GetRenderer());
