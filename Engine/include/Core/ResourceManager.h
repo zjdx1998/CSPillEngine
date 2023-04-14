@@ -43,6 +43,7 @@ class ResourceManager {
 
   Scene *ActiveScene();
   [[nodiscard]] std::string GetActiveSceneName() const;
+  [[nodiscard]] std::string GetActiveScenePath() const;
   bool SetActiveScene(const std::string &scene_name);
 
   Layer *ActiveLayer();

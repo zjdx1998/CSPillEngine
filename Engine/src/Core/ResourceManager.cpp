@@ -177,6 +177,14 @@ std::string ResourceManager::GetActiveSceneName() const {
   return active_scene_;
 }
 
+[[nodiscard]] std::string ResourceManager::GetActiveScenePath() const {
+  if (scenes_.find(active_scene_) == scenes_.end()) {
+    std::cerr << "Scene " << active_scene_ << "Not Found!" << std::endl;
+    return "";
+  }
+  return scenes_.at(active_scene_).first;
+}
+
 void ResourceManager::SetActiveTileset(const std::string &active_name) {
   active_tileset_ = active_name;
 }
