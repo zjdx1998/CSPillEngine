@@ -14,5 +14,6 @@ void Component::Receive(std::string_view message) {
   std::cout << "Message: " << message << " received!\n";
 }
 void Component::Render(SDL_Renderer *renderer) {}
+void Component::Update(GameObject *object) {}
 
 }  // namespace CSPill::EngineCore

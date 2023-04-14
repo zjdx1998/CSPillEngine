@@ -20,11 +20,6 @@ set(SDL2IMAGE_VENDORED ON)
 set(SDL2IMAGE_INSTALL OFF)
 add_subdirectory(thirdparty/SDL_image)
 
-# Pybind11
-add_subdirectory(thirdparty/pybind11)
-file(GLOB SRC_PYBIND src/pybind/*.cpp)
-pybind11_add_module(PyCSPillEngine ${SRC_PYBIND})
-
 # imgui
 file(GLOB SRC_IMGUI thirdparty/imgui/*.cpp)
 file(GLOB SRC_IMGUI_BACKEND thirdparty/imgui/backends/imgui_impl_sdlrenderer.cpp thirdparty/imgui/backends/imgui_impl_sdl2.cpp)
@@ -66,3 +61,13 @@ add_executable(Editor ${EDITOR_SRCS})
 target_include_directories(Editor PUBLIC ${INCLUDE_DIRS})
 add_dependencies(Editor SDL2 nlohmann_json)
 target_link_libraries(Editor SDL2 nlohmann_json Core SDL2_image)
+
+# Pybind11
+add_subdirectory(thirdparty/pybind11)
+set(PYBIND11_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pybind11/include)
+set(INC_PYBIND include/pybind)
+file(GLOB SRC_PYBIND src/pybind/*.cpp)
+# PyCSPillEngine
+pybind11_add_module(PyCSPillEngine ${SRC_PYBIND})
+target_include_directories(PyCSPillEngine PRIVATE ${INC_CORE} ${SDL2_INCLUDE_DIRS} ${Python_INCLUDE_DIRS} ${INC_PYBIND})
+target_link_libraries(PyCSPillEngine PRIVATE Core SDL2)
