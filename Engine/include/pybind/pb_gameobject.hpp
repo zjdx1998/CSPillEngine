@@ -20,9 +20,12 @@ void PB_GameObject(py::module &m) {
            [](GameObject &self, void *temp) {
              self.Render(static_cast<SDL_Renderer *>(temp));
            })
-      .def("AddComponent", [](GameObject &obj, Component &comp) {
-        return obj.AddComponent(std::move(comp));
-      }, py::arg("component"))
+      .def(
+          "AddComponent",
+          [](GameObject &obj, Component &comp) {
+            return obj.AddComponent(std::move(comp));
+          },
+          py::arg("component"))
       .def("RemoveComponent", &GameObject::RemoveComponent,
            py::arg("component_name"))
       .def("GetComponent", &GameObject::GetComponent, py::arg("component_name"),

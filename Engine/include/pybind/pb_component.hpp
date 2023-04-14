@@ -1,7 +1,8 @@
+#include <pybind11/pybind11.h>
+
 #include "Component.h"
 #include "GameObject.h"
 #include "SDL.h"
-#include <pybind11/pybind11.h>
 
 namespace py = pybind11;
 
