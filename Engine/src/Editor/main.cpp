@@ -134,7 +134,7 @@ int main(int argc, char **argv) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void) io;
+  (void)io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
@@ -168,9 +168,9 @@ int main(int argc, char **argv) {
   bool dockspace_open = true;
   ImGuiWindowFlags docking_window_flags =
       ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse |
-          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
-          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
-          ImGuiWindowFlags_NoMove;
+      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
+      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
+      ImGuiWindowFlags_NoMove;
 
   // Main loop
   bool done = false;
@@ -246,10 +246,10 @@ int main(int argc, char **argv) {
     ImGui::Render();
     SDL_RenderSetScale(engine->GetRenderer(), io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
-    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8) (clear_color.x * 255),
-                           (Uint8) (clear_color.y * 255),
-                           (Uint8) (clear_color.z * 255),
-                           (Uint8) (clear_color.w * 255));
+    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8)(clear_color.x * 255),
+                           (Uint8)(clear_color.y * 255),
+                           (Uint8)(clear_color.z * 255),
+                           (Uint8)(clear_color.w * 255));
     SDL_RenderClear(engine->GetRenderer());
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(engine->GetRenderer());
