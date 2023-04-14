@@ -62,7 +62,9 @@ class ResourceManager {
   ResourceManager();
   std::unordered_map<std::string, TTF_Font *> fonts_;
   std::unordered_map<std::string, Mix_Chunk *> audios_;
-  std::unordered_map<std::string, std::pair<std::string, std::unique_ptr<Scene>>> scenes_;
+  std::unordered_map<std::string,
+                     std::pair<std::string, std::unique_ptr<Scene>>>
+      scenes_;
   std::unordered_map<std::string, SDL_Texture *> images_;
 
   // Editor Only

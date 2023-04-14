@@ -107,7 +107,7 @@ class Scene {
 }  // namespace CSPill::EngineCore
 
 namespace nlohmann {
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   static CSPill::EngineCore::Layer from_json(const json &j) {
     if (!j.contains("tileset")) {
@@ -123,7 +123,7 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
   }
 };
 
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   static CSPill::EngineCore::Tileset from_json(const json &j) {
     return {j.at("name"), j.at("imagewidth"), j.at("imageheight"),
@@ -139,7 +139,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
   }
 };
 
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   static CSPill::EngineCore::Scene from_json(const json &j) {
     return {j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),

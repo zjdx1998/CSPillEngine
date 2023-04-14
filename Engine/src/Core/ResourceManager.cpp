@@ -74,7 +74,8 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
         std::ifstream scene_in(directory.path().c_str());
         json scene_json;
         scene_in >> scene_json;
-        scenes_[filename] = {directory.path().string(), std::make_unique<Scene>(scene_json.get<Scene>())};
+        scenes_[filename] = {directory.path().string(),
+                             std::make_unique<Scene>(scene_json.get<Scene>())};
         scene_in.close();
       }
       if (extension == ".bmp") {

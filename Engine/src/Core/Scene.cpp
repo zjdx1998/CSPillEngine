@@ -63,7 +63,9 @@ std::vector<Layer> &Scene::Layers() { return layers_; }
 const std::vector<Layer> &Scene::GetLayers() const { return layers_; }
 void Scene::SetLayers(const std::vector<Layer> &layers) { layers_ = layers; }
 std::vector<Tileset> &Scene::TileSets() { return tile_sets_; }
-[[nodiscard]] const std::vector<Tileset> &Scene::GetTileSets() const { return tile_sets_; }
+[[nodiscard]] const std::vector<Tileset> &Scene::GetTileSets() const {
+  return tile_sets_;
+}
 void Scene::SetTileSets(const std::vector<Tileset> &tile_sets) {
   tile_sets_ = tile_sets;
 }
@@ -112,8 +114,8 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
           ::EngineCore::Utils::GetRowAndCol(layer->Data()[i]);
       auto current_brush =
           std::string(tileset->GetName()) + "-cropped-" +
-              std::to_string(
-                  ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+          std::to_string(
+              ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
       SDL_Rect dst_rect = {col * tileset->GetTileWidth(),
                            row * tileset->GetTileHeight(),
                            tileset->GetTileWidth(), tileset->GetTileHeight()};
