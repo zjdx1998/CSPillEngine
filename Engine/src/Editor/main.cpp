@@ -13,13 +13,7 @@
 #include <EditorScene.h>
 #include <ResourceManager.h>
 #include <SDL.h>
-#include <SDL_image.h>
-#include <Scene.h>
-#include <unistd.h>
 
-#include <cmath>
-#include <cstdio>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -31,30 +25,92 @@
 #include "imgui_impl_sdlrenderer.h"
 #include "imgui_internal.h"
 
-#ifdef _Linux_
-#include <sys/io.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#define mymkdir(dirname) (mkdir((dirname), 00700))
-#elif _WIN32
-#include <direct.h>
-#include <io.h>
-#define SDL_MAIN_HANDLED
-#define mymkdir(dirname) (mkdir(dirname))
-#else
-#define mymkdir(dirname) (system("mkdir ../../../"))
-#endif
-
-using namespace std;
-
 #if !SDL_VERSION_ATLEAST(2, 0, 17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
+
+namespace {
 
 using CSPill::Editor::ResourceManagerUI;
 using CSPill::Editor::SceneUI;
 using CSPill::Editor::TileSetEditorUI;
 using CSPill::EngineCore::Engine;
+
+bool create_new_window = false;
+
+bool CreateFile(std::string_view path, std::string_view content) {
+  std::ofstream file(path);
+  if (!file) return false;
+  file << content;
+  file.close();
+  return true;
+}
+
+bool CreateFolder(std::string_view path) {
+  return std::filesystem::create_directories(path);
+}
+
+void MenuBar(bool &done) {
+  if (ImGui::BeginMainMenuBar()) {
+    if (ImGui::BeginMenu("File")) {
+      if (ImGui::MenuItem("New Project")) {
+        create_new_window = true;
+      }
+      if (ImGui::MenuItem("Exit", "Cmd+Q")) {
+        done = true;
+      }
+      ImGui::EndMenu();
+    }
+
+    ImGui::EndMainMenuBar();
+  }
+
+  // create a new project
+  if (create_new_window) {
+    // create a dialog
+    ImGui::OpenPopup("Create Project");
+
+    if (ImGui::BeginPopupModal("Create Project", nullptr,
+                               ImGuiWindowFlags_AlwaysAutoResize)) {
+      // input filename
+      static char name[256] = "untitled";
+      ImGui::InputText("Name", name, IM_ARRAYSIZE(name));
+
+      auto default_path = std::getenv("HOME") + std::string("/CSPillEngineProjects/");
+      ImGui::InputText("Save Location", default_path.data(), default_path.size());
+
+      if (ImGui::Button("Create")) {
+        std::string folder_path = std::string(default_path) + name;
+        folder_path.erase(std::remove(folder_path.begin(), folder_path.end(), '\n'), folder_path.end());
+        std::cout << folder_path << std::endl;
+        if (!std::filesystem::exists(folder_path)) {
+          std::cout << CreateFolder(folder_path) << std::endl;
+          folder_path += "/";
+
+          CreateFolder((folder_path + "src").c_str());
+          CreateFile(folder_path + "src/" + "app.py", "");
+          CreateFolder((folder_path + "resources").c_str());
+          CreateFolder((folder_path + "scenes").c_str());
+
+          CreateFile(folder_path + "scenes/" + "default.scene", "");
+          create_new_window = false;
+        } else {
+          std::cerr << "Directory already exists";
+        }
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        ImGui::CloseCurrentPopup();
+        create_new_window = false;
+      }
+
+      ImGui::EndPopup();
+    }
+  }
+}
+
+}  // namespace
 
 // Main code
 int main(int argc, char **argv) {
@@ -74,7 +130,7 @@ int main(int argc, char **argv) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void)io;
+  (void) io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
@@ -91,35 +147,7 @@ int main(int argc, char **argv) {
   ImGui_ImplSDL2_InitForSDLRenderer(engine->GetWindow(), engine->GetRenderer());
   ImGui_ImplSDLRenderer_Init(engine->GetRenderer());
 
-  // Load Fonts
-  // - If no fonts are loaded, dear imgui will use the default font. You can
-  // also load multiple fonts and use ImGui::PushFont()/PopFont() to select
-  // them.
-  // - AddFontFromFileTTF() will return the ImFont* so you can store it if you
-  // need to select the font among multiple.
-  // - If the file cannot be loaded, the function will return NULL. Please
-  // handle those errors in your application (e.g. use an assertion, or display
-  // an error and quit).
-  // - The fonts will be rasterized at a given size (w/ oversampling) and stored
-  // into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which
-  // ImGui_ImplXXXX_NewFrame below will call.
-  // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype
-  // for higher quality font rendering.
-  // - Read 'docs/FONTS.md' for more instructions and details.
-  // - Remember that in C/C++ if you want to include a backslash \ in a string
-  // literal you need to write a double backslash \\ !
-  // io.Fonts->AddFontDefault();
-  // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-  // ImFont* font =
-  // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f,
-  // NULL, io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != NULL);
-
   // Our state
-  bool m_minimized = false;
-  bool create_new_window = false;
   ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
   // Init ResourceUI
@@ -136,22 +164,14 @@ int main(int argc, char **argv) {
   bool dockspace_open = true;
   ImGuiWindowFlags docking_window_flags =
       ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse |
-      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
-      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
-      ImGuiWindowFlags_NoMove;
+          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
+          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
+          ImGuiWindowFlags_NoMove;
 
   // Main loop
   bool done = false;
   while (!done) {
-    // Poll and handle events (inputs, window resize, etc.)
-    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
-    // tell if dear imgui wants to use your inputs.
-    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to
-    // your main application, or clear/overwrite your copy of the mouse data.
-    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input
-    // data to your main application, or clear/overwrite your copy of the
-    // keyboard data. Generally you may always pass all inputs to dear imgui,
-    // and hide them from your application based on those two flags.
+
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       ImGui_ImplSDL2_ProcessEvent(&event);
@@ -168,8 +188,8 @@ int main(int argc, char **argv) {
     ImGui::NewFrame();
 
     ImGuiViewport *viewport = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos(viewport->Pos);
-    ImGui::SetNextWindowSize(viewport->Size);
+    ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("MainWindow", &dockspace_open, docking_window_flags);
@@ -217,91 +237,16 @@ int main(int argc, char **argv) {
 
     ImGui::End();
 
-    if (!m_minimized) {
-      if (ImGui::BeginMainMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-          if (ImGui::MenuItem("New Project")) {
-            create_new_window = true;
-          }
-          if (ImGui::MenuItem("Exit", "Cmd+Q")) {
-            done = true;
-          }
-          ImGui::EndMenu();
-        }
-
-        ImGui::EndMainMenuBar();
-      }
-    }
-
-    // create a new project
-    if (create_new_window) {
-      // create a dialog
-      ImGui::OpenPopup("Create Project");
-
-      if (ImGui::BeginPopupModal("Create Project", NULL,
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
-        // input filename
-        static char name[256] = "untitled";
-        ImGui::InputText("Name", name, IM_ARRAYSIZE(name));
-        // static char path[256] = "../../../";
-
-        static char defaultPath[256] = "~/finalproject-sv-group/";
-        ImGui::InputText("Save Location", defaultPath,
-                         IM_ARRAYSIZE(defaultPath));
-
-        if (ImGui::Button("Create")) {
-          static string inputPath = (string)defaultPath;
-          static string path = "../../../";
-          path = path + inputPath.substr(24);
-          static string foldpath = (string)path + (string)name;
-          auto itor = remove(foldpath.begin(), foldpath.end(), '\n');
-          foldpath.erase(itor, foldpath.end());
-          std::cout << foldpath << endl;
-          if (0 != access(foldpath.c_str(), 0)) {
-            mymkdir(foldpath.c_str());
-
-            string newfolder = foldpath + "./";
-
-            mymkdir((newfolder + "src").c_str());
-            string file = newfolder + "src/" + "app.py";
-            ofstream oFile;
-            oFile.open(file, ios::app);
-            if (!oFile) cout << "fail to create app.py" << endl;
-
-            mymkdir((newfolder + "resources").c_str());
-
-            mymkdir((newfolder + "scenes").c_str());
-
-            string scenefile = newfolder + "scenes/" + "default.scene";
-            ofstream oFile2;
-            oFile2.open(scenefile, ios::app);
-            if (!oFile2) cout << "fail ro create default.scene" << endl;
-
-            create_new_window = false;
-          } else {
-            cout << "Directory already exists";
-          }
-
-          ImGui::CloseCurrentPopup();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel")) {
-          ImGui::CloseCurrentPopup();
-          create_new_window = false;
-        }
-
-        ImGui::EndPopup();
-      }
-    }
+    MenuBar(done);
 
     // Rendering
     ImGui::Render();
     SDL_RenderSetScale(engine->GetRenderer(), io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
-    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8)(clear_color.x * 255),
-                           (Uint8)(clear_color.y * 255),
-                           (Uint8)(clear_color.z * 255),
-                           (Uint8)(clear_color.w * 255));
+    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8) (clear_color.x * 255),
+                           (Uint8) (clear_color.y * 255),
+                           (Uint8) (clear_color.z * 255),
+                           (Uint8) (clear_color.w * 255));
     SDL_RenderClear(engine->GetRenderer());
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(engine->GetRenderer());
