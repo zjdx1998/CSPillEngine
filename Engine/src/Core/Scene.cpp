@@ -101,7 +101,7 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
     if (layer->Data().size() !=
         canvas_width * canvas_height / tile_width / tile_height) {
       layer->Data().resize(canvas_width * canvas_height / tile_width /
-                           tile_height);
+          tile_height, -1);
     }
     for (int i = 0; i < layer->Data().size(); i++) {
       if (layer->Data()[i] == -1) continue;
@@ -111,8 +111,8 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
           ::EngineCore::Utils::GetRowAndCol(layer->Data()[i]);
       auto current_brush =
           std::string(tileset->GetName()) + "-cropped-" +
-          std::to_string(
-              ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+              std::to_string(
+                  ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
       SDL_Rect dst_rect = {col * tileset->GetTileWidth(),
                            row * tileset->GetTileHeight(),
                            tileset->GetTileWidth(), tileset->GetTileHeight()};

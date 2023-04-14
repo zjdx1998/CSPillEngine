@@ -60,17 +60,17 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
   for (const auto &directory : fs::recursive_directory_iterator(folder_path)) {
     if (fs::is_regular_file(directory)) {
       const auto &extension = directory.path().extension();
-      const auto &filename = directory.path().filename();
+      const auto &filename = directory.path().filename().string();
       if (extension == ".ttf") {
-        if (fonts_.find(filename.string()) != fonts_.end()) continue;
+        if (fonts_.find(filename) != fonts_.end()) continue;
         fonts_[filename] = TTF_OpenFont(directory.path().c_str(), 20);
       }
       if (extension == ".wav") {
-        if (audios_.find(filename.string()) != audios_.end()) continue;
+        if (audios_.find(filename) != audios_.end()) continue;
         audios_[filename] = Mix_LoadWAV(directory.path().c_str());
       }
       if (extension == ".scene") {
-        if (scenes_.find(filename.string()) != scenes_.end()) continue;
+        if (scenes_.find(filename) != scenes_.end()) continue;
         std::ifstream scene_in(directory.path().c_str());
         json scene_json;
         scene_in >> scene_json;
@@ -78,7 +78,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
         scene_in.close();
       }
       if (extension == ".bmp") {
-        if (images_.find(filename.string()) != images_.end()) continue;
+        if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *bmp_surface = SDL_LoadBMP(directory.path().c_str())) {
           images_[filename] =
               SDL_CreateTextureFromSurface(renderer_, bmp_surface);
@@ -86,7 +86,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
         }
       }
       if (::EngineCore::Utils::isIn(extension, ".png", ".jpg", ".tif")) {
-        if (images_.find(filename.string()) != images_.end()) continue;
+        if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *surface = IMG_Load(directory.path().c_str())) {
           images_[filename] = SDL_CreateTextureFromSurface(renderer_, surface);
           SDL_FreeSurface(surface);
