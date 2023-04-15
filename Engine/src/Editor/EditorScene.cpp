@@ -6,9 +6,9 @@
 
 #include <SDL_image.h>
 
+#include <filesystem>
 #include <iostream>
 #include <utility>
-#include <filesystem>
 
 #include "EditorScene.h"
 #include "ImGuiFileDialog.h"
@@ -226,7 +226,8 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                       resource_manager.GetActiveTilesetName();
                   UICenterRadioButton("", is_layer_selected);
                   // show delete button in the same line
-                  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,
+                  ImGui::PushStyleVar(
+                      ImGuiStyleVar_ItemSpacing,
                       ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
                   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                   ImGui::SameLine(ImGui::GetWindowWidth() -
@@ -341,8 +342,9 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
     ImGui::SameLine();
     if (ImGui::Button("Browse")) {
       ImGui::SetNextWindowSize(ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
-      ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder",
-                                              "Image files (*.png *.gif *.jpg *.jpeg){.png,.gif,.jpg,.jpeg}", ".");
+      ImGuiFileDialog::Instance()->OpenDialog(
+          "FileBrowser", "Choose Folder",
+          "Image files (*.png *.gif *.jpg *.jpeg){.png,.gif,.jpg,.jpeg}", ".");
     }
     ImGui::InputInt("Tileset Width", &tileset_width);
     ImGui::InputInt("Tileset Height", &tileset_height);
@@ -375,12 +377,15 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
         std::filesystem::path p(file_path);
         std::string tileset_name = p.filename().string();
         // Create a new tileset
-        CSPill::EngineCore::Tileset new_tileset(tileset_name, tileset_width, tileset_height, tile_width, tile_height);
+        CSPill::EngineCore::Tileset new_tileset(tileset_name, tileset_width,
+                                                tileset_height, tile_width,
+                                                tile_height);
         // Add tileset to the current scene
         active_scene->AddTileSet(std::move(new_tileset));
         // Create a new layer
         std::vector<int> layer_data = {-1};
-        CSPill::EngineCore::Layer new_layer(layer_name, tileset_name, layer_data);
+        CSPill::EngineCore::Layer new_layer(layer_name, tileset_name,
+                                            layer_data);
         // Add layer to the current scene
         active_scene->AddLayer(std::move(new_layer));
       }
