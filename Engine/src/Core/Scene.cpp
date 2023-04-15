@@ -119,9 +119,29 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
       SDL_Rect dst_rect = {col * tileset->GetTileWidth(),
                            row * tileset->GetTileHeight(),
                            tileset->GetTileWidth(), tileset->GetTileHeight()};
-      SDL_RenderCopy(renderer,
-                     ResourceManager::GetInstance().QueryTexture(current_brush),
-                     nullptr, &dst_rect);
+
+      if (!ResourceManager::GetInstance().GetActiveTilesetName().empty()) {
+          if (auto active_layer = ResourceManager::GetInstance().LoadImage(
+              ResourceManager::GetInstance().GetActiveTilesetName())) {
+              SDL_Texture* cropped_texture = nullptr;
+              SDL_Rect src_rect = { row_and_col.second * tileset->GetTileWidth(),
+                                   row_and_col.first * tileset->GetTileHeight(),
+                                   tileset->GetTileWidth(),
+                                   tileset->GetTileHeight() };
+              if (auto query_texture =
+                  ResourceManager::GetInstance().QueryTexture(current_brush)) {
+                  cropped_texture = query_texture;
+              }
+              else {
+                  auto cropped = ::EngineCore::Utils::CropTexture(
+                      renderer, active_layer, src_rect);
+                  ResourceManager::GetInstance().AddTile(current_brush,
+                      std::move(cropped));
+                  cropped_texture = cropped.get();
+              }
+              SDL_RenderCopy(renderer, cropped_texture, nullptr, &dst_rect);
+          }
+      }
     }
   }
   SDL_SetRenderTarget(renderer, nullptr);

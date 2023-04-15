@@ -63,15 +63,15 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       const auto &filename = directory.path().filename().string();
       if (extension == ".ttf") {
         if (fonts_.find(filename) != fonts_.end()) continue;
-        fonts_[filename] = TTF_OpenFont(directory.path().c_str(), 20);
+        fonts_[filename] = TTF_OpenFont(directory.path().string().c_str(), 20);
       }
       if (extension == ".wav") {
         if (audios_.find(filename) != audios_.end()) continue;
-        audios_[filename] = Mix_LoadWAV(directory.path().c_str());
+        audios_[filename] = Mix_LoadWAV(directory.path().string().c_str());
       }
       if (extension == ".scene") {
         if (scenes_.find(filename) != scenes_.end()) continue;
-        std::ifstream scene_in(directory.path().c_str());
+        std::ifstream scene_in(directory.path().string().c_str());
         json scene_json;
         scene_in >> scene_json;
         scenes_[filename] = {directory.path().string(),
@@ -80,7 +80,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       }
       if (extension == ".bmp") {
         if (images_.find(filename) != images_.end()) continue;
-        if (SDL_Surface *bmp_surface = SDL_LoadBMP(directory.path().c_str())) {
+        if (SDL_Surface *bmp_surface = SDL_LoadBMP(directory.path().string().c_str())) {
           images_[filename] =
               SDL_CreateTextureFromSurface(renderer_, bmp_surface);
           SDL_FreeSurface(bmp_surface);
@@ -88,7 +88,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       }
       if (::EngineCore::Utils::isIn(extension, ".png", ".jpg", ".tif")) {
         if (images_.find(filename) != images_.end()) continue;
-        if (SDL_Surface *surface = IMG_Load(directory.path().c_str())) {
+        if (SDL_Surface *surface = IMG_Load(directory.path().string().c_str())) {
           images_[filename] = SDL_CreateTextureFromSurface(renderer_, surface);
           SDL_FreeSurface(surface);
         }
@@ -177,7 +177,7 @@ std::string ResourceManager::GetActiveSceneName() const {
   return active_scene_;
 }
 
-[[nodiscard]] std::string ResourceManager::GetActiveScenePath() const {
+std::string ResourceManager::GetActiveScenePath() const {
   if (scenes_.find(active_scene_) == scenes_.end()) {
     std::cerr << "Scene " << active_scene_ << "Not Found!" << std::endl;
     return "";

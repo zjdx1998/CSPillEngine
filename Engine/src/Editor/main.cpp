@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 #include "Engine.h"
 #include "ImGuiFileDialog.h"
@@ -25,6 +26,7 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer.h"
 #include "imgui_internal.h"
+#include "Scene.h"
 
 #if !SDL_VERSION_ATLEAST(2, 0, 17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -36,6 +38,8 @@ using CSPill::Editor::ResourceManagerUI;
 using CSPill::Editor::SceneUI;
 using CSPill::Editor::TileSetEditorUI;
 using CSPill::EngineCore::Engine;
+using json = nlohmann::json;
+using CSPill::EngineCore::Scene;
 
 bool create_new_window = false;
 bool save_scene = false;
@@ -67,7 +71,7 @@ void MenuBar(bool &done) {
       }
       if (ImGui::MenuItem("Save Scene As...")) {
         save_scene_as = true;
-        // ImGui::OpenPopup("Save As");
+       
       }
       ImGui::Text("------");
       if (ImGui::MenuItem("Exit", "Cmd+Q")) {
@@ -195,7 +199,7 @@ void MenuBar(bool &done) {
     }
   }
 }
-}
+
 
 }  // namespace
 
