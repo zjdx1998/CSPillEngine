@@ -63,15 +63,15 @@ void MenuBar(bool &done) {
         create_new_window = true;
       }
       if (ImGui::MenuItem("Save Scene")) {
-          save_scene = true;
+        save_scene = true;
       }
       if (ImGui::MenuItem("Save Scene As...")) {
-          save_scene_as = true;
-          // ImGui::OpenPopup("Save As");
+        save_scene_as = true;
+        // ImGui::OpenPopup("Save As");
       }
       ImGui::Text("------");
       if (ImGui::MenuItem("Exit", "Cmd+Q")) {
-          done = true;
+        done = true;
       }
       ImGui::EndMenu();
     }
@@ -128,71 +128,71 @@ void MenuBar(bool &done) {
   }
 
   if (save_scene) {
-      Scene* scene_to_save =
-          CSPill::EngineCore::ResourceManager::GetInstance().ActiveScene();
+    Scene *scene_to_save =
+        CSPill::EngineCore::ResourceManager::GetInstance().ActiveScene();
 
-      json json_object = *scene_to_save;
+    json json_object = *scene_to_save;
 
-      std::string path_to_scene =
-          CSPill::EngineCore::ResourceManager::GetInstance()
-          .GetActiveScenePath();  // read path from scene_to_save
+    std::string path_to_scene =
+        CSPill::EngineCore::ResourceManager::GetInstance()
+            .GetActiveScenePath();  // read path from scene_to_save
 
-      std::cout << path_to_scene << std::endl;
+    std::cout << path_to_scene << std::endl;
 
-      std::ofstream file(path_to_scene);
+    std::ofstream file(path_to_scene);
 
-      file << json_object;
-      file.close();
-      save_scene = false;
+    file << json_object;
+    file.close();
+    save_scene = false;
   }
 
   if (save_scene_as) {
-      ImGui::OpenPopup("Save Scene As");
-      if (ImGui::BeginPopupModal("Save Scene As", nullptr,
-          ImGuiWindowFlags_AlwaysAutoResize)) {
-          Scene* scene_to_save =
-              CSPill::EngineCore::ResourceManager::GetInstance().ActiveScene();
+    ImGui::OpenPopup("Save Scene As");
+    if (ImGui::BeginPopupModal("Save Scene As", nullptr,
+                               ImGuiWindowFlags_AlwaysAutoResize)) {
+      Scene *scene_to_save =
+          CSPill::EngineCore::ResourceManager::GetInstance().ActiveScene();
 
-          json json_object = *scene_to_save;
-          static std::string file_path;
+      json json_object = *scene_to_save;
+      static std::string file_path;
 
-          ImGui::InputText("File Path", file_path.data(), file_path.capacity());
-          ImGui::SameLine();
-          if (ImGui::Button("Browse")) {
-              // open Dialog Simple
-              ImGui::SetNextWindowSize(
-                  ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
-              ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder",
-                  nullptr, ".");
-          }
-
-          // Display file browser
-          if (ImGuiFileDialog::Instance()->Display("FileBrowser")) {
-              if (ImGuiFileDialog::Instance()->IsOk()) {
-                  file_path = ImGuiFileDialog::Instance()->GetFilePathName();
-              }
-              ImGuiFileDialog::Instance()->Close();
-          }
-
-          // Confirm button
-          if (ImGui::Button("Confirm")) {
-              std::cout << file_path << std::endl;
-
-              std::ofstream file(file_path + "/default.scene");
-
-              file << json_object;
-              file.close();
-              ImGui::CloseCurrentPopup();
-              save_scene_as = false;
-          }
-
-          if (ImGui::Button("Cancel")) {
-              ImGui::CloseCurrentPopup();
-              save_scene_as = false;
-          }
-
-          ImGui::EndPopup();
+      ImGui::InputText("File Path", file_path.data(), file_path.capacity());
+      ImGui::SameLine();
+      if (ImGui::Button("Browse")) {
+        // open Dialog Simple
+        ImGui::SetNextWindowSize(
+            ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
+        ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder",
+                                                nullptr, ".");
       }
+
+      // Display file browser
+      if (ImGuiFileDialog::Instance()->Display("FileBrowser")) {
+        if (ImGuiFileDialog::Instance()->IsOk()) {
+          file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+        }
+        ImGuiFileDialog::Instance()->Close();
+      }
+
+      // Confirm button
+      if (ImGui::Button("Confirm")) {
+        std::cout << file_path << std::endl;
+
+        std::ofstream file(file_path + "/default.scene");
+
+        file << json_object;
+        file.close();
+        ImGui::CloseCurrentPopup();
+        save_scene_as = false;
+      }
+
+      if (ImGui::Button("Cancel")) {
+        ImGui::CloseCurrentPopup();
+        save_scene_as = false;
+      }
+
+      ImGui::EndPopup();
+    }
   }
 }
 }
