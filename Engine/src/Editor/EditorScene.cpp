@@ -39,6 +39,21 @@ void UICenterRadioButton(std::string_view label, bool active) {
   ImGui::PopStyleVar(2);
 }
 
+// show a delete button on the right side of each layer
+bool UIDeleteButton(std::string_view label) {
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,
+                      ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+  ImGui::SameLine(ImGui::GetWindowWidth() -
+                  ImGui::GetTextLineHeightWithSpacing() -
+                  ImGui::GetStyle().ItemInnerSpacing.x - 25);
+  if (ImGui::SmallButton(" X ")) {
+    return true;
+  }
+  ImGui::PopStyleVar(2);
+  return false;
+}
+
 }  // namespace
 
 SceneUI::SceneUI(std::string title, int width, int height)
@@ -226,17 +241,9 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                       resource_manager.GetActiveTilesetName();
                   UICenterRadioButton("", is_layer_selected);
                   // show delete button in the same line
-                  ImGui::PushStyleVar(
-                      ImGuiStyleVar_ItemSpacing,
-                      ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
-                  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                  ImGui::SameLine(ImGui::GetWindowWidth() -
-                                  ImGui::GetTextLineHeightWithSpacing() -
-                                  ImGui::GetStyle().ItemInnerSpacing.x - 25);
-                  if (ImGui::SmallButton(" X ")) {
+                  if (UIDeleteButton(" X ")) {
                     scene->RemoveLayer(layer.GetName().data());
                   }
-                  ImGui::PopStyleVar(2);
                   if (ImGui::TreeNode(layer.GetTileset().empty()
                                           ? "N/A"
                                           : layer.GetTileset().data())) {
