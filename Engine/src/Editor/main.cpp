@@ -16,17 +16,17 @@
 
 #include <fstream>
 #include <iostream>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
 
 #include "Engine.h"
 #include "ImGuiFileDialog.h"
+#include "Scene.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer.h"
 #include "imgui_internal.h"
-#include "Scene.h"
 
 #if !SDL_VERSION_ATLEAST(2, 0, 17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -71,7 +71,6 @@ void MenuBar(bool &done) {
       }
       if (ImGui::MenuItem("Save Scene As...")) {
         save_scene_as = true;
-       
       }
       ImGui::Text("------");
       if (ImGui::MenuItem("Exit", "Cmd+Q")) {
@@ -199,7 +198,6 @@ void MenuBar(bool &done) {
     }
   }
 }
-
 
 }  // namespace
 
