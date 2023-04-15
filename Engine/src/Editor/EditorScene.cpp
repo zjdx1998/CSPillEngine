@@ -33,8 +33,8 @@ void UICenterRadioButton(std::string_view label, bool active) {
                       ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
   ImGui::SameLine(ImGui::GetWindowWidth() -
-                  ImGui::GetTextLineHeightWithSpacing() -
-                  ImGui::GetStyle().ItemInnerSpacing.x);
+      ImGui::GetTextLineHeightWithSpacing() -
+      ImGui::GetStyle().ItemInnerSpacing.x);
   ImGui::RadioButton(label.data(), active);
   ImGui::PopStyleVar(2);
 }
@@ -45,8 +45,8 @@ bool UIDeleteButton(std::string_view label) {
                       ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
   ImGui::SameLine(ImGui::GetWindowWidth() -
-                  ImGui::GetTextLineHeightWithSpacing() -
-                  ImGui::GetStyle().ItemInnerSpacing.x - 25);
+      ImGui::GetTextLineHeightWithSpacing() -
+      ImGui::GetStyle().ItemInnerSpacing.x - 25);
   if (ImGui::SmallButton(" X ")) {
     return true;
   }
@@ -65,7 +65,7 @@ SceneUI::~SceneUI() { SDL_DestroyTexture(active_scene_texture_); }
 void SceneUI::Render(SDL_Renderer *renderer) {
   ImGui::SetNextWindowSize(ImVec2(static_cast<float>(this->GetWidth()),
                                   static_cast<float>(this->GetHeight())));
-  ImGui::Begin(this->GetTitle().c_str());
+  ImGui::Begin(this->GetTitle().c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar);
   auto scene = ResourceManager::GetInstance().ActiveScene();
   auto layer = ResourceManager::GetInstance().ActiveLayer();
   auto tileset = ResourceManager::GetInstance().ActiveTileset();
@@ -106,7 +106,7 @@ void SceneUI::Render(SDL_Renderer *renderer) {
                                           selected_tileset_col);
           layer
               ->Data()[row * scene->GetCanvasWidth() / tileset->GetTileWidth() +
-                       col] =
+              col] =
               ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col);
           //          std::cout << row << " , " << col << " , " <<
           //          ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col)
@@ -131,7 +131,7 @@ void TileSetEditorUI::Render(SDL_Renderer *renderer) {
 
   if (!ResourceManager::GetInstance().GetActiveTilesetName().empty()) {
     if (auto active_layer = ResourceManager::GetInstance().LoadImage(
-            ResourceManager::GetInstance().GetActiveTilesetName())) {
+        ResourceManager::GetInstance().GetActiveTilesetName())) {
       SDL_Point active_layer_size;
       SDL_QueryTexture(active_layer, nullptr, nullptr, &active_layer_size.x,
                        &active_layer_size.y);
@@ -188,10 +188,10 @@ void TileSetEditorUI::Render(SDL_Renderer *renderer) {
             std::pair<int, int>(selected_tileset_row, selected_tileset_col);
         auto current_brush =
             std::string(tileset->GetName()) + "-cropped-" +
-            std::to_string(
-                ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+                std::to_string(
+                    ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
         if (auto query_texture =
-                ResourceManager::GetInstance().QueryTexture(current_brush)) {
+            ResourceManager::GetInstance().QueryTexture(current_brush)) {
           cropped_texture = query_texture;
         } else {
           auto cropped = ::EngineCore::Utils::CropTexture(
@@ -238,15 +238,15 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                 if (ImGui::TreeNode(layer.GetName().data())) {
                   bool is_layer_selected =
                       layer.GetTileset() ==
-                      resource_manager.GetActiveTilesetName();
+                          resource_manager.GetActiveTilesetName();
                   UICenterRadioButton("", is_layer_selected);
                   // show delete button in the same line
                   if (UIDeleteButton(" X ")) {
                     scene->RemoveLayer(layer.GetName().data());
                   }
                   if (ImGui::TreeNode(layer.GetTileset().empty()
-                                          ? "N/A"
-                                          : layer.GetTileset().data())) {
+                                      ? "N/A"
+                                      : layer.GetTileset().data())) {
                     if (!layer.GetTileset().empty()) {
                       ImGui::Text("File: %s",
                                   tilesets[layer.GetTileset().data()]
