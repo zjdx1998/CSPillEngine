@@ -9,7 +9,7 @@
 // API to the end-user. We provide this backend for the sake of completeness.
 // For a multi-platform app consider using e.g. SDL+DirectX on Windows and
 // SDL+OpenGL on Linux/OSX.
-
+#define SDL_MAIN_HANDLED
 #include <EditorScene.h>
 #include <ResourceManager.h>
 #include <SDL.h>
@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "Engine.h"
+#include "ImGuiFileDialog.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer.h"
@@ -37,6 +38,11 @@ using CSPill::Editor::TileSetEditorUI;
 using CSPill::EngineCore::Engine;
 
 bool create_new_window = false;
+bool save_scene = false;
+bool save_scene_as = false;
+
+constexpr float FILE_BROWSER_WIDTH = 400;
+constexpr float FILE_BROWSER_HEIGHT = 300;
 
 bool CreateFile(std::string_view path, std::string_view content) {
   std::ofstream file(path.data());
@@ -56,8 +62,16 @@ void MenuBar(bool &done) {
       if (ImGui::MenuItem("New Project")) {
         create_new_window = true;
       }
+      if (ImGui::MenuItem("Save Scene")) {
+          save_scene = true;
+      }
+      if (ImGui::MenuItem("Save Scene As...")) {
+          save_scene_as = true;
+          // ImGui::OpenPopup("Save As");
+      }
+      ImGui::Text("------");
       if (ImGui::MenuItem("Exit", "Cmd+Q")) {
-        done = true;
+          done = true;
       }
       ImGui::EndMenu();
     }
@@ -112,6 +126,75 @@ void MenuBar(bool &done) {
       ImGui::EndPopup();
     }
   }
+
+  if (save_scene) {
+      Scene* scene_to_save =
+          CSPill::EngineCore::ResourceManager::GetInstance().ActiveScene();
+
+      json json_object = *scene_to_save;
+
+      std::string path_to_scene =
+          CSPill::EngineCore::ResourceManager::GetInstance()
+          .GetActiveScenePath();  // read path from scene_to_save
+
+      std::cout << path_to_scene << std::endl;
+
+      std::ofstream file(path_to_scene);
+
+      file << json_object;
+      file.close();
+      save_scene = false;
+  }
+
+  if (save_scene_as) {
+      ImGui::OpenPopup("Save Scene As");
+      if (ImGui::BeginPopupModal("Save Scene As", nullptr,
+          ImGuiWindowFlags_AlwaysAutoResize)) {
+          Scene* scene_to_save =
+              CSPill::EngineCore::ResourceManager::GetInstance().ActiveScene();
+
+          json json_object = *scene_to_save;
+          static std::string file_path;
+
+          ImGui::InputText("File Path", file_path.data(), file_path.capacity());
+          ImGui::SameLine();
+          if (ImGui::Button("Browse")) {
+              // open Dialog Simple
+              ImGui::SetNextWindowSize(
+                  ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
+              ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder",
+                  nullptr, ".");
+          }
+
+          // Display file browser
+          if (ImGuiFileDialog::Instance()->Display("FileBrowser")) {
+              if (ImGuiFileDialog::Instance()->IsOk()) {
+                  file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+              }
+              ImGuiFileDialog::Instance()->Close();
+          }
+
+          // Confirm button
+          if (ImGui::Button("Confirm")) {
+              std::cout << file_path << std::endl;
+
+              std::ofstream file(file_path + "/default.scene");
+
+              file << json_object;
+              file.close();
+              ImGui::CloseCurrentPopup();
+              save_scene_as = false;
+          }
+
+          if (ImGui::Button("Cancel")) {
+              ImGui::CloseCurrentPopup();
+              save_scene_as = false;
+          }
+
+          ImGui::EndPopup();
+      }
+  }
+}
 }
 
 }  // namespace
