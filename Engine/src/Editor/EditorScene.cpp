@@ -339,13 +339,14 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
   }
   if (ImGui::BeginPopup("Add Layer")) {
     static std::string file_path;
-    static std::string layer_name;
+    constexpr int BUFFER_SIZE = 256;
+    static char layer_name_buffer[BUFFER_SIZE] = "";
     static int tileset_width = 0;
     static int tileset_height = 0;
     static int tile_width = 0;
     static int tile_height = 0;
 
-    ImGui::InputText("Layer Name", layer_name.data(), layer_name.capacity());
+    ImGui::InputText("Layer Name", layer_name_buffer, BUFFER_SIZE);
     ImGui::InputText("File Path", file_path.data(), file_path.capacity());
     ImGui::SameLine();
     if (ImGui::Button("Browse")) {
@@ -392,6 +393,7 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
         active_scene->AddTileSet(std::move(new_tileset));
         // Create a new layer
         std::vector<int> layer_data = {-1};
+        std::string layer_name(layer_name_buffer);
         CSPill::EngineCore::Layer new_layer(layer_name, tileset_name,
                                             layer_data);
         // Add layer to the current scene
