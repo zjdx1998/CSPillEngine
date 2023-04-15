@@ -312,6 +312,7 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                 ImGui::EndPopup();
               }
               for (const auto &layer : scene->Layers()) {
+                static std::map<std::string, bool> layer_selected_states;
                 if (ImGui::TreeNode(layer.GetName().data())) {
                   bool is_layer_selected =
                       layer.GetTileset() ==
@@ -319,12 +320,25 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                   UICenterRadioButton("", is_layer_selected);
                   // show delete button in the same line
                   if (UIDeleteButton(" X ")) {
+                    if (resource_manager.ActiveLayer() != nullptr && layer.GetName() == resource_manager.ActiveLayer()->GetName()) {
+                      // Deactive current tileset
+                      resource_manager.SetActiveTileset("");
+                      // Deselect layer
+                      layer_selected_states[layer.GetName().data()] = false;
+                    }
                     scene->RemoveLayer(layer.GetName().data());
                   }
-                  if (ImGui::TreeNode(layer.GetTileset().empty()
-                                          ? "N/A"
-                                          : layer.GetTileset().data())) {
-                    if (!layer.GetTileset().empty()) {
+                  bool &is_selected = layer_selected_states[layer.GetName().data()];
+                  if (ImGui::Selectable(layer.GetTileset().empty()
+                      ? "N/A"
+                      : layer.GetTileset().data(),
+                      is_selected,
+                      ImGuiSelectableFlags_AllowItemOverlap)) {
+                    resource_manager.SetActiveTileset(
+                        layer.GetTileset().data());
+                    is_selected = true;
+                  }
+                  if (is_selected && !layer.GetTileset().empty()) {
                       ImGui::Text("File: %s",
                                   tilesets[layer.GetTileset().data()]
                                       ->GetName()
@@ -345,12 +359,6 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                                   tilesets[layer.GetTileset().data()]
                                       ->GetImageHeight());
                     }
-                    ImGui::TreePop();
-                  }
-                  if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0)) {
-                    resource_manager.SetActiveTileset(
-                        layer.GetTileset().data());
-                  }
                   ImGui::TreePop();
                 }
               }
