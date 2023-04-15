@@ -90,6 +90,10 @@ class Scene {
   void SetCanvasWidth(int canvas_width);
   [[nodiscard]] int GetCanvasHeight() const;
   void SetCanvasHeight(int canvas_height);
+  // Add layer to scene
+  void AddLayer(Layer &&l);
+  // Remove layer from scene
+  void RemoveLayer(const std::string &name);
 
   SDL_Texture *Render(SDL_Renderer *renderer, Layer *layer, Tileset *tileset,
                       bool accumulate = false);

@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <utility>
+#include <filesystem>
 
 #include "EditorScene.h"
 #include "ImGuiFileDialog.h"
@@ -224,6 +225,17 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                       layer.GetTileset() ==
                       resource_manager.GetActiveTilesetName();
                   UICenterRadioButton("", is_layer_selected);
+                  // show delete button in the same line
+                  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,
+                      ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
+                  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                  ImGui::SameLine(ImGui::GetWindowWidth() -
+                                  ImGui::GetTextLineHeightWithSpacing() -
+                                  ImGui::GetStyle().ItemInnerSpacing.x - 25);
+                  if (ImGui::SmallButton(" X ")) {
+                    scene->RemoveLayer(layer.GetName().data());
+                  }
+                  ImGui::PopStyleVar(2);
                   if (ImGui::TreeNode(layer.GetTileset().empty()
                                           ? "N/A"
                                           : layer.GetTileset().data())) {
@@ -301,6 +313,77 @@ void ResourceManagerUI::Render(SDL_Renderer *renderer) {
     // Confirm button
     if (ImGui::Button("Confirm")) {
       resource_manager.LoadResources(file_path);
+      ImGui::CloseCurrentPopup();
+    }
+
+    if (ImGui::Button("Cancel")) {
+      ImGui::CloseCurrentPopup();
+    }
+
+    ImGui::EndPopup();
+  }
+
+  ImGui::SameLine();
+  // Button to add layer to the current scene
+  if (ImGui::Button("Add Layer")) {
+    ImGui::OpenPopup("Add Layer");
+  }
+  if (ImGui::BeginPopup("Add Layer")) {
+    static std::string file_path;
+    static std::string layer_name;
+    static int tileset_width = 0;
+    static int tileset_height = 0;
+    static int tile_width = 0;
+    static int tile_height = 0;
+
+    ImGui::InputText("Layer Name", layer_name.data(), layer_name.capacity());
+    ImGui::InputText("File Path", file_path.data(), file_path.capacity());
+    ImGui::SameLine();
+    if (ImGui::Button("Browse")) {
+      ImGui::SetNextWindowSize(ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
+      ImGuiFileDialog::Instance()->OpenDialog("FileBrowser", "Choose Folder",
+                                              "Image files (*.png *.gif *.jpg *.jpeg){.png,.gif,.jpg,.jpeg}", ".");
+    }
+    ImGui::InputInt("Tileset Width", &tileset_width);
+    ImGui::InputInt("Tileset Height", &tileset_height);
+    ImGui::InputInt("Tile Width", &tile_width);
+    ImGui::InputInt("Tile Height", &tile_height);
+
+    if (ImGuiFileDialog::Instance()->Display("FileBrowser")) {
+      if (ImGuiFileDialog::Instance()->IsOk()) {
+        file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+      }
+      ImGuiFileDialog::Instance()->Close();
+    }
+
+    if (ImGui::Button("Confirm")) {
+      if (!file_path.empty()) {
+        // Check file exists or not
+        if (!std::filesystem::exists(file_path)) {
+          std::cerr << "File does not exist" << std::endl;
+          return;
+        }
+        // Check if there's a active scene
+        std::string scene_name = resource_manager.GetActiveSceneName();
+        if (scene_name.empty()) {
+          std::cerr << "No active scene" << std::endl;
+          return;
+        }
+        // Get active scene
+        auto active_scene = resource_manager.ActiveScene();
+        // Create a new layer and add it to the current scene
+        std::filesystem::path p(file_path);
+        std::string tileset_name = p.filename().string();
+        // Create a new tileset
+        CSPill::EngineCore::Tileset new_tileset(tileset_name, tileset_width, tileset_height, tile_width, tile_height);
+        // Add tileset to the current scene
+        active_scene->AddTileSet(std::move(new_tileset));
+        // Create a new layer
+        std::vector<int> layer_data = {-1};
+        CSPill::EngineCore::Layer new_layer(layer_name, tileset_name, layer_data);
+        // Add layer to the current scene
+        active_scene->AddLayer(std::move(new_layer));
+      }
       ImGui::CloseCurrentPopup();
     }
 

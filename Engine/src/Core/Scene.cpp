@@ -130,4 +130,15 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
 
 void Scene::Render(SDL_Renderer *renderer) {}
 
+void Scene::AddLayer(Layer &&layer) { layers_.push_back(std::move(layer)); }
+
+void Scene::RemoveLayer(const std::string &name) {
+  for (auto it = layers_.begin(); it != layers_.end(); it++) {
+    if (it->GetName() == name) {
+      layers_.erase(it);
+      break;
+    }
+  }
+}
+
 }  // namespace CSPill::EngineCore
