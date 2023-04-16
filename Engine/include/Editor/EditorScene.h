@@ -12,108 +12,108 @@
 
 namespace CSPill::Editor {
 
-  using EngineCore::Scene;
+using EngineCore::Scene;
 
 /**
  * \brief UI for Scene
  */
-  class SceneUI : public EngineCore::UI {
-  public:
-    /**
-     * Constructor for SceneUI.
-     * @param title a string of the title of the SceneUI.
-     * @param width int, the width of the SceneUI
-     * @param height int, the height of the SceneUI
-     */
-    SceneUI(std::string title, int width, int height);
-
-    /**
-     * Render the current SceneUI.
-     * @param renderer SDL_Renderer that is going to be used
-     */
-    void Render(SDL_Renderer *renderer) override;
-
-    /**
-     * Destructor of SceneUI.
-     */
-    ~SceneUI();
-
-    /**
-     * Check if the SceneUI is previewed.
-     * @return true the SceneUI is previewed, false otherwise
-     */
-    bool IsPreview() const;
-
-    /**
-     * Set the current SceneUI should or should not to be previewed.
-     * @param preview true the SceneUI is going to be previewed, false otherwise
-     */
-    void SetPreview(bool preview);
-
-    /**
-     * Get active Scene texture.
-     * @return SDL_Texture of the active Scene
-     */
-    SDL_Texture *GetActiveSceneTexture() const;
-
-    /**
-     * Set active Scene texture to active_scene_texture.
-     * @param active_scene_texture the targeted SDL_Texture of the active Scene
-     */
-    void SetActiveSceneTexture(SDL_Texture *active_scene_texture);
-
-  private:
-    bool preview_ = false;
-    SDL_Texture *active_scene_texture_;
-  };
+class SceneUI : public EngineCore::UI {
+ public:
+  /**
+   * Constructor for SceneUI.
+   * @param title a string of the title of the SceneUI.
+   * @param width int, the width of the SceneUI
+   * @param height int, the height of the SceneUI
+   */
+  SceneUI(std::string title, int width, int height);
 
   /**
-   * \brief UI for TileSetEditor
+   * Render the current SceneUI.
+   * @param renderer SDL_Renderer that is going to be used
    */
-  class TileSetEditorUI : public EngineCore::UI {
-  public:
-    /**
-     * Constructor of TileSetEditorUI.
-     * @param title a string of the title of TileSetEditorUI
-     * @param width int, the width of TileSetEditorUI
-     * @param height int, the height of TileSetEditorUI
-     */
-    TileSetEditorUI(std::string title, int width, int height);
-
-    /**
-     * Render the current TileSetEditorUI.
-     * @param renderer SDL_Renderer that is going to be used
-     */
-    void Render(SDL_Renderer *renderer) override;
-
-  private:
-    SDL_Rect src_rect_;
-  };
+  void Render(SDL_Renderer *renderer) override;
 
   /**
-   * \brief UI for ResourceManager
+   * Destructor of SceneUI.
    */
-  class ResourceManagerUI : public EngineCore::UI {
-  public:
-    /**
-     * Constructor of ResourceManagerUI.
-     * @param title a string of the title of ResourceManagerUI
-     * @param width int, the width of ResourceManagerUI
-     * @param height int, the height of ResourceManagerUI
-     */
-    ResourceManagerUI(std::string title, int width, int height);
+  ~SceneUI();
 
-    /**
-     * Render the current ResourceManagerUI.
-     * @param renderer SDL_Renderer that is going to be used
-     */
-    void Render(SDL_Renderer *renderer) override;
+  /**
+   * Check if the SceneUI is previewed.
+   * @return true the SceneUI is previewed, false otherwise
+   */
+  bool IsPreview() const;
 
-  private:
-    void ResourceManagerRenderSceneLevels();
+  /**
+   * Set the current SceneUI should or should not to be previewed.
+   * @param preview true the SceneUI is going to be previewed, false otherwise
+   */
+  void SetPreview(bool preview);
 
-    std::string selected_image_;
-  };
+  /**
+   * Get active Scene texture.
+   * @return SDL_Texture of the active Scene
+   */
+  SDL_Texture *GetActiveSceneTexture() const;
+
+  /**
+   * Set active Scene texture to active_scene_texture.
+   * @param active_scene_texture the targeted SDL_Texture of the active Scene
+   */
+  void SetActiveSceneTexture(SDL_Texture *active_scene_texture);
+
+ private:
+  bool preview_ = false;
+  SDL_Texture *active_scene_texture_;
+};
+
+/**
+ * \brief UI for TileSetEditor
+ */
+class TileSetEditorUI : public EngineCore::UI {
+ public:
+  /**
+   * Constructor of TileSetEditorUI.
+   * @param title a string of the title of TileSetEditorUI
+   * @param width int, the width of TileSetEditorUI
+   * @param height int, the height of TileSetEditorUI
+   */
+  TileSetEditorUI(std::string title, int width, int height);
+
+  /**
+   * Render the current TileSetEditorUI.
+   * @param renderer SDL_Renderer that is going to be used
+   */
+  void Render(SDL_Renderer *renderer) override;
+
+ private:
+  SDL_Rect src_rect_;
+};
+
+/**
+ * \brief UI for ResourceManager
+ */
+class ResourceManagerUI : public EngineCore::UI {
+ public:
+  /**
+   * Constructor of ResourceManagerUI.
+   * @param title a string of the title of ResourceManagerUI
+   * @param width int, the width of ResourceManagerUI
+   * @param height int, the height of ResourceManagerUI
+   */
+  ResourceManagerUI(std::string title, int width, int height);
+
+  /**
+   * Render the current ResourceManagerUI.
+   * @param renderer SDL_Renderer that is going to be used
+   */
+  void Render(SDL_Renderer *renderer) override;
+
+ private:
+  void ResourceManagerRenderSceneLevels();
+
+  std::string selected_image_;
+};
 
 }  // namespace CSPill::Editor
 
