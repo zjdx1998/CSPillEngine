@@ -124,8 +124,9 @@ void MenuBar(bool &done) {
       std::string command =
           "pkill -f " +
           file_path;  // linux/macOS in windows taskkill /im app.py /f
-      std::string command = "taskkill /im " + file_path + " /f";
+      
       std::system(command.c_str());  // kill app.py
+      command = "taskkill /im " + file_path + " /f";
       std::system(command.c_str());
     }
     ImGui::PopStyleColor(3);
