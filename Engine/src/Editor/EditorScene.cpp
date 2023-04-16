@@ -250,13 +250,17 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                 static int tile_height = 0;
 
                 ImGui::InputText("Layer Name", layer_name_buffer, BUFFER_SIZE);
-                ImGui::InputText("File Path", file_path.data(), file_path.capacity());
+                ImGui::InputText("File Path", file_path.data(),
+                                 file_path.capacity());
                 ImGui::SameLine();
                 if (ImGui::Button("Browse")) {
-                  ImGui::SetNextWindowSize(ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
+                  ImGui::SetNextWindowSize(
+                      ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
                   ImGuiFileDialog::Instance()->OpenDialog(
                       "FileBrowser", "Choose Folder",
-                      "Image files (*.png *.gif *.jpg *.jpeg){.png,.gif,.jpg,.jpeg}", ".");
+                      "Image files (*.png *.gif *.jpg "
+                      "*.jpeg){.png,.gif,.jpg,.jpeg}",
+                      ".");
                 }
                 ImGui::InputInt("Tileset Width", &tileset_width);
                 ImGui::InputInt("Tileset Height", &tileset_height);
@@ -278,7 +282,8 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                       return;
                     }
                     // Check if there's a active scene
-                    std::string scene_name = resource_manager.GetActiveSceneName();
+                    std::string scene_name =
+                        resource_manager.GetActiveSceneName();
                     if (scene_name.empty()) {
                       std::cerr << "No active scene" << std::endl;
                       return;
@@ -289,16 +294,16 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                     std::filesystem::path p(file_path);
                     std::string tileset_name = p.filename().string();
                     // Create a new tileset
-                    CSPill::EngineCore::Tileset new_tileset(tileset_name, tileset_width,
-                                                            tileset_height, tile_width,
-                                                            tile_height);
+                    CSPill::EngineCore::Tileset new_tileset(
+                        tileset_name, tileset_width, tileset_height, tile_width,
+                        tile_height);
                     // Add tileset to the current scene
                     active_scene->AddTileSet(std::move(new_tileset));
                     // Create a new layer
                     std::vector<int> layer_data = {-1};
                     std::string layer_name(layer_name_buffer);
-                    CSPill::EngineCore::Layer new_layer(layer_name, tileset_name,
-                                                        layer_data);
+                    CSPill::EngineCore::Layer new_layer(
+                        layer_name, tileset_name, layer_data);
                     // Add layer to the current scene
                     active_scene->AddLayer(std::move(new_layer));
                   }
@@ -320,7 +325,9 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                   UICenterRadioButton("", is_layer_selected);
                   // show delete button in the same line
                   if (UIDeleteButton(" X ")) {
-                    if (resource_manager.ActiveLayer() != nullptr && layer.GetName() == resource_manager.ActiveLayer()->GetName()) {
+                    if (resource_manager.ActiveLayer() != nullptr &&
+                        layer.GetName() ==
+                            resource_manager.ActiveLayer()->GetName()) {
                       // Deactive current tileset
                       resource_manager.SetActiveTileset("");
                       // Deselect layer
@@ -328,37 +335,36 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                     }
                     scene->RemoveLayer(layer.GetName().data());
                   }
-                  bool &is_selected = layer_selected_states[layer.GetName().data()];
-                  if (ImGui::Selectable(layer.GetTileset().empty()
-                      ? "N/A"
-                      : layer.GetTileset().data(),
-                      is_selected,
-                      ImGuiSelectableFlags_AllowItemOverlap)) {
+                  bool &is_selected =
+                      layer_selected_states[layer.GetName().data()];
+                  if (ImGui::Selectable(
+                          layer.GetTileset().empty()
+                              ? "N/A"
+                              : layer.GetTileset().data(),
+                          is_selected, ImGuiSelectableFlags_AllowItemOverlap)) {
                     resource_manager.SetActiveTileset(
                         layer.GetTileset().data());
                     is_selected = true;
                   }
                   if (is_selected && !layer.GetTileset().empty()) {
-                      ImGui::Text("File: %s",
-                                  tilesets[layer.GetTileset().data()]
-                                      ->GetName()
-                                      .data());
-                      ImGui::SliderInt(
-                          "Width: %d",
-                          &tilesets[layer.GetTileset().data()]->TileWidth(), 2,
-                          tilesets[layer.GetTileset().data()]->GetImageWidth());
-                      ImGui::SliderInt(
-                          "Height: %d",
-                          &tilesets[layer.GetTileset().data()]->TileHeight(), 2,
-                          tilesets[layer.GetTileset().data()]
-                              ->GetImageHeight());
-                      ImGui::Text(
-                          "Width: %d",
-                          tilesets[layer.GetTileset().data()]->GetImageWidth());
-                      ImGui::Text("Height: %d",
-                                  tilesets[layer.GetTileset().data()]
-                                      ->GetImageHeight());
-                    }
+                    ImGui::Text(
+                        "File: %s",
+                        tilesets[layer.GetTileset().data()]->GetName().data());
+                    ImGui::SliderInt(
+                        "Width: %d",
+                        &tilesets[layer.GetTileset().data()]->TileWidth(), 2,
+                        tilesets[layer.GetTileset().data()]->GetImageWidth());
+                    ImGui::SliderInt(
+                        "Height: %d",
+                        &tilesets[layer.GetTileset().data()]->TileHeight(), 2,
+                        tilesets[layer.GetTileset().data()]->GetImageHeight());
+                    ImGui::Text(
+                        "Width: %d",
+                        tilesets[layer.GetTileset().data()]->GetImageWidth());
+                    ImGui::Text(
+                        "Height: %d",
+                        tilesets[layer.GetTileset().data()]->GetImageHeight());
+                  }
                   ImGui::TreePop();
                 }
               }
