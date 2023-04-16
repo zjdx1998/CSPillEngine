@@ -2,6 +2,8 @@
 
 #include "pb_component.hpp"
 #include "pb_gameobject.hpp"
+#include "pb_scene.hpp"
+#include "pb_resource_manager.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;
@@ -14,4 +16,6 @@ PYBIND11_MODULE(PyCSPillEngine, m) {
   m.doc() = "CSPill Engine Python Bindings";
   PB_GameObject(m);
   PB_Component(m);
+  PB_Scene(m);
+  PB_ResourceManager(m);
 }
