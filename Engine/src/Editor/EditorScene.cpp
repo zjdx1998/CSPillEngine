@@ -317,7 +317,7 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                 ImGui::EndPopup();
               }
               for (int i = 0; i < scene->Layers().size(); i++) {
-                const auto& layer = scene->Layers()[i];
+                const auto &layer = scene->Layers()[i];
                 static std::map<std::string, bool> layer_selected_states;
                 if (ImGui::TreeNode(layer.GetName().data())) {
                   bool is_layer_selected =
@@ -336,26 +336,22 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                     }
                     scene->RemoveLayer(layer.GetName().data());
                   }
-                  
+
                   if (ImGui::ArrowButton("up", ImGuiDir_Up)) {
-                      if (i != 0) {
-                          std::swap(scene->Layers().at(i),
-                              scene->Layers().at(i - 1));
-                      }
-    
-                   }
-                  ImGui::SameLine();
-                     
-                   
-                      
-                    if (ImGui::ArrowButton("down", ImGuiDir_Down)) {
-                        if (i != scene->Layers().size() - 1) {
-                            std::swap(scene->Layers().at(i),
-                                scene->Layers().at(i + 1));
-                        }
-                         
+                    if (i != 0) {
+                      std::swap(scene->Layers().at(i),
+                                scene->Layers().at(i - 1));
                     }
-                  
+                  }
+                  ImGui::SameLine();
+
+                  if (ImGui::ArrowButton("down", ImGuiDir_Down)) {
+                    if (i != scene->Layers().size() - 1) {
+                      std::swap(scene->Layers().at(i),
+                                scene->Layers().at(i + 1));
+                    }
+                  }
+
                   bool &is_selected =
                       layer_selected_states[layer.GetName().data()];
                   if (ImGui::Selectable(

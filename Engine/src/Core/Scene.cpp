@@ -30,8 +30,8 @@ const std::vector<int> &Layer::GetData() const { return data_; }
 
 void Layer::SetData(const std::vector<int> &data) { data_ = data; }
 
-bool Layer::operator==(const Layer& rhs) const {
-    return this->name_.compare(rhs.name_) && this->tileset_.compare(rhs.tileset_);
+bool Layer::operator==(const Layer &rhs) const {
+  return this->name_.compare(rhs.name_) && this->tileset_.compare(rhs.tileset_);
 }
 
 Tileset::Tileset(std::string name, int image_width, int image_height,

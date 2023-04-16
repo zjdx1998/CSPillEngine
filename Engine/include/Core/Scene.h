@@ -34,7 +34,7 @@ class Layer {
   [[nodiscard]] std::vector<int> &Data();
   const std::vector<int> &GetData() const;
   void SetData(const std::vector<int> &data);
-  bool operator==(const Layer& rhs) const;
+  bool operator==(const Layer &rhs) const;
 
  private:
   std::string name_;
