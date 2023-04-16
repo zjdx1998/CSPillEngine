@@ -131,20 +131,20 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
           ::EngineCore::Utils::GetRowAndCol(layer->Data()[i]);
       auto current_brush =
           std::string(tileset->GetName()) + "-cropped-" +
-              std::to_string(
-                  ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+          std::to_string(
+              ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
       SDL_Rect dst_rect = {col * tileset->GetTileWidth(),
                            row * tileset->GetTileHeight(),
                            tileset->GetTileWidth(), tileset->GetTileHeight()};
 
       if (auto active_layer = ResourceManager::GetInstance().LoadImage(
-          std::string(tileset->GetName()))) {
+              std::string(tileset->GetName()))) {
         SDL_Texture *cropped_texture = nullptr;
         SDL_Rect src_rect = {row_and_col.second * tileset->GetTileWidth(),
                              row_and_col.first * tileset->GetTileHeight(),
                              tileset->GetTileWidth(), tileset->GetTileHeight()};
         if (auto query_texture =
-            ResourceManager::GetInstance().QueryTexture(current_brush)) {
+                ResourceManager::GetInstance().QueryTexture(current_brush)) {
           cropped_texture = query_texture;
         } else {
           auto cropped = ::EngineCore::Utils::CropTexture(

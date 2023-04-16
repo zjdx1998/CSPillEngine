@@ -23,13 +23,14 @@ SDL_Renderer *SDLRenderer::GetRenderer() const { return renderer_.get(); }
 
 Engine::Engine(std::unique_ptr<SDLWindow> window,
                std::unique_ptr<SDLRenderer> renderer, int width, int height)
-    : window_(std::move(window)), renderer_(std::move(renderer)), width_(width), height_(height) {}
+    : window_(std::move(window)),
+      renderer_(std::move(renderer)),
+      width_(width),
+      height_(height) {}
 
 Engine::~Engine() { SDL_Quit(); }
 
-std::pair<int, int> Engine::GetWindowSize() const {
-  return {width_, height_};
-}
+std::pair<int, int> Engine::GetWindowSize() const { return {width_, height_}; }
 
 SDL_Window *Engine::GetWindow() const { return window_->GetWindow(); }
 
