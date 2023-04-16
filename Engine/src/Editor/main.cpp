@@ -82,7 +82,7 @@ void MenuBar(bool &done) {
     }
 
     // untitled folder path
-   
+
     std::string file_path = startpath + "/app.py";
 
     // draw app runing buttons
@@ -94,15 +94,13 @@ void MenuBar(bool &done) {
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
                           (ImVec4)ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
     if (ImGui::ArrowButton("Start", ImGuiDir_Right)) {
-      
-        if (std::filesystem::exists(file_path)) {
-          std::string command = "python " + file_path;
-          // std::string command = "python ../../untitled/src/app.py";
-          std::system(command.c_str());  // running app
-        } else {
-          std::cout << "file doesn't exists" << std::endl;
-        }
-       
+      if (std::filesystem::exists(file_path)) {
+        std::string command = "python " + file_path;
+        // std::string command = "python ../../untitled/src/app.py";
+        std::system(command.c_str());  // running app
+      } else {
+        std::cout << "file doesn't exists" << std::endl;
+      }
     }
     ImGui::PopStyleColor(3);
 
@@ -114,14 +112,13 @@ void MenuBar(bool &done) {
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
                           (ImVec4)ImColor::HSV(0 / 7.0f, 0.8f, 0.8f));
     if (ImGui::Button(" || ", ImVec2(40, 0))) {
-      std::string command =
-          "pkill -f " +
-          file_path;  // linux/macOS 
+      std::string command = "pkill -f " + file_path;  // linux/macOS
 
       std::system(command.c_str());  // kill app.py in linux/macos
-      command = "taskkill /im " + file_path + " /f"; //in windows taskkill / im app.py / f
-      std::system(command.c_str()); //kill app.py in windows
-    } 
+      command = "taskkill /im " + file_path +
+                " /f";               // in windows taskkill / im app.py / f
+      std::system(command.c_str());  // kill app.py in windows
+    }
     ImGui::PopStyleColor(3);
 
     ImGui::SetCursorPosX(860);
