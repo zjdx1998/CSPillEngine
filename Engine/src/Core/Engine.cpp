@@ -3,6 +3,7 @@
 //
 
 #include "Engine.h"
+
 #include "CameraComponent.h"
 #include "ResourceManager.h"
 
@@ -84,12 +85,13 @@ void Engine::RefreshScene() {
   if (level) {
     SDL_Rect dstRect = {0, 0, GetWindowSize().first, GetWindowSize().second};
     if (auto camera = GetObject("Camera")) {
-      auto camera_component = (CameraComponent *) (camera->GetComponent("CameraComponent"));
+      auto camera_component =
+          (CameraComponent *)(camera->GetComponent("CameraComponent"));
       auto &viewport = camera_component->GetViewport();
-      dstRect.x = std::max(dstRect.x, (int) viewport.x);
-      dstRect.y = std::max(dstRect.y, (int) viewport.y);
-      dstRect.w = std::min(dstRect.w, (int) viewport.w);
-      dstRect.h = std::min(dstRect.h, (int) viewport.h);
+      dstRect.x = std::max(dstRect.x, (int)viewport.x);
+      dstRect.y = std::max(dstRect.y, (int)viewport.y);
+      dstRect.w = std::min(dstRect.w, (int)viewport.w);
+      dstRect.h = std::min(dstRect.h, (int)viewport.h);
     }
     SDL_RenderCopy(renderer_->GetRenderer(), level, &dstRect, nullptr);
   }

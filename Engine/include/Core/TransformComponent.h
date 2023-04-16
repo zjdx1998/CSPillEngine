@@ -17,11 +17,12 @@ class TransformComponent : public Component {
   void Update(GameObject *object, float dt) override;
   Math::Vec2D &position();
   Math::Vec2D &velocity();
+
  private:
   Math::Vec2D position_;
   Math::Vec2D velocity_;
 };
 
-}  // CSPill::EngineCore
+}  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINE_INCLUDE_CORE_TRANSFORMCOMPONENT_H_
+#endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_TRANSFORMCOMPONENT_H_

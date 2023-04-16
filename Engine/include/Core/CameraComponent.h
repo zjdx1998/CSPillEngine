@@ -23,6 +23,6 @@ class CameraComponent : public Component {
   GameObject *bind_object_{};
 };
 
-}
+}  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINE_INCLUDE_CORE_CAMERA_COMPONENT_H_
+#endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_CAMERA_COMPONENT_H_

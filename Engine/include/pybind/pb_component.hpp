@@ -16,8 +16,7 @@ class PyComponent : public Component {
                            Component,  // Parent class
                            Update,     // Name of function
                            object,     // Argument(s)
-                           dt
-    );
+                           dt);
   }
   void Receive(std::string_view message) override {
     PYBIND11_OVERLOAD_PURE(void,       // Return type
