@@ -92,55 +92,53 @@ void MenuBar(bool &done) {
     // draw app runing buttons
     ImGui::SetCursorPosX(700);
     ImGui::PushStyleColor(ImGuiCol_Button,
-        (ImVec4)ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
+                          (ImVec4)ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-        (ImVec4)ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
+                          (ImVec4)ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-        (ImVec4)ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
+                          (ImVec4)ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
     if (ImGui::ArrowButton("Start", ImGuiDir_Right)) {
-        if (std::filesystem::exists(default_path)) {
-            if (std::filesystem::exists(file_path)) {
-                std::string command = "python " + file_path;
-                // std::string command = "python ../../untitled/src/app.py";
-                std::system(command.c_str());  // running app
-            }
-            else {
-                std::cout << "file doesn't exists" << std::endl;
-            }
+      if (std::filesystem::exists(default_path)) {
+        if (std::filesystem::exists(file_path)) {
+          std::string command = "python " + file_path;
+          // std::string command = "python ../../untitled/src/app.py";
+          std::system(command.c_str());  // running app
+        } else {
+          std::cout << "file doesn't exists" << std::endl;
         }
-        else {
-            std::cout << default_path << std::endl;
-            std::cout << "Directory doesn't exists" << std::endl;
-        }
+      } else {
+        std::cout << default_path << std::endl;
+        std::cout << "Directory doesn't exists" << std::endl;
+      }
     }
     ImGui::PopStyleColor(3);
 
     ImGui::SetCursorPosX(770);
     ImGui::PushStyleColor(ImGuiCol_Button,
-        (ImVec4)ImColor::HSV(0 / 7.0f, 0.6f, 0.6f));
+                          (ImVec4)ImColor::HSV(0 / 7.0f, 0.6f, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-        (ImVec4)ImColor::HSV(0 / 7.0f, 0.7f, 0.7f));
+                          (ImVec4)ImColor::HSV(0 / 7.0f, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-        (ImVec4)ImColor::HSV(0 / 7.0f, 0.8f, 0.8f));
+                          (ImVec4)ImColor::HSV(0 / 7.0f, 0.8f, 0.8f));
     if (ImGui::Button(" || ", ImVec2(40, 0))) {
-        std::string command =
-            "pkill -f " +
-            file_path;  // linux/macOS in windows taskkill /im app.py /f
-        std::string command = "taskkill /im " + file_path + " /f";
-        std::system(command.c_str());  // kill app.py
-        std::system(command.c_str());
+      std::string command =
+          "pkill -f " +
+          file_path;  // linux/macOS in windows taskkill /im app.py /f
+      std::string command = "taskkill /im " + file_path + " /f";
+      std::system(command.c_str());  // kill app.py
+      std::system(command.c_str());
     }
     ImGui::PopStyleColor(3);
 
     ImGui::SetCursorPosX(860);
     ImGui::PushStyleColor(ImGuiCol_Button,
-        (ImVec4)ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
+                          (ImVec4)ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-        (ImVec4)ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
+                          (ImVec4)ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-        (ImVec4)ImColor::HSV(4 / 7.0f, 0.8f, 0.8f));
+                          (ImVec4)ImColor::HSV(4 / 7.0f, 0.8f, 0.8f));
     if (ImGui::Button("<o>", ImVec2(40, 0))) {
-        preview_flag = !preview_flag;
+      preview_flag = !preview_flag;
     }
     ImGui::PopStyleColor(3);
 
@@ -310,7 +308,6 @@ int main(int argc, char **argv) {
   // TODO: load json
   // scene_widget.LoadScene();
   SceneUI scene_widget("Scene", 800, 600);
-  
 
   // Init ResourceManagerUI
   ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
