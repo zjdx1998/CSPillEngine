@@ -45,6 +45,7 @@ bool create_new_window = false;
 bool save_scene = false;
 bool save_scene_as = false;
 bool preview_flag = false;
+static std::string startpath = "";
 
 constexpr float FILE_BROWSER_WIDTH = 400;
 constexpr float FILE_BROWSER_HEIGHT = 300;
@@ -81,13 +82,8 @@ void MenuBar(bool &done) {
     }
 
     // untitled folder path
-    auto default_path =
-        std::getenv("HOME") + std::string("/CSPillEngineProjects/untitled");
-
-    default_path.erase(
-        std::remove(default_path.begin(), default_path.end(), '\n'),
-        default_path.end());
-    std::string file_path = default_path + "/src/" + "app.py";
+   
+    std::string file_path = startpath + "/app.py";
 
     // draw app runing buttons
     ImGui::SetCursorPosX(700);
@@ -98,7 +94,7 @@ void MenuBar(bool &done) {
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
                           (ImVec4)ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
     if (ImGui::ArrowButton("Start", ImGuiDir_Right)) {
-      if (std::filesystem::exists(default_path)) {
+      
         if (std::filesystem::exists(file_path)) {
           std::string command = "python " + file_path;
           // std::string command = "python ../../untitled/src/app.py";
@@ -106,10 +102,7 @@ void MenuBar(bool &done) {
         } else {
           std::cout << "file doesn't exists" << std::endl;
         }
-      } else {
-        std::cout << default_path << std::endl;
-        std::cout << "Directory doesn't exists" << std::endl;
-      }
+       
     }
     ImGui::PopStyleColor(3);
 
@@ -123,12 +116,12 @@ void MenuBar(bool &done) {
     if (ImGui::Button(" || ", ImVec2(40, 0))) {
       std::string command =
           "pkill -f " +
-          file_path;  // linux/macOS in windows taskkill /im app.py /f
+          file_path;  // linux/macOS 
 
-      std::system(command.c_str());  // kill app.py
-      command = "taskkill /im " + file_path + " /f";
-      std::system(command.c_str());
-    }
+      std::system(command.c_str());  // kill app.py in linux/macos
+      command = "taskkill /im " + file_path + " /f"; //in windows taskkill / im app.py / f
+      std::system(command.c_str()); //kill app.py in windows
+    } 
     ImGui::PopStyleColor(3);
 
     ImGui::SetCursorPosX(860);
@@ -276,6 +269,7 @@ int main(int argc, char **argv) {
 
   if (argc > 1) {
     CSPill::EngineCore::ResourceManager::GetInstance().LoadResources(argv[1]);
+    startpath = argv[1];
   }
 
   // Setup Dear ImGui context
