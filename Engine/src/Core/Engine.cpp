@@ -31,8 +31,8 @@ SDL_Window *Engine::GetWindow() const { return window_->GetWindow(); }
 
 SDL_Renderer *Engine::GetRenderer() const { return renderer_->GetRenderer(); }
 
-std::unique_ptr<Engine> Engine::Create(std::string_view title,
-                                       int w, int h, int x, int y, Uint32 sdl_init_flags,
+std::unique_ptr<Engine> Engine::Create(std::string_view title, int w, int h,
+                                       int x, int y, Uint32 sdl_init_flags,
                                        SDL_WindowFlags window_flags,
                                        SDL_RendererFlags renderer_flags) {
   if (SDL_Init(sdl_init_flags) < 0) {
@@ -67,12 +67,8 @@ GameObject *Engine::GetObject(const std::string &name) {
   return objects_.at(name).get();
 }
 
-void Engine::SetGameOver(bool game_over) {
-  this->game_over_ = game_over;
-}
-[[nodiscard]] bool Engine::IsGameOver() const {
-  return this->game_over_;
-}
+void Engine::SetGameOver(bool game_over) { this->game_over_ = game_over; }
+[[nodiscard]] bool Engine::IsGameOver() const { return this->game_over_; }
 
 void Engine::Run(int FPS) {
   while (!Engine::IsGameOver()) {

@@ -8,8 +8,8 @@
 #include <memory>
 #include <string>
 
-#include "SDL.h"
 #include "GameObject.h"
+#include "SDL.h"
 
 namespace CSPill::EngineCore {
 
@@ -46,9 +46,10 @@ class Engine {
   [[nodiscard]] SDL_Window *GetWindow() const;
   [[nodiscard]] SDL_Renderer *GetRenderer() const;
   static std::unique_ptr<Engine> Create(
-      std::string_view title, int w, int h, int x = SDL_WINDOWPOS_CENTERED, int y = SDL_WINDOWPOS_CENTERED,
+      std::string_view title, int w, int h, int x = SDL_WINDOWPOS_CENTERED,
+      int y = SDL_WINDOWPOS_CENTERED,
       Uint32 sdl_init_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER |
-          SDL_INIT_GAMECONTROLLER,
+                              SDL_INIT_GAMECONTROLLER,
       SDL_WindowFlags window_flags = static_cast<SDL_WindowFlags>(
           SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI),
       SDL_RendererFlags renderer_flags = static_cast<SDL_RendererFlags>(
@@ -61,6 +62,7 @@ class Engine {
   [[nodiscard]] bool IsGameOver() const;
 
   void Run(int FPS = 60);
+
  private:
   Engine(std::unique_ptr<SDLWindow> window,
          std::unique_ptr<SDLRenderer> renderer);
