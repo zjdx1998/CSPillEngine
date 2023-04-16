@@ -19,8 +19,13 @@ class SceneUI : public EngineCore::UI {
   SceneUI(std::string title, int width, int height);
   void Render(SDL_Renderer *renderer) override;
   ~SceneUI();
+  bool IsPreview() const;
+  void SetPreview(bool preview);
+  SDL_Texture *GetActiveSceneTexture() const;
+  void SetActiveSceneTexture(SDL_Texture *active_scene_texture);
 
  private:
+  bool preview_ = false;
   SDL_Texture *active_scene_texture_;
 };
 

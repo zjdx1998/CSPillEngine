@@ -81,7 +81,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (extension == ".bmp") {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *bmp_surface =
-                SDL_LoadBMP(directory.path().string().c_str())) {
+            SDL_LoadBMP(directory.path().string().c_str())) {
           images_[filename] =
               SDL_CreateTextureFromSurface(renderer_, bmp_surface);
           SDL_FreeSurface(bmp_surface);
@@ -90,7 +90,9 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (::EngineCore::Utils::isIn(extension, ".png", ".jpg", ".tif")) {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *surface =
-                IMG_Load(directory.path().string().c_str())) {
+            IMG_Load(directory.path().string().c_str())) {
+          SDL_SetColorKey(surface, 1, SDL_MapRGB(surface->format, 255, 255, 255));
+          SDL_SetColorKey(surface, 1, SDL_MapRGB(surface->format, 0, 0, 0));
           images_[filename] = SDL_CreateTextureFromSurface(renderer_, surface);
           SDL_FreeSurface(surface);
         }

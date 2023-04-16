@@ -25,21 +25,28 @@ namespace CSPill::EngineCore {
  */
 class Layer {
  public:
-  Layer(std::string name, std::string tileset, const std::vector<int> &data);
-  Layer(std::string name, const std::vector<int> &data);
+  Layer(std::string name,
+        std::string tileset,
+        const std::vector<int> &data,
+        const SDL_Color &bkg_color = {255, 255, 255, 255});
+  Layer(std::string name, const std::vector<int> &data, const SDL_Color &bkg_color = {255, 255, 255, 255});
   [[nodiscard]] std::string_view GetName() const;
   void SetName(const std::string &name);
   [[nodiscard]] std::string_view GetTileset() const;
   void SetTileset(const std::string &tileset);
   [[nodiscard]] std::vector<int> &Data();
-  const std::vector<int> &GetData() const;
+  [[nodiscard]] const std::vector<int> &GetData() const;
   void SetData(const std::vector<int> &data);
   bool operator==(const Layer &rhs) const;
+  [[nodiscard]] const SDL_Color &GetBackgroundColor() const;
+  SDL_Color &BackgroundColor();
+  void SetBackgroundColor(const SDL_Color &background_color);
 
  private:
   std::string name_;
   std::string tileset_;
   std::vector<int> data_;
+  SDL_Color background_color_{};
 };
 
 /**
@@ -98,7 +105,7 @@ class Scene {
 
   SDL_Texture *Render(SDL_Renderer *renderer, Layer *layer, Tileset *tileset,
                       bool accumulate = false);
-  void Render(SDL_Renderer *renderer);
+  SDL_Texture *Render(SDL_Renderer *renderer);
 
  private:
   std::vector<Layer> layers_;
@@ -112,23 +119,37 @@ class Scene {
 }  // namespace CSPill::EngineCore
 
 namespace nlohmann {
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   static CSPill::EngineCore::Layer from_json(const json &j) {
-    if (!j.contains("tileset")) {
-      return {j.at("name"), j.at("data")};
+    SDL_Color color = {255, 255, 255, 255};
+    if (j.contains("color")) {
+      json json_color = j.at("color");
+      color.r = json_color.at("r");
+      color.g = json_color.at("g");
+      color.b = json_color.at("b");
+      color.a = json_color.at("a");
     }
-    return {j.at("name"), j.at("tileset"), j.at("data")};
+    if (!j.contains("tileset")) {
+      return {j.at("name"), j.at("data"), color};
+    }
+    return {j.at("name"), j.at("tileset"), j.at("data"), color};
   }
 
   static void to_json(json &j, const CSPill::EngineCore::Layer &l) {
     j["name"] = l.GetName();
     j["tileset"] = l.GetTileset();
     j["data"] = l.GetData();
+    json json_color;
+    json_color.at("r") = l.GetBackgroundColor().r;
+    json_color.at("g") = l.GetBackgroundColor().g;
+    json_color.at("b") = l.GetBackgroundColor().b;
+    json_color.at("a") = l.GetBackgroundColor().a;
+    j["color"] = json_color;
   }
 };
 
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   static CSPill::EngineCore::Tileset from_json(const json &j) {
     return {j.at("name"), j.at("imagewidth"), j.at("imageheight"),
@@ -144,7 +165,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
   }
 };
 
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   static CSPill::EngineCore::Scene from_json(const json &j) {
     return {j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),
