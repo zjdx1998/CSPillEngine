@@ -22,10 +22,14 @@ SDLRenderer::SDLRenderer(SDL_Window *window, SDL_RendererFlags renderer_flags)
 SDL_Renderer *SDLRenderer::GetRenderer() const { return renderer_.get(); }
 
 Engine::Engine(std::unique_ptr<SDLWindow> window,
-               std::unique_ptr<SDLRenderer> renderer)
-    : window_(std::move(window)), renderer_(std::move(renderer)) {}
+               std::unique_ptr<SDLRenderer> renderer, int width, int height)
+    : window_(std::move(window)), renderer_(std::move(renderer)), width_(width), height_(height) {}
 
 Engine::~Engine() { SDL_Quit(); }
+
+std::pair<int, int> Engine::GetWindowSize() const {
+  return {width_, height_};
+}
 
 SDL_Window *Engine::GetWindow() const { return window_->GetWindow(); }
 
@@ -52,7 +56,7 @@ std::unique_ptr<Engine> Engine::Create(std::string_view title, int w, int h,
   }
   ResourceManager::GetInstance().SetRenderer(renderer->GetRenderer());
   return std::unique_ptr<Engine>(
-      new Engine(std::move(window), std::move(renderer)));
+      new Engine(std::move(window), std::move(renderer), w, h));
 }
 bool Engine::AddObject(const std::string &name, GameObject &&object) {
   if (objects_.find(name) != objects_.end()) {
@@ -68,12 +72,27 @@ GameObject *Engine::GetObject(const std::string &name) {
 }
 
 void Engine::SetGameOver(bool game_over) { this->game_over_ = game_over; }
-[[nodiscard]] bool Engine::IsGameOver() const { return this->game_over_; }
+bool Engine::IsGameOver() const { return this->game_over_; }
+
+void Engine::SwitchScene(Scene *scene) { this->scene_ = scene; }
 
 void Engine::Run(int FPS) {
   while (!Engine::IsGameOver()) {
     SDL_SetRenderDrawColor(renderer_->GetRenderer(), 0, 0, 0, 255);
     SDL_RenderClear(renderer_->GetRenderer());
+    SDL_Texture *level = scene_->Render(renderer_->GetRenderer());
+    if (level) {
+      SDL_Rect dstRect = {0, 0, GetWindowSize().first, GetWindowSize().second};
+      SDL_RenderCopy(renderer_->GetRenderer(), level, &dstRect, &dstRect);
+    }
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+      if (event.type == SDL_QUIT) game_over_ = true;
+      if (event.type == SDL_WINDOWEVENT &&
+          event.window.event == SDL_WINDOWEVENT_CLOSE &&
+          event.window.windowID == SDL_GetWindowID(GetWindow()))
+        game_over_ = true;
+    }
     for (const auto &obj : objects_) {
       obj.second->Update();
       obj.second->Render(renderer_->GetRenderer());

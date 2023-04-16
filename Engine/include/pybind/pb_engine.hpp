@@ -48,6 +48,7 @@ void PB_Engine(py::module &m) {
       .def("GetObject", &Engine::GetObject)
       .def("Terminate", &Engine::SetGameOver, py::arg("gameover") = true)
       .def("IsGameOver", &Engine::IsGameOver)
+      .def("SwitchScene", &Engine::SwitchScene)
       .def("Run", &Engine::Run);
 }
 

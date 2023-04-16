@@ -10,6 +10,7 @@
 
 #include "GameObject.h"
 #include "SDL.h"
+#include "Scene.h"
 
 namespace CSPill::EngineCore {
 
@@ -49,7 +50,7 @@ class Engine {
       std::string_view title, int w, int h, int x = SDL_WINDOWPOS_CENTERED,
       int y = SDL_WINDOWPOS_CENTERED,
       Uint32 sdl_init_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER |
-                              SDL_INIT_GAMECONTROLLER,
+          SDL_INIT_GAMECONTROLLER,
       SDL_WindowFlags window_flags = static_cast<SDL_WindowFlags>(
           SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI),
       SDL_RendererFlags renderer_flags = static_cast<SDL_RendererFlags>(
@@ -60,14 +61,19 @@ class Engine {
 
   void SetGameOver(bool game_over);
   [[nodiscard]] bool IsGameOver() const;
+  void SwitchScene(Scene *scene);
+
+  std::pair<int, int> GetWindowSize() const;
 
   void Run(int FPS = 60);
 
  private:
+  int width_, height_;
   Engine(std::unique_ptr<SDLWindow> window,
-         std::unique_ptr<SDLRenderer> renderer);
+         std::unique_ptr<SDLRenderer> renderer, int width, int height);
   std::unique_ptr<SDLWindow> window_;
   std::unique_ptr<SDLRenderer> renderer_;
+  Scene *scene_;
   std::unordered_map<std::string, std::unique_ptr<GameObject>> objects_;
   bool game_over_ = false;
 };
