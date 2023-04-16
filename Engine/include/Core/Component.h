@@ -27,6 +27,7 @@ class Component {
    */
   virtual ~Component() = default;
 
+  explicit Component(std::string_view name = "Component");
   Component(Component &&) = default;
 
   /**
@@ -34,7 +35,7 @@ class Component {
    * GameObject. This function must be implemented in child class.
    * @param object The GameObject that current component belongs to.
    */
-  virtual void Update(GameObject *object, double dt);
+  virtual void Update(GameObject *object, float dt);
 
   /**
    * Render is called every frame.
@@ -53,7 +54,6 @@ class Component {
    * @param message content of the message.
    */
   virtual void Receive(std::string_view message);
-  explicit Component(std::string_view name = "Component");
 
  protected:
   std::string name_;

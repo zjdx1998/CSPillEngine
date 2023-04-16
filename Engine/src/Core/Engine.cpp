@@ -3,7 +3,7 @@
 //
 
 #include "Engine.h"
-
+#include "CameraComponent.h"
 #include "ResourceManager.h"
 
 namespace CSPill::EngineCore {
@@ -77,16 +77,28 @@ bool Engine::IsGameOver() const { return this->game_over_; }
 
 void Engine::SwitchScene(Scene *scene) { this->scene_ = scene; }
 
-void Engine::Run(int FPS) {
-  double dt = 0;
-  while (!Engine::IsGameOver()) {
-    SDL_SetRenderDrawColor(renderer_->GetRenderer(), 0, 0, 0, 255);
-    SDL_RenderClear(renderer_->GetRenderer());
-    SDL_Texture *level = scene_->Render(renderer_->GetRenderer());
-    if (level) {
-      SDL_Rect dstRect = {0, 0, GetWindowSize().first, GetWindowSize().second};
-      SDL_RenderCopy(renderer_->GetRenderer(), level, &dstRect, &dstRect);
+void Engine::RefreshScene() {
+  SDL_SetRenderDrawColor(renderer_->GetRenderer(), 0, 0, 0, 255);
+  SDL_RenderClear(renderer_->GetRenderer());
+  SDL_Texture *level = scene_->Render(renderer_->GetRenderer());
+  if (level) {
+    SDL_Rect dstRect = {0, 0, GetWindowSize().first, GetWindowSize().second};
+    if (auto camera = GetObject("Camera")) {
+      auto camera_component = (CameraComponent *) (camera->GetComponent("CameraComponent"));
+      auto &viewport = camera_component->GetViewport();
+      dstRect.x = std::max(dstRect.x, (int) viewport.x);
+      dstRect.y = std::max(dstRect.y, (int) viewport.y);
+      dstRect.w = std::min(dstRect.w, (int) viewport.w);
+      dstRect.h = std::min(dstRect.h, (int) viewport.h);
     }
+    SDL_RenderCopy(renderer_->GetRenderer(), level, &dstRect, nullptr);
+  }
+}
+
+void Engine::Run(int FPS) {
+  float dt = 0;
+  while (!Engine::IsGameOver()) {
+    RefreshScene();
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT) game_over_ = true;

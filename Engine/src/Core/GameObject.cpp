@@ -2,10 +2,11 @@
 // Created by Jeromy Zhang on 3/22/23.
 //
 #include "GameObject.h"
+#include "TransformComponent.h"
 
 namespace CSPill::EngineCore {
 
-void GameObject::Update(double dt) {
+void GameObject::Update(float dt) {
   for (auto &component : components_) component->Update(this, dt);
 }
 void GameObject::Render(SDL_Renderer *renderer) {
@@ -25,6 +26,8 @@ void GameObject::RemoveComponent(std::string_view component_name) {
 }
 
 std::unique_ptr<GameObject> GameObject::Create() {
+  auto *object = new GameObject();
+  object->AddComponent(std::move(TransformComponent("Transform")));
   return std::unique_ptr<GameObject>(new GameObject());
 }
 Component *GameObject::GetComponent(std::string_view component_name) {

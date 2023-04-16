@@ -1,6 +1,8 @@
 #ifndef TINYMATH_HPP
 #define TINYMATH_HPP
 
+#pragma once
+
 #include <cmath>
 #include <ostream>
 
@@ -106,86 +108,67 @@ struct Vec2D {
     return out;
   }
 
-};
-
-// Compute the dot product of a Vec2D
-inline float Dot(const Vec2D &a, const Vec2D &b) {
-  return a * b;
-}
+  // Compute the dot product of a Vec2D
+  inline float Dot(const Vec2D &b) {
+    return *this * b;
+  }
 
 // Test for equality
 // NOTE: Comparing floats is somewhat tricky, meaning that
 //       you will want to take the fabs(lhs.x - lhs.y) < 0.00001
 //       of each component to see if they are 'close enough'
-bool operator==(const Vec2D &lhs, const Vec2D &rhs) {
-  return fabs(lhs.x - rhs.x) < 1e-6 && fabs(lhs.y - rhs.y) < 1e-6;
-}
+  bool operator==(const Vec2D &rhs) {
+    return fabs(x - rhs.x) < 1e-6 && fabs(y - rhs.y) < 1e-6;
+  }
 
 // Multiplication of a vector by a scalar values
-inline Vec2D operator*(const Vec2D &v, float s) {
-  return {v.x * s, v.y * s, v.w};
-}
-
-inline Vec2D operator*(float s, const Vec2D &v) {
-  return v * s;
-}
+  inline Vec2D operator*(float s) {
+    return {x * s, y * s, w};
+  }
 
 // Division of a vector by a scalar value.
-inline Vec2D operator/(const Vec2D &v, float s) {
-  if (s == 0.f) s += 1e-6;
-  return {v.x / s, v.y / s, v.w};
-}
-
-// Negation of a vector
-// Use Case: Sometimes it is handy to apply a force in an opposite direction
-inline Vec2D operator-(const Vec2D &v) {
-  return {-v.x, -v.y, v.w};
-}
+  inline Vec2D operator/(float s) {
+    if (s == 0.f) s += 1e-6;
+    return {x / s, y / s, w};
+  }
 
 // Return the magnitude of a vector
-inline float Magnitude(const Vec2D &v) {
-  return sqrt(v.x * v.x + v.y * v.y);
-}
+  inline float Magnitude() {
+    return sqrt(x * x + y * y);
+  }
 
 // Add two vectors together
-inline Vec2D operator+(const Vec2D &a, const Vec2D &b) {
-  if (a.w == 1 && b.w == 1) throw std::invalid_argument("Two points can't be added.");
-  return {a.x + b.x, a.y + b.y, fmax(a.w, b.w)};
-}
+  inline Vec2D operator+(const Vec2D &b) const {
+    if (w == 1 && b.w == 1) throw std::invalid_argument("Two points can't be added.");
+    return {x + b.x, y + b.y, fmax(w, b.w)};
+  }
 
 // Subtract two vectors
-inline Vec2D operator-(const Vec2D &a, const Vec2D &b) {
-  if (a.w == 1 && b.w == 1) throw std::invalid_argument("Two points can't be subtracted.");
-  return {a.x - b.x, a.y - b.y, fmax(a.w, b.w)};
-}
+  inline Vec2D operator-(const Vec2D &b) const {
+    if (w == 1 && b.w == 1) throw std::invalid_argument("Two points can't be subtracted.");
+    return {x - b.x, y - b.y, fmax(w, b.w)};
+  }
 
 // Vector Projection
-inline Vec2D Project(const Vec2D &a, const Vec2D &b) {
-  return Dot(a, b) / Dot(b, b) * b;
-}
+  inline Vec2D Project(Vec2D b) {
+    return b * (this->Dot(b) / b.Dot(b));
+  }
 
 // Set a vectors magnitude to 1
 // Note: This is NOT generating a normal vector
-inline Vec2D Normalize(const Vec2D &v) {
-  return v / Magnitude(v);
-}
+  inline Vec2D Normalize() {
+    return *this / this->Magnitude();
+  }
 
 // a x b (read: 'a crossed b')
 // With a 3D vector we would yield another perpendicular cross product
 // For 2D cross product, this will yield a scalar.
 // You should write this to yield a scalar value.
-inline float CrossProduct(const Vec2D &a, const Vec2D &b) {
-  return a.x * b.y - a.y * b.x;
-}
+  inline float CrossProduct(const Vec2D &b) {
+    return x * b.y - y * b.x;
+  }
 
-// Pretty print a vector 
-// std::ostream& could be 'std::cout' for example'
-// This function is primarily used for debugging purposes
-inline void PrettyPrint(std::ostream &os, const Vec2D &a) {
-  os << "x  : " << a.x << std::endl;
-  os << "y  : " << a.y << std::endl;
-  os << "(w): " << a.w << std::endl;
-}
+};
 
 // Matrix 3D represents 3x3 matrices in Math
 struct Matrix3D {
@@ -270,28 +253,28 @@ struct Matrix3D {
         if (fabs(n[i][j] - m[i][j]) > 1e-6) return false;
     return true;
   }
-};
 
-// Matrix Multiplication
-Matrix3D operator*(const Matrix3D &A, const Matrix3D &B) {
-  Matrix3D result;
-  for (int i = 0; i < 3; i++)
-    for (int j = 0; j < 3; j++) {
-      result[i][j] = 0;
-      for (int k = 0; k < 3; k++)
-        result[i][j] += A[i][k] * B[k][j];
-    }
-  return result;
-}
+  // Matrix Multiplication
+  Matrix3D operator*(const Matrix3D &B) {
+    Matrix3D result;
+    for (int i = 0; i < 3; i++)
+      for (int j = 0; j < 3; j++) {
+        result[i][j] = 0;
+        for (int k = 0; k < 3; k++)
+          result[i][j] += this->n[i][k] * B[k][j];
+      }
+    return result;
+  }
 
 // Matrix multiply by a vector
-Vec2D operator*(const Matrix3D &M, const Vec2D &v) {
-  Vec2D res;
-  for (int i = 0; i < 3; i++)
-    for (int j = 0; j < 3; j++)
-      res[i] += M[i][j] * v[j];
-  return res;
-}
+  Vec2D operator*(const Vec2D &v) {
+    Vec2D res;
+    for (int i = 0; i < 3; i++)
+      for (int j = 0; j < 3; j++)
+        res[i] += this->n[i][j] * v[j];
+    return res;
+  }
+};
 
 }  // namespace CSPill::Math
 

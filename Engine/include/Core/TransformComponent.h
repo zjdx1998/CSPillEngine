@@ -12,7 +12,11 @@ namespace CSPill::EngineCore {
 
 class TransformComponent : public Component {
  public:
-  void Update(GameObject *object, double dt) override;
+  explicit TransformComponent(const std::string_view &name);
+  TransformComponent(TransformComponent &&) = default;
+  void Update(GameObject *object, float dt) override;
+  Math::Vec2D &position();
+  Math::Vec2D &velocity();
  private:
   Math::Vec2D position_;
   Math::Vec2D velocity_;

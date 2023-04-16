@@ -6,18 +6,21 @@
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_CAMERA_COMPONENT_H_
 
 #include "GameObject.h"
+#include "TinyMath.hpp"
 
 namespace CSPill::EngineCore {
 
 class CameraComponent : public Component {
  public:
-  void Update(GameObject *object, double dt) override;
-  void Bind(GameObject *object, const std::pair<int, int> &offset = {0, 0});
+  explicit CameraComponent(const std::string_view &name);
+  void Update(GameObject *object, float dt) override;
+  void Bind(GameObject *object, const Math::Vec2D &offset = {0, 0});
+  const SDL_FRect &GetViewport();
 
  private:
-  SDL_Rect viewport_;
-  std::pair<int, int> offset_;
-  GameObject *bind_object_;
+  SDL_FRect viewport_{};
+  Math::Vec2D offset_;
+  GameObject *bind_object_{};
 };
 
 }
