@@ -25,11 +25,10 @@ namespace CSPill::EngineCore {
  */
 class Layer {
  public:
-  Layer(std::string name,
-        std::string tileset,
-        const std::vector<int> &data,
+  Layer(std::string name, std::string tileset, const std::vector<int> &data,
         const SDL_Color &bkg_color = {255, 255, 255, 255});
-  Layer(std::string name, const std::vector<int> &data, const SDL_Color &bkg_color = {255, 255, 255, 255});
+  Layer(std::string name, const std::vector<int> &data,
+        const SDL_Color &bkg_color = {255, 255, 255, 255});
   [[nodiscard]] std::string_view GetName() const;
   void SetName(const std::string &name);
   [[nodiscard]] std::string_view GetTileset() const;
@@ -119,7 +118,7 @@ class Scene {
 }  // namespace CSPill::EngineCore
 
 namespace nlohmann {
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   static CSPill::EngineCore::Layer from_json(const json &j) {
     SDL_Color color = {255, 255, 255, 255};
@@ -149,7 +148,7 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
   }
 };
 
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   static CSPill::EngineCore::Tileset from_json(const json &j) {
     return {j.at("name"), j.at("imagewidth"), j.at("imageheight"),
@@ -165,7 +164,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
   }
 };
 
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   static CSPill::EngineCore::Scene from_json(const json &j) {
     return {j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),
