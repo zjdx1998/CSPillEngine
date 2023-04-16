@@ -44,6 +44,7 @@ using CSPill::EngineCore::Scene;
 bool create_new_window = false;
 bool save_scene = false;
 bool save_scene_as = false;
+bool preview_flag = false;
 
 constexpr float FILE_BROWSER_WIDTH = 400;
 constexpr float FILE_BROWSER_HEIGHT = 300;
@@ -78,6 +79,70 @@ void MenuBar(bool &done) {
       }
       ImGui::EndMenu();
     }
+
+    // untitled folder path
+    auto default_path =
+        std::getenv("HOME") + std::string("/CSPillEngineProjects/untitled");
+
+    default_path.erase(
+        std::remove(default_path.begin(), default_path.end(), '\n'),
+        default_path.end());
+    std::string file_path = default_path + "/src/" + "app.py";
+
+    // draw app runing buttons
+    ImGui::SetCursorPosX(700);
+    ImGui::PushStyleColor(ImGuiCol_Button,
+        (ImVec4)ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+        (ImVec4)ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+        (ImVec4)ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
+    if (ImGui::ArrowButton("Start", ImGuiDir_Right)) {
+        if (std::filesystem::exists(default_path)) {
+            if (std::filesystem::exists(file_path)) {
+                std::string command = "python " + file_path;
+                // std::string command = "python ../../untitled/src/app.py";
+                std::system(command.c_str());  // running app
+            }
+            else {
+                std::cout << "file doesn't exists" << std::endl;
+            }
+        }
+        else {
+            std::cout << default_path << std::endl;
+            std::cout << "Directory doesn't exists" << std::endl;
+        }
+    }
+    ImGui::PopStyleColor(3);
+
+    ImGui::SetCursorPosX(770);
+    ImGui::PushStyleColor(ImGuiCol_Button,
+        (ImVec4)ImColor::HSV(0 / 7.0f, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+        (ImVec4)ImColor::HSV(0 / 7.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+        (ImVec4)ImColor::HSV(0 / 7.0f, 0.8f, 0.8f));
+    if (ImGui::Button(" || ", ImVec2(40, 0))) {
+        std::string command =
+            "pkill -f " +
+            file_path;  // linux/macOS in windows taskkill /im app.py /f
+        std::string command = "taskkill /im " + file_path + " /f";
+        std::system(command.c_str());  // kill app.py
+        std::system(command.c_str());
+    }
+    ImGui::PopStyleColor(3);
+
+    ImGui::SetCursorPosX(860);
+    ImGui::PushStyleColor(ImGuiCol_Button,
+        (ImVec4)ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+        (ImVec4)ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+        (ImVec4)ImColor::HSV(4 / 7.0f, 0.8f, 0.8f));
+    if (ImGui::Button("<o>", ImVec2(40, 0))) {
+        preview_flag = !preview_flag;
+    }
+    ImGui::PopStyleColor(3);
 
     ImGui::EndMainMenuBar();
   }
@@ -245,7 +310,7 @@ int main(int argc, char **argv) {
   // TODO: load json
   // scene_widget.LoadScene();
   SceneUI scene_widget("Scene", 800, 600);
-  scene_widget.SetPreview(true);
+  
 
   // Init ResourceManagerUI
   ResourceManagerUI resource_manager_widget("Resource Manager", 600, 300);
@@ -297,6 +362,8 @@ int main(int argc, char **argv) {
 
     // Render Resource Manager widget
     resource_manager_widget.Render(engine->GetRenderer());
+
+    scene_widget.SetPreview(preview_flag);
 
     static bool docking_init = true;
     // Set up docking
