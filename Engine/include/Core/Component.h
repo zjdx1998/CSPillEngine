@@ -34,7 +34,7 @@ class Component {
    * GameObject. This function must be implemented in child class.
    * @param object The GameObject that current component belongs to.
    */
-  virtual void Update(GameObject *object);
+  virtual void Update(GameObject *object, double dt);
 
   /**
    * Render is called every frame.

@@ -11,11 +11,12 @@ namespace CSPill::EngineCore {
 class PyComponent : public Component {
  public:
   using Component::Component;
-  void Update(GameObject *object) override {
+  void Update(GameObject *object, double dt) override {
     PYBIND11_OVERLOAD_PURE(void,       // Return type
                            Component,  // Parent class
                            Update,     // Name of function
-                           object      // Argument(s)
+                           object,     // Argument(s)
+                           dt
     );
   }
   void Receive(std::string_view message) override {

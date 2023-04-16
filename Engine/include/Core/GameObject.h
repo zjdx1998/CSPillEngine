@@ -39,7 +39,7 @@ class GameObject {
   /**
    * Update is called every frame, if the object is enabled.
    */
-  void Update();
+  void Update(double dt);
 
   /**
    * Render is called every frame, if the object is enabled.

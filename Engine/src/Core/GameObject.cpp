@@ -5,8 +5,8 @@
 
 namespace CSPill::EngineCore {
 
-void GameObject::Update() {
-  for (auto &component : components_) component->Update(this);
+void GameObject::Update(double dt) {
+  for (auto &component : components_) component->Update(this, dt);
 }
 void GameObject::Render(SDL_Renderer *renderer) {
   for (auto &component : components_) component->Render(renderer);
