@@ -25,6 +25,7 @@ class GameObject {
    * @return a unique pointer to instantiated game object.
    */
   static std::unique_ptr<GameObject> Create();
+
   /**
    * Virtual Destructor
    */
