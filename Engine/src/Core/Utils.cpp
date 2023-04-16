@@ -44,6 +44,9 @@ std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> CropTexture(
                         SDL_TEXTUREACCESS_TARGET, src_rect.w, src_rect.h),
       [](SDL_Texture *t) { SDL_DestroyTexture(t); });
   SDL_SetRenderTarget(renderer, cropped.get());
+  SDL_SetTextureBlendMode(cropped.get(), SDL_BLENDMODE_BLEND);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+  SDL_RenderClear(renderer);
   SDL_RenderCopy(renderer, texture, &src_rect, nullptr);
   SDL_SetRenderTarget(renderer, nullptr);
   return std::move(cropped);
