@@ -31,8 +31,8 @@ SDL_Window *Engine::GetWindow() const { return window_->GetWindow(); }
 
 SDL_Renderer *Engine::GetRenderer() const { return renderer_->GetRenderer(); }
 
-std::unique_ptr<Engine> Engine::Create(std::string_view title, int x, int y,
-                                       int w, int h, Uint32 sdl_init_flags,
+std::unique_ptr<Engine> Engine::Create(std::string_view title,
+                                       int w, int h, int x, int y, Uint32 sdl_init_flags,
                                        SDL_WindowFlags window_flags,
                                        SDL_RendererFlags renderer_flags) {
   if (SDL_Init(sdl_init_flags) < 0) {
@@ -53,6 +53,34 @@ std::unique_ptr<Engine> Engine::Create(std::string_view title, int x, int y,
   ResourceManager::GetInstance().SetRenderer(renderer->GetRenderer());
   return std::unique_ptr<Engine>(
       new Engine(std::move(window), std::move(renderer)));
+}
+bool Engine::AddObject(const std::string &name, GameObject &&object) {
+  if (objects_.find(name) != objects_.end()) {
+    return false;
+  }
+  objects_[name] = std::make_unique<GameObject>(std::move(object));
+  return true;
+}
+
+GameObject *Engine::GetObject(const std::string &name) {
+  if (objects_.find(name) == objects_.end()) return nullptr;
+  return objects_.at(name).get();
+}
+
+void Engine::SetGameOver(bool game_over) {
+  this->game_over_ = game_over;
+}
+[[nodiscard]] bool Engine::IsGameOver() const {
+  return this->game_over_;
+}
+
+void Engine::Run(int FPS) {
+  while (!Engine::IsGameOver()) {
+    for (const auto &obj : objects_) {
+      obj.second->Update();
+      obj.second->Render(renderer_->GetRenderer());
+    }
+  }
 }
 
 }  // namespace CSPill::EngineCore

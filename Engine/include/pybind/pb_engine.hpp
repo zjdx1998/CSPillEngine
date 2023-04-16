@@ -1,0 +1,52 @@
+//
+// Created by Jeromy Zhang on 4/16/23.
+//
+
+#ifndef CSPILLENGINE_ENGINE_INCLUDE_PYBIND_PB_ENGINE_HPP_
+#define CSPILLENGINE_ENGINE_INCLUDE_PYBIND_PB_ENGINE_HPP_
+
+#include <pybind11/pybind11.h>
+#include "SDL.h"
+
+#include "Engine.h"
+
+namespace py = pybind11;
+
+namespace CSPill::EngineCore {
+
+void PB_Engine(py::module &m) {
+  py::class_<Engine>(m, "Engine")
+      .def(py::init([](std::string_view title,
+                       int w,
+                       int h,
+                       int x = SDL_WINDOWPOS_CENTERED,
+                       int y = SDL_WINDOWPOS_CENTERED,
+                       Uint32 sdl_init_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER |
+                           SDL_INIT_GAMECONTROLLER,
+                       SDL_WindowFlags window_flags = static_cast<SDL_WindowFlags>(
+                           SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI),
+                       SDL_RendererFlags renderer_flags = static_cast<SDL_RendererFlags>(
+                           SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED)) -> std::unique_ptr<Engine> {
+        return Engine::Create(title,
+                              w,
+                              h,
+                              x,
+                              y,
+                              sdl_init_flags,
+                              window_flags,
+                              renderer_flags);
+      }))
+      .def_static("Create", &Engine::Create)
+      .def("AddObject",
+           [](Engine &self, const std::string &name, GameObject &object) -> bool {
+             return self.AddObject(name, std::move(object));
+           },
+           py::arg("name"),
+           py::arg("object"))
+      .def("GetObject", &Engine::GetObject)
+      .def("Terminate", &Engine::SetGameOver, py::arg("gameover") = true)
+      .def("IsGameOver", &Engine::IsGameOver);
+}
+
+}  // namespace CSPill::EngineCore
+#endif //CSPILLENGINE_ENGINE_INCLUDE_PYBIND_PB_ENGINE_H_
