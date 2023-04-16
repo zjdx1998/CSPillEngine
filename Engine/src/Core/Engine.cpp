@@ -72,10 +72,13 @@ void Engine::SetGameOver(bool game_over) { this->game_over_ = game_over; }
 
 void Engine::Run(int FPS) {
   while (!Engine::IsGameOver()) {
+    SDL_SetRenderDrawColor(renderer_->GetRenderer(), 0, 0, 0, 255);
+    SDL_RenderClear(renderer_->GetRenderer());
     for (const auto &obj : objects_) {
       obj.second->Update();
       obj.second->Render(renderer_->GetRenderer());
     }
+    SDL_RenderPresent(renderer_->GetRenderer());
   }
 }
 
