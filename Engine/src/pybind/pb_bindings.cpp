@@ -10,6 +10,7 @@
 #include "pb_scene.hpp"
 #include "pb_tiny_math.hpp"
 #include "pb_transformcomponent.hpp"
+#include "pb_ui_text.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;
@@ -28,6 +29,7 @@ PYBIND11_MODULE(PyCSPillEngine, m) {
   PB_ResourceManager(mCore);
   PB_Engine(mCore);
   CSPill::Media::PB_Media(mUtils);
+  PB_UIText(mCore);
   CSPill::Math::PB_TinyMath(mUtils);
   PB_CameraComponent(mCore);
   PB_TransformComponent(mCore);

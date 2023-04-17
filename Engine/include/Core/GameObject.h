@@ -68,6 +68,7 @@ class GameObject {
 
  private:
   GameObject() = default;
+  friend class UIText;
   std::list<std::unique_ptr<Component>> components_;
   std::unordered_map<std::string_view,
                      std::list<std::unique_ptr<Component>>::iterator>
