@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append("~/PyCSPillEngine")
 from PyCSPillEngine import Core
 from PyCSPillEngine import Utils
 

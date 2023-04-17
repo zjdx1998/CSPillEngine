@@ -88,14 +88,14 @@ void MenuBar(bool &done) {
     // draw app runing buttons
     ImGui::SetCursorPosX(700);
     ImGui::PushStyleColor(ImGuiCol_Button,
-                          (ImVec4)ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
+                          (ImVec4) ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-                          (ImVec4)ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
+                          (ImVec4) ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-                          (ImVec4)ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
+                          (ImVec4) ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
     if (ImGui::ArrowButton("Start", ImGuiDir_Right)) {
       if (std::filesystem::exists(file_path)) {
-        std::string command = "python " + file_path;
+        std::string command = "cd " + startpath + " && python " + file_path;
         // std::string command = "python ../../untitled/src/app.py";
         std::system(command.c_str());  // running app
       } else {
@@ -106,28 +106,28 @@ void MenuBar(bool &done) {
 
     ImGui::SetCursorPosX(770);
     ImGui::PushStyleColor(ImGuiCol_Button,
-                          (ImVec4)ImColor::HSV(0 / 7.0f, 0.6f, 0.6f));
+                          (ImVec4) ImColor::HSV(0 / 7.0f, 0.6f, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-                          (ImVec4)ImColor::HSV(0 / 7.0f, 0.7f, 0.7f));
+                          (ImVec4) ImColor::HSV(0 / 7.0f, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-                          (ImVec4)ImColor::HSV(0 / 7.0f, 0.8f, 0.8f));
+                          (ImVec4) ImColor::HSV(0 / 7.0f, 0.8f, 0.8f));
     if (ImGui::Button(" || ", ImVec2(40, 0))) {
       std::string command = "pkill -f " + file_path;  // linux/macOS
 
       std::system(command.c_str());  // kill app.py in linux/macos
       command = "taskkill /im " + file_path +
-                " /f";               // in windows taskkill / im app.py / f
+          " /f";               // in windows taskkill / im app.py / f
       std::system(command.c_str());  // kill app.py in windows
     }
     ImGui::PopStyleColor(3);
 
     ImGui::SetCursorPosX(860);
     ImGui::PushStyleColor(ImGuiCol_Button,
-                          (ImVec4)ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
+                          (ImVec4) ImColor::HSV(4 / 7.0f, 0.6f, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-                          (ImVec4)ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
+                          (ImVec4) ImColor::HSV(4 / 7.0f, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,
-                          (ImVec4)ImColor::HSV(4 / 7.0f, 0.8f, 0.8f));
+                          (ImVec4) ImColor::HSV(4 / 7.0f, 0.8f, 0.8f));
     if (ImGui::Button("<o>", ImVec2(40, 0))) {
       preview_flag = !preview_flag;
     }
@@ -273,7 +273,7 @@ int main(int argc, char **argv) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void)io;
+  (void) io;
   io.ConfigFlags |=
       ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
   io.ConfigFlags |=
@@ -307,9 +307,9 @@ int main(int argc, char **argv) {
   bool dockspace_open = true;
   ImGuiWindowFlags docking_window_flags =
       ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse |
-      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
-      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
-      ImGuiWindowFlags_NoMove;
+          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration |
+          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNavFocus |
+          ImGuiWindowFlags_NoMove;
 
   // Main loop
   bool done = false;
@@ -387,10 +387,10 @@ int main(int argc, char **argv) {
     ImGui::Render();
     SDL_RenderSetScale(engine->GetRenderer(), io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
-    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8)(clear_color.x * 255),
-                           (Uint8)(clear_color.y * 255),
-                           (Uint8)(clear_color.z * 255),
-                           (Uint8)(clear_color.w * 255));
+    SDL_SetRenderDrawColor(engine->GetRenderer(), (Uint8) (clear_color.x * 255),
+                           (Uint8) (clear_color.y * 255),
+                           (Uint8) (clear_color.z * 255),
+                           (Uint8) (clear_color.w * 255));
     SDL_RenderClear(engine->GetRenderer());
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(engine->GetRenderer());
