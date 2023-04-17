@@ -248,10 +248,11 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
         static bool show_color_picker = false;
         ImGui::SameLine();
         if (ImGui::SmallButton("Color")) {
-            show_color_picker = !show_color_picker;
+          show_color_picker = !show_color_picker;
         }
         if (show_color_picker) {
-            ImGui::ColorPicker3("Color Picker", (float*)&bkg_color, ImGuiColorEditFlags_None);
+          ImGui::ColorPicker3("Color Picker", (float *)&bkg_color,
+                              ImGuiColorEditFlags_None);
         }
         UICenterRadioButton("", is_scene_selected);
         if (scene_name == resource_manager.GetActiveSceneName()) {
@@ -264,10 +265,17 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
             SDL_Color bkg_sdl_color = scene->GetBackgroundColor();
             if (!show_color_picker) {
               // When the color picker is not displayed, get the current color
-              bkg_color = ImVec4(bkg_sdl_color.r / 255.0f, bkg_sdl_color.g / 255.0f, bkg_sdl_color.b / 255.0f, bkg_sdl_color.a / 255.0f);
+              bkg_color =
+                  ImVec4(bkg_sdl_color.r / 255.0f, bkg_sdl_color.g / 255.0f,
+                         bkg_sdl_color.b / 255.0f, bkg_sdl_color.a / 255.0f);
             } else {
-              // Update the background color of the scene when color picker is displayed
-              SDL_Color new_bkg_color = {static_cast<Uint8>(bkg_color.x * 255.0f), static_cast<Uint8>(bkg_color.y * 255.0f), static_cast<Uint8>(bkg_color.z * 255.0f), static_cast<Uint8>(bkg_color.w * 255.0f)};
+              // Update the background color of the scene when color picker is
+              // displayed
+              SDL_Color new_bkg_color = {
+                  static_cast<Uint8>(bkg_color.x * 255.0f),
+                  static_cast<Uint8>(bkg_color.y * 255.0f),
+                  static_cast<Uint8>(bkg_color.z * 255.0f),
+                  static_cast<Uint8>(bkg_color.w * 255.0f)};
               scene->SetBackgroundColor(new_bkg_color);
             }
             if (ImGui::TreeNode("Layers")) {

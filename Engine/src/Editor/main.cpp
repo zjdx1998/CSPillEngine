@@ -50,7 +50,8 @@ static std::string startpath = "";
 constexpr float FILE_BROWSER_WIDTH = 400;
 constexpr float FILE_BROWSER_HEIGHT = 300;
 
-const static std::string default_app_py_content = R"(from PyCSPillEngine import Core, Utils, UI
+const static std::string default_app_py_content =
+    R"(from PyCSPillEngine import Core, Utils, UI
 engine = Core.Engine("default", 1280, 720)
 resource_manager = Core.ResourceManager.GetInstance()
 resource_manager.LoadResources(".")
@@ -159,7 +160,7 @@ void MenuBar(bool &done) {
           std::getenv("HOME") + std::string("/CSPillEngineProjects/");
       ImGui::InputText("Save Location", default_path.data(),
                        default_path.size());
-      
+
       // dir browser
       ImGui::SameLine();
       if (ImGui::Button("Browse")) {
