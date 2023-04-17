@@ -10,10 +10,11 @@ namespace CSPill::EngineCore {
 
 void CameraComponent::Update(GameObject *object, float dt) {
   auto transform_component =
-      (TransformComponent *) (object->GetComponent("TransformComponent"));
+      (TransformComponent *)(object->GetComponent("TransformComponent"));
   if (this->bind_object_) {
     transform_component->position() =
-        ((TransformComponent *) this->bind_object_->GetComponent("TransformComponent"))
+        ((TransformComponent *)this->bind_object_->GetComponent(
+             "TransformComponent"))
             ->position();
   }
   this->viewport_ = {
