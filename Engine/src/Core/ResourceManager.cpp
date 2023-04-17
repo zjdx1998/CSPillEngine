@@ -19,13 +19,11 @@ ResourceManager::ResourceManager() {
   if (TTF_Init() == -1) {
     std::cerr << "Could not initialize SDL2_ttf, error: " << TTF_GetError()
               << std::endl;
-    return;
   }
   if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF) !=
       (IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF)) {
     std::cerr << "Failed to initialize SDL_image: " << IMG_GetError()
               << std::endl;
-    return;
   }
   int Mix_flags = MIX_INIT_MP3 | MIX_INIT_FLAC;
   int Mix_initted = Mix_Init(Mix_flags);
@@ -36,7 +34,6 @@ ResourceManager::ResourceManager() {
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     std::cerr << "Could not initialize SDL2_mixer, error: " << Mix_GetError()
               << std::endl;
-    return;
   }
   renderer_ = nullptr;
 }
@@ -81,7 +78,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (extension == ".bmp") {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *bmp_surface =
-                SDL_LoadBMP(directory.path().string().c_str())) {
+            SDL_LoadBMP(directory.path().string().c_str())) {
           SDL_SetColorKey(bmp_surface, SDL_TRUE,
                           SDL_MapRGB(bmp_surface->format, 0, 0, 0));
           images_[filename] =
@@ -92,7 +89,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (::EngineCore::Utils::isIn(extension, ".png", ".jpg", ".tif")) {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *surface =
-                IMG_Load(directory.path().string().c_str())) {
+            IMG_Load(directory.path().string().c_str())) {
           SDL_SetColorKey(surface, SDL_TRUE,
                           SDL_MapRGB(surface->format, 0, 0, 0));
           images_[filename] = SDL_CreateTextureFromSurface(renderer_, surface);
