@@ -7,6 +7,7 @@
 #include "pb_resource_manager.hpp"
 #include "pb_scene.hpp"
 #include "pb_tiny_math.hpp"
+#include "pb_media.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;
@@ -24,5 +25,6 @@ PYBIND11_MODULE(PyCSPillEngine, m) {
   PB_Scene(mCore);
   PB_ResourceManager(mCore);
   PB_Engine(mCore);
+  CSPill::Media::PB_Media(mUtils);
   CSPill::Math::PB_TinyMath(mUtils);
 }

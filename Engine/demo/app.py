@@ -1,4 +1,5 @@
 from PyCSPillEngine import Core
+from PyCSPillEngine import Utils
 
 engine = Core.Engine("Super Mario", 1280, 720)
 
@@ -15,6 +16,8 @@ resource_manager = Core.ResourceManager.GetInstance()
 resource_manager.LoadResources(".")
 engine.SwitchScene(resource_manager.LoadScene("default.scene"))
 
+Utils.PlayMusic("background_winter.wav")
+
 character = Core.GameObject()
 # camera = PyCSPillEngine.GameObject()
 
@@ -24,7 +27,6 @@ character.AddComponent(CharacterControllerComponent("ControllerComponent"))
 
 engine.AddObject("Character", character)
 # engine.AddObject("Camera", camera)
-
 engine.Run(60)
 
 resource_manager.ReleaseAll()
