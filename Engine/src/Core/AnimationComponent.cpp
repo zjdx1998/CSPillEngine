@@ -2,6 +2,7 @@
 
 #include "ResourceManager.h"
 #include "TransformComponent.h"
+#include "Utils.h"
 
 namespace CSPill::EngineCore {
 
@@ -16,8 +17,8 @@ void AnimationComponent::Update(GameObject* object, float dt) {
   mSrc.y = 0;
   mSrc.w = 128;
   mSrc.h = 128;
-  auto transform_component =
-      (TransformComponent*)(object->GetComponent("TransformComponent"));
+  auto transform_component = (TransformComponent*)(object->GetComponent(
+      ::EngineCore::Utils::TRANSFORM_COMPONENT));
   Math::Vec2D pos = transform_component->position();
   mDest.x = pos.x;
   mDest.y = pos.y;
@@ -26,7 +27,7 @@ void AnimationComponent::Update(GameObject* object, float dt) {
 }
 void AnimationComponent::Render(SDL_Renderer* renderer) {
   std::string query =
-      current_animation_ + "-" + std::to_string(current_animation_frame_);
+      current_animation_ + "-cropped-" + std::to_string(current_animation_frame_);
   SDL_Texture* mTexture = ResourceManager::GetInstance().QueryTexture(query);
   SDL_RenderCopy(renderer, mTexture, &mSrc, &mDest);
 }
@@ -58,7 +59,7 @@ int AnimationComponent::GetCurrentAnimationFrame() const {
 void AnimationComponent::SetCurrentAnimationFrame(int frame) {
   current_animation_frame_ = frame;
 }
-AnimationComponent::AnimationComponent(const std::string_view& name)
-    : Component(name), current_animation_frame_(0) {}
+AnimationComponent::AnimationComponent()
+    : Component(::EngineCore::Utils::ANIMATION_COMPONENT) {}
 
 }  // namespace CSPill::EngineCore

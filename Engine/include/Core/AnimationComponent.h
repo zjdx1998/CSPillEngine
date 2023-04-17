@@ -10,7 +10,7 @@ namespace CSPill::EngineCore {
 
 class AnimationComponent : public Component {
  public:
-  explicit AnimationComponent(const std::string_view& name);
+  explicit AnimationComponent();
   AnimationComponent(AnimationComponent&&) = default;
   void Update(GameObject* object, float dt) override;
   void Render(SDL_Renderer* renderer) override;

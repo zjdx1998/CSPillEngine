@@ -12,6 +12,7 @@
 #include "pb_tiny_math.hpp"
 #include "pb_transformcomponent.hpp"
 #include "pb_ui_text.hpp"
+#include "pb_animationcomponent.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;
@@ -37,4 +38,5 @@ PYBIND11_MODULE(PyCSPillEngine, m) {
   PB_CollisionComponent(mPhysics);
   CSPill::Media::PB_Media(mUtils);
   CSPill::UI::PB_UIText(mUI);
+  PB_AnimationComponent(mCore);
 }
