@@ -311,9 +311,9 @@ class Scene {
   void RemoveLayer(const std::string &name);
 
   /**
- * Get the background color of current layer.
- * @return SDL_Color, which represents the background color
- */
+   * Get the background color of current layer.
+   * @return SDL_Color, which represents the background color
+   */
   [[nodiscard]] const SDL_Color &GetBackgroundColor() const;
 
   /**
@@ -364,7 +364,7 @@ namespace nlohmann {
 /**
  * \brief JSON parsing helper struct for Layer
  */
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   /**
    * Retrieve the information in JSON object j.
@@ -393,7 +393,7 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
 /**
  * \brief JSON parsing helper struct for Tileset
  */
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   /**
    * Retrieve the information in JSON object j.
@@ -422,7 +422,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
 /**
  * \brief JSON parsing helper struct for Scene
  */
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   /**
    * Retrieve the information in JSON object j.

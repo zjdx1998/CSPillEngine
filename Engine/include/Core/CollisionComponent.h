@@ -24,4 +24,4 @@ class CollisionComponent : public Component {
 
 }  // namespace CSPill::EngineCore
 
-#endif //CSPILLENGINE_ENGINE_INCLUDE_CORE_COLLISIONCOMPONENT_H_
+#endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_COLLISIONCOMPONENT_H_
