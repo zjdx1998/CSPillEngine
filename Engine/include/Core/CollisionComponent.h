@@ -5,8 +5,9 @@
 #ifndef CSPILLENGINE_ENGINE_INCLUDE_CORE_COLLISIONCOMPONENT_H_
 #define CSPILLENGINE_ENGINE_INCLUDE_CORE_COLLISIONCOMPONENT_H_
 
-#include "Component.h"
 #include <unordered_set>
+
+#include "Component.h"
 
 namespace CSPill::EngineCore {
 

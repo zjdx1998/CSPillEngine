@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 
 #include "pb_cameracomponent.hpp"
+#include "pb_collision_component.hpp"
 #include "pb_component.hpp"
 #include "pb_engine.hpp"
 #include "pb_gameobject.hpp"
@@ -11,7 +12,6 @@
 #include "pb_tiny_math.hpp"
 #include "pb_transformcomponent.hpp"
 #include "pb_ui_text.hpp"
-#include "pb_collision_component.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;
