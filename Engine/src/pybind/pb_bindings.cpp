@@ -4,10 +4,10 @@
 #include "pb_component.hpp"
 #include "pb_engine.hpp"
 #include "pb_gameobject.hpp"
+#include "pb_media.hpp"
 #include "pb_resource_manager.hpp"
 #include "pb_scene.hpp"
 #include "pb_tiny_math.hpp"
-#include "pb_media.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;
