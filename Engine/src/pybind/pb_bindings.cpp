@@ -17,10 +17,12 @@ using namespace CSPill::EngineCore;
 
 PYBIND11_MODULE(PyCSPillEngine, m) {
   m.doc() = "CSPill Engine Python Bindings";
-  PB_GameObject(m);
-  PB_Component(m);
-  PB_Scene(m);
-  PB_ResourceManager(m);
-  PB_Engine(m);
-  CSPill::Math::PB_TinyMath(m);
+  py::module_ mCore = m.def_submodule("Core", "Core Library of CSPill Engine");
+  py::module_ mUtils = m.def_submodule("Utils", "Utils part of CSPill Engine");
+  PB_GameObject(mCore);
+  PB_Component(mCore);
+  PB_Scene(mCore);
+  PB_ResourceManager(mCore);
+  PB_Engine(mCore);
+  CSPill::Math::PB_TinyMath(mUtils);
 }
