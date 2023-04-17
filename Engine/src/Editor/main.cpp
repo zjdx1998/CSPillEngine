@@ -155,10 +155,25 @@ void MenuBar(bool &done) {
       static char name[256] = "untitled";
       ImGui::InputText("Name", name, IM_ARRAYSIZE(name));
 
-      auto default_path =
+      static std::string default_path =
           std::getenv("HOME") + std::string("/CSPillEngineProjects/");
       ImGui::InputText("Save Location", default_path.data(),
                        default_path.size());
+      
+      // dir browser
+      ImGui::SameLine();
+      if (ImGui::Button("Browse")) {
+        ImGui::SetNextWindowSize(
+            ImVec2(FILE_BROWSER_WIDTH, FILE_BROWSER_HEIGHT));
+        ImGuiFileDialog::Instance()->OpenDialog(
+            "ChooseDirDlgKey", "Choose a Directory", nullptr, ".");
+      }
+      if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey")) {
+        if (ImGuiFileDialog::Instance()->IsOk()) {
+          default_path = ImGuiFileDialog::Instance()->GetFilePathName() + "/";
+        }
+        ImGuiFileDialog::Instance()->Close();
+      }
 
       // canvas size
       static int canvas_width = 1024;
