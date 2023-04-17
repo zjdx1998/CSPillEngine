@@ -10,10 +10,10 @@ namespace CSPill::EngineCore {
 
 void CameraComponent::Update(GameObject *object, float dt) {
   auto transform_component =
-      (TransformComponent *)(object->GetComponent("Transform"));
+      (TransformComponent *) (object->GetComponent("TransformComponent"));
   if (this->bind_object_) {
     transform_component->position() =
-        ((TransformComponent *)this->bind_object_->GetComponent("Transform"))
+        ((TransformComponent *) this->bind_object_->GetComponent("TransformComponent"))
             ->position();
   }
   this->viewport_ = {
@@ -29,5 +29,5 @@ CameraComponent::CameraComponent(const std::string_view &name)
     : Component(name), bind_object_(nullptr), offset_({0, 0}) {}
 const SDL_FRect &CameraComponent::GetViewport() { return viewport_; }
 
-CameraComponent::~CameraComponent() {}
+CameraComponent::~CameraComponent() = default;
 }  // namespace CSPill::EngineCore
