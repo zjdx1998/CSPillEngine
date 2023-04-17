@@ -22,9 +22,9 @@ class UIText : public GameObject {
   void SetSize(const CSPill::Math::Vec2D &size);
   [[nodiscard]] const CSPill::Math::Vec2D &GetPos() const;
   void SetPos(const CSPill::Math::Vec2D &pos);
-  const std::string &GetContent() const;
+  [[nodiscard]] const std::string &GetContent() const;
   void SetContent(const std::string &content);
-  void Render(SDL_Renderer *renderer);
+  void Render(SDL_Renderer *renderer) override;
   SDL_FRect GetBoundingBox();
 
  private:

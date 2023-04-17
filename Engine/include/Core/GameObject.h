@@ -45,7 +45,7 @@ class GameObject {
    * Render is called every frame, if the object is enabled.
    * @param renderer SDL_Renderer renderer.
    */
-  void Render(SDL_Renderer *renderer);
+  virtual void Render(SDL_Renderer *renderer);
   /**
    * Add a component to current GameObject.
    * @param component new component that needs to be added.
@@ -66,9 +66,9 @@ class GameObject {
    */
   Component *GetComponent(std::string_view component_name);
 
- private:
+ protected:
   GameObject() = default;
-  friend class UIText;
+ private:
   std::list<std::unique_ptr<Component>> components_;
   std::unordered_map<std::string_view,
                      std::list<std::unique_ptr<Component>>::iterator>
