@@ -4,7 +4,9 @@
 
 namespace py = pybind11;
 
-namespace CSPill::EngineCore {
+namespace CSPill::UI {
+
+using EngineCore::GameObject;
 
 void PB_UIText(py::module &m) {
   py::class_<UIText, GameObject, std::unique_ptr<UIText>>(m, "UIText")

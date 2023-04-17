@@ -1,4 +1,4 @@
-from PyCSPillEngine import Core, Utils
+from PyCSPillEngine import Core, Utils, UI
 
 # engine through the game
 engine = Core.Engine("Super Mario", 1280, 720)
@@ -39,8 +39,8 @@ camera_component.SetViewport(1280, 720)
 camera_component.Bind(character)
 camera.AddComponent(camera_component)
 
-score_ui = Core.UIText.Create("comic.ttf", "Score: " + str(score), Utils.Vec2D(1150, 50), Utils.Vec2D(200, 100), 100)
-level_ui = Core.UIText.Create("comic.ttf", "Level: 1-" + str(level), Utils.Vec2D(650, 50), Utils.Vec2D(200, 100), 100)
+score_ui = UI.UIText.Create("comic.ttf", "Score: " + str(score), Utils.Vec2D(1150, 50), Utils.Vec2D(200, 100), 100)
+level_ui = UI.UIText.Create("comic.ttf", "Level: 1-" + str(level), Utils.Vec2D(650, 50), Utils.Vec2D(200, 100), 100)
 
 engine.AddObject("Character", character)
 engine.AddObject("Camera", camera)

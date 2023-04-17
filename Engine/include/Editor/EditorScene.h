@@ -17,7 +17,7 @@ using EngineCore::Scene;
 /**
  * \brief UI for Scene
  */
-class SceneUI : public EngineCore::UI {
+class SceneUI : public UI::UI {
  public:
   /**
    * Constructor for SceneUI.
@@ -70,7 +70,7 @@ class SceneUI : public EngineCore::UI {
 /**
  * \brief UI for TileSetEditor
  */
-class TileSetEditorUI : public EngineCore::UI {
+class TileSetEditorUI : public UI::UI {
  public:
   /**
    * Constructor of TileSetEditorUI.
@@ -93,7 +93,7 @@ class TileSetEditorUI : public EngineCore::UI {
 /**
  * \brief UI for ResourceManager
  */
-class ResourceManagerUI : public EngineCore::UI {
+class ResourceManagerUI : public UI::UI {
  public:
   /**
    * Constructor of ResourceManagerUI.

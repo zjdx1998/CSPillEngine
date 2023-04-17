@@ -4,8 +4,8 @@
 #include "GameObject.h"
 #include "TinyMath.hpp"
 
-namespace CSPill::EngineCore {
-class UIText : public GameObject {
+namespace CSPill::UI {
+class UIText : public EngineCore::GameObject {
  public:
   static std::unique_ptr<GameObject> Create(std::string_view font_name_,
                                             std::string_view content,
@@ -40,6 +40,6 @@ class UIText : public GameObject {
   SDL_Texture *text_texture_ = nullptr;
 };
 
-}  // namespace CSPill::EngineCore
+}  // namespace CSPill::UI
 
 #endif  // CSPILLENGINE_ENGINECORE_UITEXT_H_

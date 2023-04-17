@@ -5,7 +5,10 @@
 #include "ResourceManager.h"
 #include "TinyMath.hpp"
 
-namespace CSPill::EngineCore {
+namespace CSPill::UI {
+
+using EngineCore::GameObject;
+using EngineCore::ResourceManager;
 
 std::unique_ptr<GameObject> UIText::Create(std::string_view font_name,
                                            std::string_view content,

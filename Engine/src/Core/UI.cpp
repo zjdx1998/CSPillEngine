@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace CSPill::EngineCore {
+namespace CSPill::UI {
 
 UI::UI(std::string title, int width, int height)
     : title_(std::move(title)), width_(width), height_(height) {}
@@ -19,4 +19,4 @@ void UI::SetHeight(int height) { height_ = height; }
 bool UI::IsDisplay() const { return display_; }
 void UI::SetDisplay(bool display) { display_ = display; }
 
-}  // namespace CSPill::EngineCore
+}  // namespace CSPill::UI

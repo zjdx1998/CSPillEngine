@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace CSPill::EngineCore {
+namespace CSPill::UI {
 
 /**
  * \brief UI class for editor.
@@ -88,6 +88,6 @@ class UI {
   bool display_ = true;
 };
 
-}  // namespace CSPill::EngineCore
+}  // namespace CSPill::UI
 
 #endif  // CSPILLENGINE_ENGINE_INCLUDE_CORE_UI_H_
