@@ -12,7 +12,7 @@ namespace CSPill::EngineCore {
 
 class TransformComponent : public Component {
  public:
-  explicit TransformComponent(const std::string_view &name);
+  explicit TransformComponent();
   TransformComponent(TransformComponent &&) = default;
   ~TransformComponent() override = default;
   void Update(GameObject *object, float dt) override;

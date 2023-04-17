@@ -34,8 +34,14 @@ void PB_TinyMath(py::module &m) {
       .def("__sub__", &Vec2D::operator-)
       .def("__str__", [](const Vec2D &v) {
         return "Vec2D(x: " + std::to_string(v.x) +
-               ", y: " + std::to_string(v.y) + ", w: " + std::to_string(v.w) +
-               ")";
+            ", y: " + std::to_string(v.y) + ", w: " + std::to_string(v.w) +
+            ")";
       });
+  py::class_<SDL_FRect>(m, "RectF")
+      .def(py::init<>())
+      .def_readwrite("x", &SDL_FRect::x)
+      .def_readwrite("y", &SDL_FRect::y)
+      .def_readwrite("w", &SDL_FRect::w)
+      .def_readwrite("h", &SDL_FRect::h);
 }
 }  // namespace CSPill::Math

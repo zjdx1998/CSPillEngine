@@ -11,6 +11,7 @@
 #include "pb_tiny_math.hpp"
 #include "pb_transformcomponent.hpp"
 #include "pb_ui_text.hpp"
+#include "pb_collision_component.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;

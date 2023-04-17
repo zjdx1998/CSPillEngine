@@ -34,7 +34,7 @@ character = Core.GameObject()
 camera = Core.GameObject()
 
 character.AddComponent(CharacterControllerComponent("ControllerComponent"))
-camera_component = Core.CameraComponent("CameraComponent")
+camera_component = Core.CameraComponent()
 camera_component.SetViewport(1280, 720)
 camera_component.Bind(character)
 camera.AddComponent(camera_component)

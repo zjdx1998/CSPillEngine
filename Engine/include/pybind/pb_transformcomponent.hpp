@@ -11,7 +11,7 @@ namespace CSPill::EngineCore {
 
 void PB_TransformComponent(py::module &m) {
   py::class_<TransformComponent, Component>(m, "TransformComponent")
-      .def(py::init<const std::string_view &>())
+      .def(py::init<>())
       .def("Update", &TransformComponent::Update, "Update TransformComponent")
       .def("position", &TransformComponent::position, "Get position",
            py::return_value_policy::reference)

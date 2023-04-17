@@ -28,7 +28,7 @@ void GameObject::RemoveComponent(std::string_view component_name) {
 
 std::unique_ptr<GameObject> GameObject::Create() {
   auto *object = new GameObject();
-  object->AddComponent(new TransformComponent("TransformComponent"));
+  object->AddComponent(new TransformComponent());
   return std::unique_ptr<GameObject>(object);
 }
 Component *GameObject::GetComponent(std::string_view component_name) {

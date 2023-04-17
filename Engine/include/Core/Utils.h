@@ -13,6 +13,11 @@
 
 namespace EngineCore::Utils {
 
+constexpr std::string_view TRANSFORM_COMPONENT = "TransformComponent";
+constexpr std::string_view CAMERA_COMPONENT = "CameraComponent";
+constexpr std::string_view COLLISION_COMPONENT = "CollisionComponent";
+constexpr std::string_view ANIMATION_COMPONENT = "AnimationComponent";
+
 /**
  * Get the extension of the file.
  * @param path a string of the path to the target file
