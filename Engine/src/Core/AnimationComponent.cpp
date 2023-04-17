@@ -26,8 +26,8 @@ void AnimationComponent::Update(GameObject* object, float dt) {
   mDest.h = 128;
 }
 void AnimationComponent::Render(SDL_Renderer* renderer) {
-  std::string query =
-      current_animation_ + "-cropped-" + std::to_string(current_animation_frame_);
+  std::string query = current_animation_ + "-cropped-" +
+                      std::to_string(current_animation_frame_);
   SDL_Texture* mTexture = ResourceManager::GetInstance().QueryTexture(query);
   SDL_RenderCopy(renderer, mTexture, &mSrc, &mDest);
 }
