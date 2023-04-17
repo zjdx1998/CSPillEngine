@@ -12,8 +12,8 @@ namespace py = pybind11;
 namespace CSPill::EngineCore {
 
 void PB_GameObject(py::module &m) {
-  py::class_<GameObject, std::unique_ptr<GameObject>>(m, "GameObject",
-                                                      "Base class for all entities in CSPill Scenes.")
+  py::class_<GameObject, std::unique_ptr<GameObject>>(
+      m, "GameObject", "Base class for all entities in CSPill Scenes.")
       .def(py::init(
           []() -> std::unique_ptr<GameObject> { return GameObject::Create(); }))
       .def("Update", &GameObject::Update,
@@ -29,8 +29,8 @@ void PB_GameObject(py::module &m) {
           [](GameObject &self, Component *comp) {
             return self.AddComponent(comp);
           },
-          py::keep_alive<1, 2>(),
-          py::arg("component"), "Add a component to current GameObject.")
+          py::keep_alive<1, 2>(), py::arg("component"),
+          "Add a component to current GameObject.")
       .def("RemoveComponent", &GameObject::RemoveComponent,
            py::arg("component_name"),
            "Remove a component based on the component name.")
