@@ -50,6 +50,14 @@ static std::string startpath = "";
 constexpr float FILE_BROWSER_WIDTH = 400;
 constexpr float FILE_BROWSER_HEIGHT = 300;
 
+const static std::string default_app_py_content = R"(from PyCSPillEngine import Core, Utils, UI
+engine = Core.Engine("default", 1280, 720)
+resource_manager = Core.ResourceManager.GetInstance()
+resource_manager.LoadResources(".")
+engine.SwitchScene(resource_manager.LoadScene("default.scene"))
+engine.Run(60)
+resource_manager.ReleaseAll())";
+
 bool CreateFile(std::string_view path, std::string_view content) {
   std::ofstream file(path.data());
   if (!file) return false;
@@ -152,6 +160,12 @@ void MenuBar(bool &done) {
       ImGui::InputText("Save Location", default_path.data(),
                        default_path.size());
 
+      // canvas size
+      static int canvas_width = 1024;
+      ImGui::InputInt("Canvas Width", &canvas_width);
+      static int canvas_height = 768;
+      ImGui::InputInt("Canvas Height", &canvas_height);
+
       if (ImGui::Button("Create")) {
         std::string folder_path = std::string(default_path) + name;
         folder_path.erase(
@@ -163,11 +177,17 @@ void MenuBar(bool &done) {
           folder_path += "/";
 
           CreateFolder((folder_path + "src").c_str());
-          CreateFile(folder_path + "src/" + "app.py", "");
+
+          CreateFile(folder_path + "src/" + "app.py", default_app_py_content);
           CreateFolder((folder_path + "resources").c_str());
           CreateFolder((folder_path + "scenes").c_str());
 
-          CreateFile(folder_path + "scenes/" + "default.scene", "");
+          // create an empty scene
+          Scene temp_scene(canvas_width, canvas_height);
+          json json_object = temp_scene;
+          std::string scene_path = folder_path + "scenes/" + "default.scene";
+          CreateFile(scene_path, json_object.dump());
+
           create_new_window = false;
         } else {
           std::cerr << "Directory already exists";
