@@ -13,10 +13,10 @@ void GameObject::Update(float dt) {
 void GameObject::Render(SDL_Renderer *renderer) {
   for (auto &component : components_) component->Render(renderer);
 }
-bool GameObject::AddComponent(Component &&component) {
-  if (component_indices_.find(component.Name()) != component_indices_.end())
+bool GameObject::AddComponent(Component *component) {
+  if (component_indices_.find(component->Name()) != component_indices_.end())
     return false;
-  components_.emplace_back(std::make_unique<Component>(std::move(component)));
+  components_.push_back(std::unique_ptr<Component>(component));
   component_indices_[components_.back()->Name()] = std::prev(components_.end());
   return true;
 }
@@ -28,8 +28,8 @@ void GameObject::RemoveComponent(std::string_view component_name) {
 
 std::unique_ptr<GameObject> GameObject::Create() {
   auto *object = new GameObject();
-  object->AddComponent(std::move(TransformComponent("Transform")));
-  return std::unique_ptr<GameObject>(new GameObject());
+  object->AddComponent(new TransformComponent("Transform"));
+  return std::unique_ptr<GameObject>(object);
 }
 Component *GameObject::GetComponent(std::string_view component_name) {
   if (component_indices_.find(component_name) == component_indices_.end())

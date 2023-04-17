@@ -9,12 +9,11 @@
 namespace CSPill::EngineCore {
 
 void CameraComponent::Update(GameObject *object, float dt) {
-  Component::Update(object, dt);
   auto transform_component =
-      (TransformComponent *)(object->GetComponent("Transform"));
+      (TransformComponent *) (object->GetComponent("Transform"));
   if (this->bind_object_) {
     transform_component->position() =
-        ((TransformComponent *)this->bind_object_->GetComponent("Transform"))
+        ((TransformComponent *) this->bind_object_->GetComponent("Transform"))
             ->position();
   }
   this->viewport_ = {
@@ -29,4 +28,6 @@ void CameraComponent::Bind(GameObject *object, const Math::Vec2D &offset) {
 CameraComponent::CameraComponent(const std::string_view &name)
     : Component(name), bind_object_(nullptr), offset_({0, 0}) {}
 const SDL_FRect &CameraComponent::GetViewport() { return viewport_; }
+
+CameraComponent::~CameraComponent() {}
 }  // namespace CSPill::EngineCore

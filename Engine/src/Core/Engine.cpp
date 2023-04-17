@@ -29,7 +29,9 @@ Engine::Engine(std::unique_ptr<SDLWindow> window,
       width_(width),
       height_(height) {}
 
-Engine::~Engine() { SDL_Quit(); }
+Engine::~Engine() {
+  SDL_Quit();
+}
 
 std::pair<int, int> Engine::GetWindowSize() const { return {width_, height_}; }
 

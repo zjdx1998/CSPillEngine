@@ -7,7 +7,6 @@
 namespace CSPill::EngineCore {
 
 void TransformComponent::Update(GameObject *object, float dt) {
-  Component::Update(object, dt);
   position_ = position_ + velocity_ * dt;
 }
 CSPill::Math::Vec2D &TransformComponent::position() { return position_; }

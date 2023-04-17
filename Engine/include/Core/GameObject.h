@@ -51,7 +51,7 @@ class GameObject {
    * @param component new component that needs to be added.
    * @return False if it's duplicated.
    */
-  bool AddComponent(Component &&component);
+  bool AddComponent(Component *component);
 
   /**
    * Remove a component based on the component name.

@@ -1,14 +1,16 @@
 import PyCSPillEngine
+import gc
+
+gc.freeze()
 
 engine = PyCSPillEngine.Engine("Super Mario", 1280, 720)
 
 
-class CharacterControllerComponent(PyCSPillEngine.Component):
-    def __init__(self, name):
-        super(CharacterControllerComponent, self).__init__(name)
+# gc.set_debug(gc.DEBUG_LEAK)
 
+
+class CharacterControllerComponent(PyCSPillEngine.Component):
     def Update(self, object, dt):
-        # PyCSPillEngine.Component.Update(self, object, dt)
         print("wtf")
         if engine.IsKeyPressed("Right"):
             print("Right Key Prssed")
@@ -22,10 +24,11 @@ engine.SwitchScene(resource_manager.LoadScene("default.scene"))
 
 character = PyCSPillEngine.GameObject()
 # character.AddComponent(PyCSPillEngine.CameraComponent())
-controller = CharacterControllerComponent("ControllerComponent")
-controller.Update(character, 0.0)
-character.AddComponent(controller)
+
+character.AddComponent(CharacterControllerComponent("Controller"))
 
 engine.AddObject("Character", character)
 
 engine.Run(60)
+
+resource_manager.ReleaseAll()

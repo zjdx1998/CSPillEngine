@@ -14,6 +14,7 @@ class TransformComponent : public Component {
  public:
   explicit TransformComponent(const std::string_view &name);
   TransformComponent(TransformComponent &&) = default;
+  ~TransformComponent() override = default;
   void Update(GameObject *object, float dt) override;
   Math::Vec2D &position();
   Math::Vec2D &velocity();

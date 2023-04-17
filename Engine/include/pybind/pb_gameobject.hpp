@@ -26,9 +26,10 @@ void PB_GameObject(py::module &m) {
           "Render is called every frame, if the object is enabled.")
       .def(
           "AddComponent",
-          [](GameObject &obj, Component &comp) {
-            return obj.AddComponent(std::move(comp));
+          [](GameObject &self, Component *comp) {
+            return self.AddComponent(comp);
           },
+          py::keep_alive<1, 2>(),
           py::arg("component"), "Add a component to current GameObject.")
       .def("RemoveComponent", &GameObject::RemoveComponent,
            py::arg("component_name"),
