@@ -14,6 +14,9 @@ void PB_TinyMath(py::module &m) {
       .def("__getitem__", [](const Vec2D &v, int index) { return v[index]; })
       .def("__setitem__",
            [](Vec2D &v, int index, float value) { v[index] = value; })
+      .def_readwrite("x", &Vec2D::x)
+      .def_readwrite("y", &Vec2D::y)
+      .def_readwrite("w", &Vec2D::w)
       .def(py::self *= float())
       .def(py::self /= float())
       .def(py::self += py::self)
@@ -31,8 +34,8 @@ void PB_TinyMath(py::module &m) {
       .def("__sub__", &Vec2D::operator-)
       .def("__str__", [](const Vec2D &v) {
         return "Vec2D(x: " + std::to_string(v.x) +
-               ", y: " + std::to_string(v.y) + ", w: " + std::to_string(v.w) +
-               ")";
+            ", y: " + std::to_string(v.y) + ", w: " + std::to_string(v.w) +
+            ")";
       });
 }
 }  // namespace CSPill::Math

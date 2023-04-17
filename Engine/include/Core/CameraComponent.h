@@ -17,6 +17,7 @@ class CameraComponent : public Component {
   void Update(GameObject *object, float dt) override;
   void Bind(GameObject *object, const Math::Vec2D &offset = {0, 0});
   const SDL_FRect &GetViewport();
+  void SetViewport(float w, float h);
 
  private:
   SDL_FRect viewport_{};

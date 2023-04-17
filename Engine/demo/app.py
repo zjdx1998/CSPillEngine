@@ -1,8 +1,4 @@
-import sys
-
-sys.path.append("~/PyCSPillEngine")
-from PyCSPillEngine import Core
-from PyCSPillEngine import Utils
+from PyCSPillEngine import Core, Utils
 
 engine = Core.Engine("Super Mario", 1280, 720)
 
@@ -10,7 +6,9 @@ engine = Core.Engine("Super Mario", 1280, 720)
 class CharacterControllerComponent(Core.Component):
     def Update(self, object, dt):
         if engine.IsKeyPressed("Right"):
-            print("Right Key Pressed")
+            object.GetComponent("TransformComponent").velocity().x += 1
+        if engine.IsKeyPressed("Left"):
+            object.GetComponent("TransformComponent").velocity().x -= 1
 
     pass
 
@@ -22,14 +20,16 @@ engine.SwitchScene(resource_manager.LoadScene("default.scene"))
 Utils.PlayMusic("background_winter.wav")
 
 character = Core.GameObject()
-# camera = PyCSPillEngine.GameObject()
+camera = Core.GameObject()
 
 character.AddComponent(CharacterControllerComponent("ControllerComponent"))
-# camera.AddComponent(PyCSPillEngine.CameraComponent("CameraComponent"))
-# camera.GetComponent("CameraComponent").bind(character)
+camera_component = Core.CameraComponent("CameraComponent")
+camera_component.SetViewport(1280, 720)
+camera_component.Bind(character)
+camera.AddComponent(camera_component)
 
 engine.AddObject("Character", character)
-# engine.AddObject("Camera", camera)
+engine.AddObject("Camera", camera)
 engine.Run(60)
 
 resource_manager.ReleaseAll()
