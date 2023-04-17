@@ -6,6 +6,7 @@
 #include "pb_gameobject.hpp"
 #include "pb_resource_manager.hpp"
 #include "pb_scene.hpp"
+#include "pb_tiny_math.hpp"
 
 namespace py = pybind11;
 using namespace CSPill::EngineCore;
@@ -21,4 +22,5 @@ PYBIND11_MODULE(PyCSPillEngine, m) {
   PB_Scene(m);
   PB_ResourceManager(m);
   PB_Engine(m);
+  CSPill::Math::PB_TinyMath(m);
 }

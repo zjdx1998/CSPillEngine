@@ -95,7 +95,7 @@ struct Vec2D {
   // Subtraction operator
   Vec2D &operator-=(const Vec2D &v) {
     x -= v.x;
-    x -= v.y;
+    y -= v.y;
     return (*this);
   }
 
@@ -123,7 +123,7 @@ struct Vec2D {
   inline Vec2D operator*(float s) { return {x * s, y * s, w}; }
 
   // Division of a vector by a scalar value.
-  inline Vec2D operator/(float s) {
+  inline Vec2D operator/(float s) const {
     if (s == 0.f) s += 1e-6;
     return {x / s, y / s, w};
   }
