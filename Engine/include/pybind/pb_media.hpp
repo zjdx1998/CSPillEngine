@@ -5,6 +5,9 @@
 #ifndef CSPILLENGINE_ENGINE_INCLUDE_PYBIND_PB_MEDIA_HPP_
 #define CSPILLENGINE_ENGINE_INCLUDE_PYBIND_PB_MEDIA_HPP_
 
+#include "ResourceManager.h"
+#include "SDL_mixer.h"
+
 namespace py = pybind11;
 
 namespace CSPill::Media {
