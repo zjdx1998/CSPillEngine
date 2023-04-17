@@ -27,4 +27,4 @@ void PB_UIText(py::module &m) {
         self.Render(static_cast<SDL_Renderer *>(temp));
       });
 }
-}  // namespace CSPill::EngineCore
+}  // namespace CSPill::UI

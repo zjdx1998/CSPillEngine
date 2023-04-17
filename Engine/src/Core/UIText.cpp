@@ -71,4 +71,4 @@ void UIText::Render(SDL_Renderer *renderer) {
 
 UIText::~UIText() { SDL_DestroyTexture(text_texture_); }
 
-}  // namespace CSPill::EngineCore
+}  // namespace CSPill::UI
