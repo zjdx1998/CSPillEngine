@@ -3,6 +3,12 @@
     "height": 750,
     "width": 11200
   },
+  "color": {
+    "r": 82,
+    "g": 137,
+    "b": 246,
+    "a": 255
+  },
   "layers": [
     {
       "data": [
@@ -3368,13 +3374,7 @@
         4000
       ],
       "name": "bricks",
-      "tileset": "brk.png",
-      "color": {
-        "r": 82,
-        "g": 137,
-        "b": 246,
-        "a": 255
-      }
+      "tileset": "brk.png"
     },
     {
       "data": [
@@ -6740,13 +6740,7 @@
         -1
       ],
       "name": "plumbs",
-      "tileset": "plumbs.png",
-      "color": {
-        "r": 82,
-        "g": 137,
-        "b": 246,
-        "a": 255
-      }
+      "tileset": "plumbs.png"
     },
     {
       "data": [
@@ -10112,13 +10106,7 @@
         -1
       ],
       "name": "flag",
-      "tileset": "flag.png",
-      "color": {
-        "r": 82,
-        "g": 137,
-        "b": 246,
-        "a": 255
-      }
+      "tileset": "flag.png"
     },
     {
       "data": [
@@ -13484,13 +13472,7 @@
         -1
       ],
       "name": "castle",
-      "tileset": "castle.png",
-      "color": {
-        "r": 82,
-        "g": 137,
-        "b": 246,
-        "a": 255
-      }
+      "tileset": "castle.png"
     },
     {
       "data": [
@@ -16856,13 +16838,7 @@
         -1
       ],
       "name": "mountain",
-      "tileset": "mountain.png",
-      "color": {
-        "r": 82,
-        "g": 137,
-        "b": 246,
-        "a": 255
-      }
+      "tileset": "mountain.png"
     },
     {
       "data": [
@@ -20228,13 +20204,7 @@
         -1
       ],
       "name": "cloud",
-      "tileset": "cloud.png",
-      "color": {
-        "r": 82,
-        "g": 137,
-        "b": 246,
-        "a": 255
-      }
+      "tileset": "cloud.png"
     },
     {
       "data": [
@@ -23600,13 +23570,7 @@
         -1
       ],
       "name": "bush",
-      "tileset": "bush.png",
-      "color": {
-        "r": 82,
-        "g": 137,
-        "b": 246,
-        "a": 255
-      }
+      "tileset": "bush.png"
     }
   ],
   "tilesets": [

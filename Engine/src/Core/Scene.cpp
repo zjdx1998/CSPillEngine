@@ -11,15 +11,13 @@
 namespace CSPill::EngineCore {
 
 Layer::Layer(std::string name, std::string tileset,
-             const std::vector<int> &data, const SDL_Color &bkg_color)
+             const std::vector<int> &data)
     : name_(std::move(name)),
       tileset_(std::move(tileset)),
-      data_(data),
-      background_color_(bkg_color) {}
+      data_(data) {}
 
-Layer::Layer(std::string name, const std::vector<int> &data,
-             const SDL_Color &bkg_color)
-    : name_(std::move(name)), data_(data), background_color_(bkg_color) {}
+Layer::Layer(std::string name, const std::vector<int> &data)
+    : name_(std::move(name)), data_(data) {}
 
 std::string_view Layer::GetName() const { return name_; }
 
@@ -36,11 +34,6 @@ void Layer::SetData(const std::vector<int> &data) { data_ = data; }
 
 bool Layer::operator==(const Layer &rhs) const {
   return this->name_ == rhs.name_ && this->tileset_ == rhs.tileset_;
-}
-const SDL_Color &Layer::GetBackgroundColor() const { return background_color_; }
-SDL_Color &Layer::BackgroundColor() { return background_color_; }
-void Layer::SetBackgroundColor(const SDL_Color &background_color) {
-  Layer::background_color_ = background_color;
 }
 
 Tileset::Tileset(std::string name, int image_width, int image_height,
@@ -63,15 +56,15 @@ void Tileset::SetTileHeight(int tile_height) { tile_height_ = tile_height; }
 int &Tileset::TileWidth() { return tile_width_; }
 int &Tileset::TileHeight() { return tile_height_; }
 
-Scene::Scene(int canvas_width, int canvas_height)
-    : canvas_width_(canvas_width), canvas_height_(canvas_height) {}
+Scene::Scene(int canvas_width, int canvas_height, const SDL_Color &bkg_color)
+    : canvas_width_(canvas_width), canvas_height_(canvas_height), background_color_(bkg_color) {}
 Scene::Scene(const std::vector<Layer> &layers,
              const std::vector<Tileset> &tile_sets, int canvas_width,
-             int canvas_height)
+             int canvas_height, const SDL_Color &bkg_color)
     : layers_(layers),
       tile_sets_(tile_sets),
       canvas_width_(canvas_width),
-      canvas_height_(canvas_height) {}
+      canvas_height_(canvas_height), background_color_(bkg_color) {}
 std::vector<Layer> &Scene::Layers() { return layers_; }
 const std::vector<Layer> &Scene::GetLayers() const { return layers_; }
 void Scene::SetLayers(const std::vector<Layer> &layers) { layers_ = layers; }
@@ -88,6 +81,11 @@ void Scene::SetCanvasWidth(int canvas_width) { canvas_width_ = canvas_width; }
 int Scene::GetCanvasHeight() const { return canvas_height_; }
 void Scene::SetCanvasHeight(int canvas_height) {
   canvas_height_ = canvas_height;
+}
+const SDL_Color &Scene::GetBackgroundColor() const { return background_color_; }
+SDL_Color &Scene::BackgroundColor() { return background_color_; }
+void Scene::SetBackgroundColor(const SDL_Color &background_color) {
+  this->background_color_ = background_color;
 }
 
 Scene::~Scene() { SDL_DestroyTexture(scene_texture_); }
@@ -109,9 +107,9 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
     SDL_Surface *surface =
         SDL_CreateRGBSurface(0, canvas_width, canvas_height, 32, 0, 0, 0, 0);
     SDL_FillRect(surface, nullptr,
-                 SDL_MapRGB(surface->format, layer->GetBackgroundColor().r,
-                            layer->GetBackgroundColor().g,
-                            layer->GetBackgroundColor().b));
+                 SDL_MapRGB(surface->format, this->GetBackgroundColor().r,
+                            this->GetBackgroundColor().g,
+                            this->GetBackgroundColor().b));
     auto white_bkg = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     SDL_RenderCopy(renderer, white_bkg, nullptr, nullptr);
@@ -131,20 +129,20 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
           ::EngineCore::Utils::GetRowAndCol(layer->Data()[i]);
       auto current_brush =
           std::string(tileset->GetName()) + "-cropped-" +
-          std::to_string(
-              ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+              std::to_string(
+                  ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
       SDL_Rect dst_rect = {col * tileset->GetTileWidth(),
                            row * tileset->GetTileHeight(),
                            tileset->GetTileWidth(), tileset->GetTileHeight()};
 
       if (auto active_layer = ResourceManager::GetInstance().LoadImage(
-              std::string(tileset->GetName()))) {
+          std::string(tileset->GetName()))) {
         SDL_Texture *cropped_texture = nullptr;
         SDL_Rect src_rect = {row_and_col.second * tileset->GetTileWidth(),
                              row_and_col.first * tileset->GetTileHeight(),
                              tileset->GetTileWidth(), tileset->GetTileHeight()};
         if (auto query_texture =
-                ResourceManager::GetInstance().QueryTexture(current_brush)) {
+            ResourceManager::GetInstance().QueryTexture(current_brush)) {
           cropped_texture = query_texture;
         } else {
           auto cropped = ::EngineCore::Utils::CropTexture(

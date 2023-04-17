@@ -73,5 +73,3 @@ file(GLOB SRC_PYBIND src/pybind/*.cpp)
 pybind11_add_module(PyCSPillEngine ${SRC_PYBIND})
 target_include_directories(PyCSPillEngine PRIVATE ${INC_CORE} ${SDL2_INCLUDE_DIRS} ${Python_INCLUDE_DIRS} ${INC_PYBIND})
 target_link_libraries(PyCSPillEngine PRIVATE Core SDL2)
-
-install(TARGETS PyCSPillEngine LIBRARY DESTINATION ~/PyCSPillEngine)

@@ -33,8 +33,7 @@ class Layer {
    * @param bkg_color SDL_Color of the layer, the default value is 255, 255,
    * 255, 255
    */
-  Layer(std::string name, std::string tileset, const std::vector<int> &data,
-        const SDL_Color &bkg_color = {255, 255, 255, 255});
+  Layer(std::string name, std::string tileset, const std::vector<int> &data);
 
   /**
    * Constructor of Layer.
@@ -43,8 +42,7 @@ class Layer {
    * @param bkg_color SDL_Color of the layer, the default value is 255, 255,
    * 255, 255
    */
-  Layer(std::string name, const std::vector<int> &data,
-        const SDL_Color &bkg_color = {255, 255, 255, 255});
+  Layer(std::string name, const std::vector<int> &data);
 
   /**
    * Get the name of the layer.
@@ -95,30 +93,10 @@ class Layer {
    */
   bool operator==(const Layer &rhs) const;
 
-  /**
-   * Get the background color of current layer.
-   * @return SDL_Color, which represents the background color
-   */
-  [[nodiscard]] const SDL_Color &GetBackgroundColor() const;
-
-  /**
-   * Get the background color of current layer.
-   * @return SDL_Color, which represents the background color
-   */
-  SDL_Color &BackgroundColor();
-
-  /**
-   * Set background color to background_color
-   * @param background_color SDL_Color which represents the target background
-   * color
-   */
-  void SetBackgroundColor(const SDL_Color &background_color);
-
  private:
   std::string name_;
   std::string tileset_;
   std::vector<int> data_;
-  SDL_Color background_color_{};
 };
 
 /**
@@ -234,7 +212,8 @@ class Scene {
    * @param canvas_width int, the width of the canvas
    * @param canvas_height int, the height of the canvas
    */
-  Scene(int canvas_width, int canvas_height);
+  Scene(int canvas_width, int canvas_height,
+        const SDL_Color &bkg_color = {255, 255, 255, 255});
 
   /**
    * Constructor of Scene.
@@ -244,7 +223,8 @@ class Scene {
    * @param canvas_height int, the height of the canvas
    */
   Scene(const std::vector<Layer> &layers, const std::vector<Tileset> &tile_sets,
-        int canvas_width, int canvas_height);
+        int canvas_width, int canvas_height,
+        const SDL_Color &bkg_color = {255, 255, 255, 255});
 
   /**
    * Destructor of Scene.
@@ -331,6 +311,25 @@ class Scene {
   void RemoveLayer(const std::string &name);
 
   /**
+ * Get the background color of current layer.
+ * @return SDL_Color, which represents the background color
+ */
+  [[nodiscard]] const SDL_Color &GetBackgroundColor() const;
+
+  /**
+   * Get the background color of current layer.
+   * @return SDL_Color, which represents the background color
+   */
+  SDL_Color &BackgroundColor();
+
+  /**
+   * Set background color to background_color
+   * @param background_color SDL_Color which represents the target background
+   * color
+   */
+  void SetBackgroundColor(const SDL_Color &background_color);
+
+  /**
    * Render a specific Layer or Tileset.
    * @param renderer SDL_Renderer that is going to be used
    * @param layer target rendering Layer
@@ -354,6 +353,7 @@ class Scene {
   std::vector<Tileset> tile_sets_;
   int canvas_width_;
   int canvas_height_;
+  SDL_Color background_color_{};
 
   SDL_Texture *scene_texture_ = nullptr;
 };
@@ -364,7 +364,7 @@ namespace nlohmann {
 /**
  * \brief JSON parsing helper struct for Layer
  */
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   /**
    * Retrieve the information in JSON object j.
@@ -372,18 +372,10 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
    * @return Layer object that contained by JSON object
    */
   static CSPill::EngineCore::Layer from_json(const json &j) {
-    SDL_Color color = {255, 255, 255, 255};
-    if (j.contains("color")) {
-      json json_color = j.at("color");
-      color.r = json_color.at("r");
-      color.g = json_color.at("g");
-      color.b = json_color.at("b");
-      color.a = json_color.at("a");
-    }
     if (!j.contains("tileset")) {
-      return {j.at("name"), j.at("data"), color};
+      return {j.at("name"), j.at("data")};
     }
-    return {j.at("name"), j.at("tileset"), j.at("data"), color};
+    return {j.at("name"), j.at("tileset"), j.at("data")};
   }
 
   /**
@@ -395,19 +387,13 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
     j["name"] = l.GetName();
     j["tileset"] = l.GetTileset();
     j["data"] = l.GetData();
-    json json_color;
-    json_color.at("r") = l.GetBackgroundColor().r;
-    json_color.at("g") = l.GetBackgroundColor().g;
-    json_color.at("b") = l.GetBackgroundColor().b;
-    json_color.at("a") = l.GetBackgroundColor().a;
-    j["color"] = json_color;
   }
 };
 
 /**
  * \brief JSON parsing helper struct for Tileset
  */
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   /**
    * Retrieve the information in JSON object j.
@@ -436,7 +422,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
 /**
  * \brief JSON parsing helper struct for Scene
  */
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   /**
    * Retrieve the information in JSON object j.
@@ -444,8 +430,16 @@ struct adl_serializer<CSPill::EngineCore::Scene> {
    * @return Scene object that contained by JSON object
    */
   static CSPill::EngineCore::Scene from_json(const json &j) {
+    SDL_Color color = {255, 255, 255, 255};
+    if (j.contains("color")) {
+      json json_color = j.at("color");
+      color.r = json_color.at("r");
+      color.g = json_color.at("g");
+      color.b = json_color.at("b");
+      color.a = json_color.at("a");
+    }
     return {j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),
-            j.at("canvas").at("height")};
+            j.at("canvas").at("height"), color};
   }
 
   /**
@@ -458,6 +452,12 @@ struct adl_serializer<CSPill::EngineCore::Scene> {
     j["tilesets"] = s.GetTileSets();
     j["canvas"]["width"] = s.GetCanvasWidth();
     j["canvas"]["height"] = s.GetCanvasHeight();
+    json json_color;
+    json_color["r"] = s.GetBackgroundColor().r;
+    json_color["g"] = s.GetBackgroundColor().g;
+    json_color["b"] = s.GetBackgroundColor().b;
+    json_color["a"] = s.GetBackgroundColor().a;
+    j["color"] = json_color;
   }
 };
 
