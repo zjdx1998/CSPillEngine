@@ -19,7 +19,7 @@ class PyComponent : public Component {
                            dt);
   }
   void Receive(std::string_view message) override {
-    PYBIND11_OVERLOAD_PURE(void,       // Return type
+    PYBIND11_OVERRIDE_PURE(void,       // Return type
                            Component,  // Parent class
                            Receive,    // Name of function
                            message     // Argument(s)

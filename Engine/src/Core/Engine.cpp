@@ -86,12 +86,12 @@ void Engine::RefreshScene() {
     SDL_Rect dstRect = {0, 0, GetWindowSize().first, GetWindowSize().second};
     if (auto camera = GetObject("Camera")) {
       auto camera_component =
-          (CameraComponent *)(camera->GetComponent("CameraComponent"));
+          (CameraComponent *) (camera->GetComponent("CameraComponent"));
       auto &viewport = camera_component->GetViewport();
-      dstRect.x = std::max(dstRect.x, (int)viewport.x);
-      dstRect.y = std::max(dstRect.y, (int)viewport.y);
-      dstRect.w = std::min(dstRect.w, (int)viewport.w);
-      dstRect.h = std::min(dstRect.h, (int)viewport.h);
+      dstRect.x = std::max(dstRect.x, (int) viewport.x);
+      dstRect.y = std::max(dstRect.y, (int) viewport.y);
+      dstRect.w = std::min(dstRect.w, (int) viewport.w);
+      dstRect.h = std::min(dstRect.h, (int) viewport.h);
     }
     SDL_RenderCopy(renderer_->GetRenderer(), level, &dstRect, nullptr);
   }
@@ -100,6 +100,7 @@ void Engine::RefreshScene() {
 void Engine::Run(int FPS) {
   float dt = 0;
   while (!Engine::IsGameOver()) {
+    auto start_time = std::chrono::high_resolution_clock::now();
     RefreshScene();
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -108,13 +109,27 @@ void Engine::Run(int FPS) {
           event.window.event == SDL_WINDOWEVENT_CLOSE &&
           event.window.windowID == SDL_GetWindowID(GetWindow()))
         game_over_ = true;
+      if (event.type == SDL_KEYDOWN) {
+        key_pressed_.insert(event.key.keysym.sym);
+      }
+      if (event.type == SDL_KEYUP) {
+        key_pressed_.erase(key_pressed_.find(event.key.keysym.sym));
+      }
     }
     for (const auto &obj : objects_) {
       obj.second->Update(dt);
       obj.second->Render(renderer_->GetRenderer());
     }
     SDL_RenderPresent(renderer_->GetRenderer());
+    auto end_time = std::chrono::high_resolution_clock::now();
+    dt = std::chrono::duration<float, std::chrono::milliseconds::period>(end_time - start_time).count();
+    if (dt < 1000.0 / FPS) {
+      SDL_Delay(1000.0 / FPS - dt);
+    }
   }
+}
+bool Engine::IsKeyPressed(const std::string &key) {
+  return key_pressed_.find(SDL_GetKeyFromName(key.data())) != key_pressed_.end();
 }
 
 }  // namespace CSPill::EngineCore

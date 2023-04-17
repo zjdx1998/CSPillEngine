@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_set>
 
 #include "GameObject.h"
 #include "SDL.h"
@@ -130,7 +131,7 @@ class Engine {
       std::string_view title, int w, int h, int x = SDL_WINDOWPOS_CENTERED,
       int y = SDL_WINDOWPOS_CENTERED,
       Uint32 sdl_init_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER |
-                              SDL_INIT_GAMECONTROLLER,
+          SDL_INIT_GAMECONTROLLER,
       SDL_WindowFlags window_flags = static_cast<SDL_WindowFlags>(
           SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI),
       SDL_RendererFlags renderer_flags = static_cast<SDL_RendererFlags>(
@@ -173,13 +174,20 @@ class Engine {
    * Get the window size.
    * @return a pair contains the window's width and height
    */
-  std::pair<int, int> GetWindowSize() const;
+  [[nodiscard]] std::pair<int, int> GetWindowSize() const;
 
   /**
    * Run the program by a certain FPS
    * @param FPS int, FPS cap for the loop, default to be 60
    */
   void Run(int FPS = 60);
+
+  /**
+   * Check if key is pressed.
+   * @param key key as string, check from: https://wiki.libsdl.org/SDL2/SDL_Keycode.
+   * @return true if key is pressed.
+   */
+  bool IsKeyPressed(const std::string &key);
 
  private:
   int width_, height_;
@@ -192,6 +200,7 @@ class Engine {
   std::unique_ptr<SDLRenderer> renderer_;
   Scene *scene_;
   std::unordered_map<std::string, std::unique_ptr<GameObject>> objects_;
+  std::unordered_set<SDL_Keycode> key_pressed_;
   bool game_over_ = false;
 };
 

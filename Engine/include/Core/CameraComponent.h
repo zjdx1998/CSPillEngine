@@ -12,7 +12,7 @@ namespace CSPill::EngineCore {
 
 class CameraComponent : public Component {
  public:
-  explicit CameraComponent(const std::string_view &name);
+  explicit CameraComponent(const std::string_view &name = "CameraComponent");
   void Update(GameObject *object, float dt) override;
   void Bind(GameObject *object, const Math::Vec2D &offset = {0, 0});
   const SDL_FRect &GetViewport();
