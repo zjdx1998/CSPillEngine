@@ -238,18 +238,37 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
   if (!scene_names.empty()) {
     if (ImGui::TreeNode("Scenes")) {
       for (const std::string &scene_name : scene_names) {
-        if (ImGui::Selectable(scene_name.c_str())) {
-          resource_manager.SetActiveScene(scene_name);
-        }
-
+        ImVec2 text_size = ImGui::CalcTextSize(scene_name.c_str());
         bool is_scene_selected =
             scene_name == resource_manager.GetActiveSceneName();
+        if (ImGui::Selectable(scene_name.c_str(), false, 0, text_size)) {
+          resource_manager.SetActiveScene(scene_name);
+        }
+        static ImVec4 bkg_color = ImVec4(0, 0, 0, 1.00f);
+        static bool show_color_picker = false;
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Color")) {
+            show_color_picker = !show_color_picker;
+        }
+        if (show_color_picker) {
+            ImGui::ColorPicker3("Color Picker", (float*)&bkg_color, ImGuiColorEditFlags_None);
+        }
         UICenterRadioButton("", is_scene_selected);
         if (scene_name == resource_manager.GetActiveSceneName()) {
           if (auto scene = ResourceManager::GetInstance().ActiveScene()) {
             std::unordered_map<std::string, Tileset *> tilesets;
             for (auto &tileset : scene->TileSets()) {
               tilesets[tileset.GetName().data()] = &tileset;
+            }
+            // Get scene background color
+            SDL_Color bkg_sdl_color = scene->GetBackgroundColor();
+            if (!show_color_picker) {
+              // When the color picker is not displayed, get the current color
+              bkg_color = ImVec4(bkg_sdl_color.r / 255.0f, bkg_sdl_color.g / 255.0f, bkg_sdl_color.b / 255.0f, bkg_sdl_color.a / 255.0f);
+            } else {
+              // Update the background color of the scene when color picker is displayed
+              SDL_Color new_bkg_color = {static_cast<Uint8>(bkg_color.x * 255.0f), static_cast<Uint8>(bkg_color.y * 255.0f), static_cast<Uint8>(bkg_color.z * 255.0f), static_cast<Uint8>(bkg_color.w * 255.0f)};
+              scene->SetBackgroundColor(new_bkg_color);
             }
             if (ImGui::TreeNode("Layers")) {
               ImGui::SameLine();
