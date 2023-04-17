@@ -68,6 +68,7 @@ class GameObject {
 
  protected:
   GameObject() = default;
+
  private:
   std::list<std::unique_ptr<Component>> components_;
   std::unordered_map<std::string_view,
