@@ -104,34 +104,44 @@ ground_collision_component.Register(character)
 ground.AddComponent(ground_collision_component)
 
 # Pipe game object
-pipe = Core.GameObject(Utils.Vec2D(400, 510))
-
-pipe = Core.GameObject(Utils.Vec2D(29 * 50, ground_y - 100), Utils.Vec2D(5, 5))
-
-
 def pipe_collision_callback(self, obj):
     """Pipe collision callback"""
-    v_x = obj.GetComponent("TransformComponent").velocity().x
-    pos_x = obj.GetComponent("TransformComponent").position().x
-    print(str(v_x))
-    print(str(pos_x))
-    if v_x > 0:
-        obj.GetComponent("TransformComponent").position().x -= 10 + obj.GetComponent("CollisionComponent").bouding_box.w
-    elif v_x < 0:
-        obj.GetComponent("TransformComponent").position().x += 10
+    self_pos = self.GetComponent("TransformComponent").position()
+    self_box = self.GetComponent("CollisionComponent").bouding_box
+    obj_pos = obj.GetComponent("TransformComponent").position()
     obj.GetComponent("TransformComponent").velocity().x = 0
+    if obj_pos.x < self_pos.x:
+        obj.GetComponent("TransformComponent").position().x -= 10
+    elif obj_pos.x > self_pos.x + self_box.w - 25:
+        obj.GetComponent("TransformComponent").position().x += 10
+    else:
+        print(str(obj_pos.x) + " " + str(self_pos) + " " + str(self_box.w))
+        obj.GetComponent("TransformComponent").velocity().y = 0
+        obj.GetComponent("TransformComponent").position().y = self_pos.y - obj.GetComponent("CollisionComponent").bouding_box.h
 
+def create_pipe(position, bounding_width, bounding_height):
+    """Create a pipe object"""
+    pipe = Core.GameObject(position, Utils.Vec2D(1, 1))
+    pipe_bounding_box = Utils.RectF()
+    pipe_bounding_box.x = pipe.GetComponent("TransformComponent").position().x
+    pipe_bounding_box.y = pipe.GetComponent("TransformComponent").position().y
+    pipe_bounding_box.w = bounding_width
+    pipe_bounding_box.h = bounding_height
+    pipe_collision_component = Physics.CollisionComponent(pipe_bounding_box)
+    pipe_collision_component.callback = pipe_collision_callback
+    pipe_collision_component.Register(character)
+    pipe.AddComponent(pipe_collision_component)
+    return pipe
 
-pipe_bounding_box = Utils.RectF()
-pipe_bounding_box.x = pipe.GetComponent("TransformComponent").position().x
-pipe_bounding_box.y = pipe.GetComponent("TransformComponent").position().y
-pipe_bounding_box.w = 100
-pipe_bounding_box.h = 100
-pipe_collision_component = Physics.CollisionComponent(pipe_bounding_box)
-pipe_collision_component.callback = pipe_collision_callback
-
-pipe_collision_component.Register(character)
-pipe.AddComponent(pipe_collision_component)
+pipe_height = 50
+pipe_width = 100
+# pipe = Core.GameObject(Utils.Vec2D(29*50, ground_y - 50), Utils.Vec2D(1, 1))
+pipe = create_pipe(Utils.Vec2D(29*50, ground_y - pipe_height), pipe_width, pipe_height * 2)
+pipe2 = create_pipe(Utils.Vec2D(39*50, ground_y - pipe_height * 2), pipe_width, pipe_height * 3)
+pipe3 = create_pipe(Utils.Vec2D(47*50, ground_y - pipe_height * 3), pipe_width, pipe_height * 4)
+pipe4 = create_pipe(Utils.Vec2D(58*50, ground_y - pipe_height * 3), pipe_width, pipe_height * 4)
+pipe5 = create_pipe(Utils.Vec2D(161*50, ground_y - pipe_height), pipe_width, pipe_height * 2)
+pipe6 = create_pipe(Utils.Vec2D(177*50, ground_y - pipe_height), pipe_width, pipe_height * 2)
 
 
 def enemy_collision_callback(self, obj):
@@ -259,6 +269,11 @@ engine.AddObject("Pipe", pipe)
 engine.AddObject("Enemy", enemy)
 for i in range(0, len(enemies)):
     engine.AddObject("Enemy" + str(i), enemies[i])
+engine.AddObject("Pipe2", pipe2)
+engine.AddObject("Pipe3", pipe3)
+engine.AddObject("Pipe4", pipe4)
+engine.AddObject("Pipe5", pipe5)
+engine.AddObject("Pipe6", pipe6)
 # engine.AddObject("Coin", coin)
 # engine.AddObject("Flag", flag)
 
