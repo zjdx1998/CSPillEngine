@@ -32,9 +32,10 @@ std::unique_ptr<GameObject> GameObject::Create() {
   return std::unique_ptr<GameObject>(object);
 }
 
-std::unique_ptr<GameObject> GameObject::Create(const CSPill::Math::Vec2D &position, const CSPill::Math::Vec2D &scale) {
+std::unique_ptr<GameObject> GameObject::Create(
+    const CSPill::Math::Vec2D &position, const CSPill::Math::Vec2D &scale) {
   auto *object = new GameObject();
-  TransformComponent* transform = new TransformComponent();
+  TransformComponent *transform = new TransformComponent();
   transform->position() = position;
   transform->SetScale(scale);
   object->AddComponent(transform);
