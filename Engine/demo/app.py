@@ -136,10 +136,14 @@ pipe.AddComponent(pipe_collision_component)
 
 def enemy_collision_callback(self, obj):
     """Enemy collision callback"""
+    global score
     tc = obj.GetComponent("TransformComponent")
-    if tc.position().y < 550:
-        print("you kill a monster")
+    if tc.position().y < 560:
+        print("You kill a monster!")
+        Utils.PlayMusic("1up_collected.wav")
         self.live = False
+        score += 1
+        score_ui.SetContent("Score: " + str(score))
     else:
         Utils.StopMusic(-1)
         Utils.PlayMusic("mario_dead.wav")
@@ -169,24 +173,29 @@ class EnemyControllerComponent(Core.Component):
             obj.GetComponent("AnimationComponent").SetCurrentAnimation(self.walk)
 
 
-# Enemy game object
-enemy = Core.GameObject(Utils.Vec2D(500, 585), Utils.Vec2D(1, 1))
-# TODO: size
-enemy_bounding_box = Utils.RectF(0, 0, 50, 50)
-enemy_collision_component = Physics.CollisionComponent(enemy_bounding_box)
-enemy_collision_component.callback = enemy_collision_callback
-enemy_collision_component.Register(character)
-enemy.AddComponent(enemy_collision_component)
+enemies = []
+for i in range(0, 10):
+    # Enemy game object
+    import random
 
-enemy_animation_component = Core.AnimationComponent()
-enemy_animation_component.AddAnimations("walkright",
-                                        ["enemy_1.png-cropped-0", "enemy_2.png-cropped-0",
-                                         "enemy_3.png-cropped-0", "enemy_4.png-cropped-0"])
-enemy_animation_component.AddAnimations("walkleft",
-                                        ["enemy_left_1.png-cropped-0", "enemy_left_2.png-cropped-0",
-                                         "enemy_left_3.png-cropped-0", "enemy_left_4.png-cropped-0"])
-enemy.AddComponent(enemy_animation_component)
-enemy.AddComponent(EnemyControllerComponent("ControllerComponent"))
+    enemy = Core.GameObject(Utils.Vec2D(random.randint(400, 10000), 585), Utils.Vec2D(1, 1))
+
+    enemy_bounding_box = Utils.RectF(0, 0, 64, 64)
+    enemy_collision_component = Physics.CollisionComponent(enemy_bounding_box)
+    enemy_collision_component.callback = enemy_collision_callback
+    enemy_collision_component.Register(character)
+    enemy.AddComponent(enemy_collision_component)
+
+    enemy_animation_component = Core.AnimationComponent()
+    enemy_animation_component.AddAnimations("walkright",
+                                            ["enemy_1.png-cropped-0", "enemy_2.png-cropped-0",
+                                             "enemy_3.png-cropped-0", "enemy_4.png-cropped-0"])
+    enemy_animation_component.AddAnimations("walkleft",
+                                            ["enemy_left_1.png-cropped-0", "enemy_left_2.png-cropped-0",
+                                             "enemy_left_3.png-cropped-0", "enemy_left_4.png-cropped-0"])
+    enemy.AddComponent(enemy_animation_component)
+    enemy.AddComponent(EnemyControllerComponent("ControllerComponent"))
+    enemies.append(enemy)
 
 # Coin game object
 coin = Core.GameObject(Utils.Vec2D(200, 510))
@@ -248,6 +257,8 @@ engine.AddObject("LevelUI", level_ui)
 engine.AddObject("MessageUI", message_ui)
 engine.AddObject("Pipe", pipe)
 engine.AddObject("Enemy", enemy)
+for i in range(0, len(enemies)):
+    engine.AddObject("Enemy" + str(i), enemies[i])
 # engine.AddObject("Coin", coin)
 # engine.AddObject("Flag", flag)
 
