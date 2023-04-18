@@ -208,28 +208,40 @@ for i in range(0, 10):
     enemies.append(enemy)
 
 # Coin game object
-coin = Core.GameObject(Utils.Vec2D(200, 510))
+coins = []
+for i in range(0, 20):
+    coin = Core.GameObject(Utils.Vec2D(random.randint(300, 10000), random.randint(ground_y-300,ground_y)))
+
+    coin_animation_component = Core.AnimationComponent()
+    coin_animation_component.AddAnimations("coin",
+                                            ["coin_1.png-cropped-0", "coin_2.png-cropped-0",
+                                             "coin_3.png-cropped-0", "coin_4.png-cropped-0"])
+    coin_animation_component.SetCurrentAnimation("coin")
+    coin.AddComponent(coin_animation_component)
 
 
-def coin_collision_callback(self, obj):
-    """Coin collision callback"""
-    Utils.PlayMusic("coin_sound.wav")
-    global score
-    score += random.randint(1, 5)
-    score_ui.SetContent("Score: " + str(score))
+    def coin_collision_callback(self, obj):
+        """Coin collision callback"""
+        Utils.PlayMusic("coin_sound.wav")
+        global score
+        score += random.randint(1, 3)
+        score_ui.SetContent("Score: " + str(score))
+        self.live = False
 
 
-# TODO: size
-coin_bounding_box = Utils.RectF()
-coin_bounding_box.x = coin.GetComponent("TransformComponent").position().x
-coin_bounding_box.y = coin.GetComponent("TransformComponent").position().y
-coin_bounding_box.w = 10
-coin_bounding_box.h = 10
+    # TODO: size
+    coin_bounding_box = Utils.RectF()
+    coin_bounding_box.x = coin.GetComponent("TransformComponent").position().x
+    coin_bounding_box.y = coin.GetComponent("TransformComponent").position().y
+    coin_bounding_box.w = 10
+    coin_bounding_box.h = 10
 
-coin_collision_component = Physics.CollisionComponent(coin_bounding_box)
-coin_collision_component.callback = coin_collision_callback
-coin_collision_component.Register(character)
-coin.AddComponent(coin_collision_component)
+    coin_collision_component = Physics.CollisionComponent(coin_bounding_box)
+    coin_collision_component.callback = coin_collision_callback
+    coin_collision_component.Register(character)
+    coin.AddComponent(coin_collision_component)
+    coins.append(coin)
+
 
 # Flag game object
 flag = Core.GameObject(Utils.Vec2D(100, 510))
@@ -269,13 +281,14 @@ engine.AddObject("Pipe", pipe)
 engine.AddObject("Enemy", enemy)
 for i in range(0, len(enemies)):
     engine.AddObject("Enemy" + str(i), enemies[i])
+for i in range(0, len(coins)):
+    engine.AddObject("Coin" + str(i), coins[i])
 engine.AddObject("Pipe2", pipe2)
 engine.AddObject("Pipe3", pipe3)
 engine.AddObject("Pipe4", pipe4)
 engine.AddObject("Pipe5", pipe5)
 engine.AddObject("Pipe6", pipe6)
-# engine.AddObject("Coin", coin)
-# engine.AddObject("Flag", flag)
+engine.AddObject("Flag", flag)
 
 engine.Run(60)
 
