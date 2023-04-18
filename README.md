@@ -2,13 +2,15 @@
 
 # The Final Project!
 
-For this assignment you are going to be building a 'Game Maker' as your final project! 
+For this assignment you are going to be building a 'Game Maker' as your final project!
 
-You will have some flexibility and creativity in how the overall game making engine is built and what types of game(s) your engine can make.
+You will have some flexibility and creativity in how the overall game making engine is built and what types of game(s)
+your engine can make.
 
 ## Logistics
 
-- You will be working on this assignment as a team on your choice (or a combination) of the Mac, Linux, or Windows Operating Sytstem.
+- You will be working on this assignment as a team on your choice (or a combination) of the Mac, Linux, or Windows
+  Operating Sytstem.
 - You will put all of your code and deliverables in the [Engine](./Engine) directory.
 - Make sure everyone has a way to work on this codebase, with a common set of tools.
 - Everyone should make code contributions to the repository (i.e. everyone should have some commits in the project log)
@@ -22,32 +24,34 @@ Team Name: CSPill💊
 3. Yuxiao Zou
 4. Chenjie Bei
 
+Website: [cspill.jeromy.site](https://cspill.jeromy.site)
+
 ## Assignment Milestones
 
-1. [Part 1 README](./part1_README.md) 
- 	* Read the project description
-2. [Part 2 README](./part2_README.md) 
- 	* More specific requierments of the project and who is going to be responsible for each part
-3. [Part 3 README](./part3_README.md) 
- 	* Portfolio instructions 	
+1. [Part 1 README](./part1_README.md)
+    * Read the project description
+2. [Part 2 README](./part2_README.md)
+    * More specific requierments of the project and who is going to be responsible for each part
+3. [Part 3 README](./part3_README.md)
+    * Portfolio instructions
 4. Team member Evaluation: https://forms.gle/qiD6guzN5W5LxAcV9
- 	* **This must be filled out before the project is due.**
-
+    * **This must be filled out before the project is due.**
 
 ## Universal Resources
 
-You will be using SDL2 to build this project. Make sure you can run SDL by following the instructions here: 
+You will be using SDL2 to build this project. Make sure you can run SDL by following the instructions here:
 (Note you do not need to glad library, unless you are doing additional work with OpenGL 3.3+)
 
-* General SDL2 programming tutorials: 
-  * http://lazyfoo.net/tutorials/SDL/
-* General SDL2 setup [Full SDL playlist](https://www.youtube.com/watch?v=QM4WW8hcsPU&list=PLvv0ScY6vfd-p1gSnbQhY7vMe2rng0IL0)
-  * Linux: https://www.youtube.com/embed/xNCFSMkpwWo
-  * Windows: https://www.youtube.com/embed/nZbytgAhvoY
-  * Mac: https://www.youtube.com/embed/xVl1ysRj_lQ
+* General SDL2 programming tutorials:
+    * http://lazyfoo.net/tutorials/SDL/
+* General SDL2
+  setup [Full SDL playlist](https://www.youtube.com/watch?v=QM4WW8hcsPU&list=PLvv0ScY6vfd-p1gSnbQhY7vMe2rng0IL0)
+    * Linux: https://www.youtube.com/embed/xNCFSMkpwWo
+    * Windows: https://www.youtube.com/embed/nZbytgAhvoY
+    * Mac: https://www.youtube.com/embed/xVl1ysRj_lQ
 
 # Part 1 and 2 Rubric (75%)
-   
+
 <table>
   <tbody>
     <tr>
@@ -121,17 +125,20 @@ You will be using SDL2 to build this project. Make sure you can run SDL by follo
 ## Notes on working in teams
 
 * Pragmatically
-	* It is useful to work in separate branches in git, and then merge your code to master, and then resolve the merge conflicts (ideally with the person you are working with).
-	* If you are uncomfortable with this in github, then pair programming may be a viable option (I do however want to see commits from everyone).
+    * It is useful to work in separate branches in git, and then merge your code to master, and then resolve the merge
+      conflicts (ideally with the person you are working with).
+    * If you are uncomfortable with this in github, then pair programming may be a viable option (I do however want to
+      see commits from everyone).
 * On working with others
-	* Be responsive
-		* Check your email, respond to your teammates within 24-48 hours on the preferred communication platform
-	* Be proactive
-		* Alert the course staff if there are issues sooner rather than later--we cannot do anything the last day before the project is due.
-	* Contribute
-		* The course staff looks at the commit logs to make sure everyone participated (No free rides--earn your grade!)
-		* Note: One team member doing all the work is not heroic either
-			* Balance the work load--no one should complete more than 50% of the project on a 4 person team for example.
+    * Be responsive
+        * Check your email, respond to your teammates within 24-48 hours on the preferred communication platform
+    * Be proactive
+        * Alert the course staff if there are issues sooner rather than later--we cannot do anything the last day before
+          the project is due.
+    * Contribute
+        * The course staff looks at the commit logs to make sure everyone participated (No free rides--earn your grade!)
+        * Note: One team member doing all the work is not heroic either
+            * Balance the work load--no one should complete more than 50% of the project on a 4 person team for example.
 
 #### More Resources on working in Teams
 

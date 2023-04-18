@@ -81,6 +81,11 @@ $(function() {
   <div class="headertitle"><div class="title">CSPill::EngineCore::CollisionComponent Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Physics Collision <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html" title="Component of GameObject.">Component</a>.  
+ <a href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_collision_component_8h_source.html">CollisionComponent.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for CSPill::EngineCore::CollisionComponent:</div>
 <div class="dyncontent">
@@ -93,28 +98,21 @@ Inheritance diagram for CSPill::EngineCore::CollisionComponent:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3c673563e8bead93baf2a40f76d275d0"><td class="memItemLeft" align="right" valign="top"><a id="a3c673563e8bead93baf2a40f76d275d0" name="a3c673563e8bead93baf2a40f76d275d0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>CollisionComponent</b> (const SDL_FRect &amp;bounding_box)</td></tr>
+<tr class="memitem:a3c673563e8bead93baf2a40f76d275d0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#a3c673563e8bead93baf2a40f76d275d0">CollisionComponent</a> (const SDL_FRect &amp;bounding_box)</td></tr>
 <tr class="separator:a3c673563e8bead93baf2a40f76d275d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abab7bde7f19a6bfdd4f72b71e6dccf3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#abab7bde7f19a6bfdd4f72b71e6dccf3b">Update</a> (<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *object, float dt) override</td></tr>
 <tr class="separator:abab7bde7f19a6bfdd4f72b71e6dccf3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ca9cb47b0fcda92a1a1f42651bc44c1"><td class="memItemLeft" align="right" valign="top"><a id="a3ca9cb47b0fcda92a1a1f42651bc44c1" name="a3ca9cb47b0fcda92a1a1f42651bc44c1"></a>
-const SDL_FRect &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetBoundingBox</b> () const</td></tr>
+<tr class="memitem:a3ca9cb47b0fcda92a1a1f42651bc44c1"><td class="memItemLeft" align="right" valign="top">const SDL_FRect &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#a3ca9cb47b0fcda92a1a1f42651bc44c1">GetBoundingBox</a> () const</td></tr>
 <tr class="separator:a3ca9cb47b0fcda92a1a1f42651bc44c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03515c253acfc6985be934e2446e792a"><td class="memItemLeft" align="right" valign="top"><a id="a03515c253acfc6985be934e2446e792a" name="a03515c253acfc6985be934e2446e792a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetBoundingBox</b> (const SDL_FRect &amp;bounding_box)</td></tr>
+<tr class="memitem:a03515c253acfc6985be934e2446e792a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#a03515c253acfc6985be934e2446e792a">SetBoundingBox</a> (const SDL_FRect &amp;bounding_box)</td></tr>
 <tr class="separator:a03515c253acfc6985be934e2446e792a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cf32582e646d20611526070d30a18f8"><td class="memItemLeft" align="right" valign="top"><a id="a8cf32582e646d20611526070d30a18f8" name="a8cf32582e646d20611526070d30a18f8"></a>
-const std::function&lt; void(<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *)&gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetCallback</b> () const</td></tr>
-<tr class="separator:a8cf32582e646d20611526070d30a18f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7112aa1ee81f086c9467b3be8026bce7"><td class="memItemLeft" align="right" valign="top"><a id="a7112aa1ee81f086c9467b3be8026bce7" name="a7112aa1ee81f086c9467b3be8026bce7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetCallback</b> (const std::function&lt; void(<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *)&gt; &amp;callback)</td></tr>
-<tr class="separator:a7112aa1ee81f086c9467b3be8026bce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a570f2bc6ebbedc00746e99ae265fbcac"><td class="memItemLeft" align="right" valign="top"><a id="a570f2bc6ebbedc00746e99ae265fbcac" name="a570f2bc6ebbedc00746e99ae265fbcac"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Register</b> (<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *object)</td></tr>
+<tr class="memitem:a740aeab8f17af3689cf7c0b52144b11e"><td class="memItemLeft" align="right" valign="top">const std::function&lt; void(<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *, <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *)&gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#a740aeab8f17af3689cf7c0b52144b11e">GetCallback</a> () const</td></tr>
+<tr class="separator:a740aeab8f17af3689cf7c0b52144b11e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5be5e87103f1fcdcb9baad089eb7ec15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#a5be5e87103f1fcdcb9baad089eb7ec15">SetCallback</a> (const std::function&lt; void(<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *, <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *)&gt; &amp;callback)</td></tr>
+<tr class="separator:a5be5e87103f1fcdcb9baad089eb7ec15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a570f2bc6ebbedc00746e99ae265fbcac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#a570f2bc6ebbedc00746e99ae265fbcac">Register</a> (<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *object)</td></tr>
 <tr class="separator:a570f2bc6ebbedc00746e99ae265fbcac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac82acd39bf6d887c1103bc32e2de637"><td class="memItemLeft" align="right" valign="top"><a id="aac82acd39bf6d887c1103bc32e2de637" name="aac82acd39bf6d887c1103bc32e2de637"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>UnRegister</b> (<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *object)</td></tr>
+<tr class="memitem:aac82acd39bf6d887c1103bc32e2de637"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#aac82acd39bf6d887c1103bc32e2de637">UnRegister</a> (<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *object)</td></tr>
 <tr class="separator:aac82acd39bf6d887c1103bc32e2de637"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_c_s_pill_1_1_engine_core_1_1_component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_c_s_pill_1_1_engine_core_1_1_component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html">CSPill::EngineCore::Component</a></td></tr>
 <tr class="memitem:ae97b0793b6e366466ca021aaca3778b2 inherit pub_methods_class_c_s_pill_1_1_engine_core_1_1_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html#ae97b0793b6e366466ca021aaca3778b2">~Component</a> ()=default</td></tr>
@@ -136,8 +134,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>UnRegister</b> (<a cl
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a6d1a5ca3f7812a4504e21849dde18ddc"><td class="memItemLeft" align="right" valign="top"><a id="a6d1a5ca3f7812a4504e21849dde18ddc" name="a6d1a5ca3f7812a4504e21849dde18ddc"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>Collide</b> (const SDL_FRect &amp;A, const SDL_FRect &amp;B)</td></tr>
+<tr class="memitem:a6d1a5ca3f7812a4504e21849dde18ddc"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html#a6d1a5ca3f7812a4504e21849dde18ddc">Collide</a> (const SDL_FRect &amp;A, const SDL_FRect &amp;B)</td></tr>
 <tr class="separator:a6d1a5ca3f7812a4504e21849dde18ddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -147,7 +144,219 @@ Additional Inherited Members</h2></td></tr>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name_</b></td></tr>
 <tr class="separator:a5e44159cf40d9cead89e9937556d440e inherit pro_attribs_class_c_s_pill_1_1_engine_core_1_1_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Physics Collision <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html" title="Component of GameObject.">Component</a>. </p>
+<p>Collision <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html" title="Component of GameObject.">Component</a> handles all the physics of the game. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a3c673563e8bead93baf2a40f76d275d0" name="a3c673563e8bead93baf2a40f76d275d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c673563e8bead93baf2a40f76d275d0">&#9670;&#160;</a></span>CollisionComponent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CSPill::EngineCore::CollisionComponent::CollisionComponent </td>
+          <td>(</td>
+          <td class="paramtype">const SDL_FRect &amp;&#160;</td>
+          <td class="paramname"><em>bounding_box</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructor of <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_collision_component.html" title="Physics Collision Component.">CollisionComponent</a>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bounding_box</td><td>SDL_FRect, hit box of an object </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6d1a5ca3f7812a4504e21849dde18ddc" name="a6d1a5ca3f7812a4504e21849dde18ddc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d1a5ca3f7812a4504e21849dde18ddc">&#9670;&#160;</a></span>Collide()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CSPill::EngineCore::CollisionComponent::Collide </td>
+          <td>(</td>
+          <td class="paramtype">const SDL_FRect &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SDL_FRect &amp;&#160;</td>
+          <td class="paramname"><em>B</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Check if two hit box collide </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">A</td><td>SDL_FRect, hit box </td></tr>
+    <tr><td class="paramname">B</td><td>SDL_FRect, hit box </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if they collide, false otherwise </dd></dl>
+
+</div>
+</div>
+<a id="a3ca9cb47b0fcda92a1a1f42651bc44c1" name="a3ca9cb47b0fcda92a1a1f42651bc44c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ca9cb47b0fcda92a1a1f42651bc44c1">&#9670;&#160;</a></span>GetBoundingBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const SDL_FRect &amp; CSPill::EngineCore::CollisionComponent::GetBoundingBox </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get the hit box. </p><dl class="section return"><dt>Returns</dt><dd>SDL_FRect, hit box of an object </dd></dl>
+
+</div>
+</div>
+<a id="a740aeab8f17af3689cf7c0b52144b11e" name="a740aeab8f17af3689cf7c0b52144b11e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a740aeab8f17af3689cf7c0b52144b11e">&#9670;&#160;</a></span>GetCallback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::function&lt; void(<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *, <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *)&gt; &amp; CSPill::EngineCore::CollisionComponent::GetCallback </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get callback function. </p><dl class="section return"><dt>Returns</dt><dd>callback function </dd></dl>
+
+</div>
+</div>
+<a id="a570f2bc6ebbedc00746e99ae265fbcac" name="a570f2bc6ebbedc00746e99ae265fbcac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a570f2bc6ebbedc00746e99ae265fbcac">&#9670;&#160;</a></span>Register()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CSPill::EngineCore::CollisionComponent::Register </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Register a <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a> to Collision <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html" title="Component of GameObject.">Component</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object</td><td><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a> that is going to be registered </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a03515c253acfc6985be934e2446e792a" name="a03515c253acfc6985be934e2446e792a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03515c253acfc6985be934e2446e792a">&#9670;&#160;</a></span>SetBoundingBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CSPill::EngineCore::CollisionComponent::SetBoundingBox </td>
+          <td>(</td>
+          <td class="paramtype">const SDL_FRect &amp;&#160;</td>
+          <td class="paramname"><em>bounding_box</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set hit box. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bounding_box</td><td>SDL_FRect, hit box of an object </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5be5e87103f1fcdcb9baad089eb7ec15" name="a5be5e87103f1fcdcb9baad089eb7ec15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5be5e87103f1fcdcb9baad089eb7ec15">&#9670;&#160;</a></span>SetCallback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CSPill::EngineCore::CollisionComponent::SetCallback </td>
+          <td>(</td>
+          <td class="paramtype">const std::function&lt; void(<a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *, <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *)&gt; &amp;&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set callback function. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>callback function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aac82acd39bf6d887c1103bc32e2de637" name="aac82acd39bf6d887c1103bc32e2de637"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac82acd39bf6d887c1103bc32e2de637">&#9670;&#160;</a></span>UnRegister()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CSPill::EngineCore::CollisionComponent::UnRegister </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html">GameObject</a> *&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Unregister a <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a> to Collision <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html" title="Component of GameObject.">Component</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object</td><td><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a> that is going to be unregister </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="abab7bde7f19a6bfdd4f72b71e6dccf3b" name="abab7bde7f19a6bfdd4f72b71e6dccf3b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abab7bde7f19a6bfdd4f72b71e6dccf3b">&#9670;&#160;</a></span>Update()</h2>
 
@@ -181,9 +390,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name_</b></td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Update is called every frame, will notify other component through <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a>. This function must be implemented in child class. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Update the target <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a> by dt time. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">object</td><td>The <a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a> that current component belongs to. </td></tr>
+    <tr><td class="paramname">object</td><td><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html" title="Base class for all entities in CSPill Scenes.">GameObject</a> that is needed to be updated </td></tr>
+    <tr><td class="paramname">dt</td><td>float, time elapsed </td></tr>
   </table>
   </dd>
 </dl>

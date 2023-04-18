@@ -104,11 +104,11 @@ $(function() {
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>      .def(py::self * <span class="keywordtype">float</span>())</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>      .def(py::self / <span class="keywordtype">float</span>())</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>      .def(<span class="stringliteral">&quot;__eq__&quot;</span>, &amp;Vec2D::operator==)</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>      .def(<span class="stringliteral">&quot;magnitude&quot;</span>, &amp;Vec2D::Magnitude)</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>      .def(<span class="stringliteral">&quot;dot&quot;</span>, &amp;Vec2D::Dot)</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>      .def(<span class="stringliteral">&quot;normalize&quot;</span>, &amp;Vec2D::Normalize)</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>      .def(<span class="stringliteral">&quot;project&quot;</span>, &amp;Vec2D::Project)</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>      .def(<span class="stringliteral">&quot;cross_product&quot;</span>, &amp;Vec2D::CrossProduct)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>      .def(<span class="stringliteral">&quot;magnitude&quot;</span>, &amp;<a class="code hl_function" href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#a73d4b8d7cfeda30dac304b4b8caa414b">Vec2D::Magnitude</a>)</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>      .def(<span class="stringliteral">&quot;dot&quot;</span>, &amp;<a class="code hl_function" href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#a6cfd0dcd2beff5711baf8b61864ef867">Vec2D::Dot</a>)</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>      .def(<span class="stringliteral">&quot;normalize&quot;</span>, &amp;<a class="code hl_function" href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#ab91c51646ec2fd7cc638730186f4c10b">Vec2D::Normalize</a>)</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>      .def(<span class="stringliteral">&quot;project&quot;</span>, &amp;<a class="code hl_function" href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#ad89c80703fd1dbfafa04d3e14c00a514">Vec2D::Project</a>)</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>      .def(<span class="stringliteral">&quot;cross_product&quot;</span>, &amp;<a class="code hl_function" href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#a50d02792521c47459e965f24669ebfe1">Vec2D::CrossProduct</a>)</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>      .def(<span class="stringliteral">&quot;__add__&quot;</span>, &amp;Vec2D::operator+)</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>      .def(<span class="stringliteral">&quot;__sub__&quot;</span>, &amp;Vec2D::operator-)</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>      .def(<span class="stringliteral">&quot;__str__&quot;</span>, [](<span class="keyword">const</span> Vec2D &amp;v) {</div>
@@ -118,12 +118,18 @@ $(function() {
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>      });</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>  py::class_&lt;SDL_FRect&gt;(m, <span class="stringliteral">&quot;RectF&quot;</span>)</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>      .def(py::init&lt;&gt;())</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>      .def_readwrite(<span class="stringliteral">&quot;x&quot;</span>, &amp;SDL_FRect::x)</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>      .def_readwrite(<span class="stringliteral">&quot;y&quot;</span>, &amp;SDL_FRect::y)</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>      .def_readwrite(<span class="stringliteral">&quot;w&quot;</span>, &amp;SDL_FRect::w)</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>      .def_readwrite(<span class="stringliteral">&quot;h&quot;</span>, &amp;SDL_FRect::h);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>}</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>}  <span class="comment">// namespace CSPill::Math</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>      .def(py::init&lt;float, float, float, float&gt;())</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>      .def_readwrite(<span class="stringliteral">&quot;x&quot;</span>, &amp;SDL_FRect::x)</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>      .def_readwrite(<span class="stringliteral">&quot;y&quot;</span>, &amp;SDL_FRect::y)</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>      .def_readwrite(<span class="stringliteral">&quot;w&quot;</span>, &amp;SDL_FRect::w)</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>      .def_readwrite(<span class="stringliteral">&quot;h&quot;</span>, &amp;SDL_FRect::h);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>}</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>}  <span class="comment">// namespace CSPill::Math</span></div>
+<div class="ttc" id="astruct_c_s_pill_1_1_math_1_1_vec2_d_html_a50d02792521c47459e965f24669ebfe1"><div class="ttname"><a href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#a50d02792521c47459e965f24669ebfe1">CSPill::Math::Vec2D::CrossProduct</a></div><div class="ttdeci">float CrossProduct(const Vec2D &amp;b)</div><div class="ttdef"><b>Definition:</b> TinyMath.hpp:226</div></div>
+<div class="ttc" id="astruct_c_s_pill_1_1_math_1_1_vec2_d_html_a6cfd0dcd2beff5711baf8b61864ef867"><div class="ttname"><a href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#a6cfd0dcd2beff5711baf8b61864ef867">CSPill::Math::Vec2D::Dot</a></div><div class="ttdeci">float Dot(const Vec2D &amp;b)</div><div class="ttdef"><b>Definition:</b> TinyMath.hpp:144</div></div>
+<div class="ttc" id="astruct_c_s_pill_1_1_math_1_1_vec2_d_html_a73d4b8d7cfeda30dac304b4b8caa414b"><div class="ttname"><a href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#a73d4b8d7cfeda30dac304b4b8caa414b">CSPill::Math::Vec2D::Magnitude</a></div><div class="ttdeci">float Magnitude()</div><div class="ttdef"><b>Definition:</b> TinyMath.hpp:179</div></div>
+<div class="ttc" id="astruct_c_s_pill_1_1_math_1_1_vec2_d_html_ab91c51646ec2fd7cc638730186f4c10b"><div class="ttname"><a href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#ab91c51646ec2fd7cc638730186f4c10b">CSPill::Math::Vec2D::Normalize</a></div><div class="ttdeci">Vec2D Normalize()</div><div class="ttdef"><b>Definition:</b> TinyMath.hpp:215</div></div>
+<div class="ttc" id="astruct_c_s_pill_1_1_math_1_1_vec2_d_html_ad89c80703fd1dbfafa04d3e14c00a514"><div class="ttname"><a href="struct_c_s_pill_1_1_math_1_1_vec2_d.html#ad89c80703fd1dbfafa04d3e14c00a514">CSPill::Math::Vec2D::Project</a></div><div class="ttdeci">Vec2D Project(Vec2D b)</div><div class="ttdef"><b>Definition:</b> TinyMath.hpp:208</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

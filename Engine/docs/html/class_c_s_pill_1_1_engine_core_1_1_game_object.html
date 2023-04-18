@@ -92,7 +92,7 @@ Inheritance diagram for CSPill::EngineCore::GameObject:</div>
  <div class="center">
   <img src="class_c_s_pill_1_1_engine_core_1_1_game_object.png" usemap="#CSPill::EngineCore::GameObject_map" alt=""/>
   <map id="CSPill::EngineCore::GameObject_map" name="CSPill::EngineCore::GameObject_map">
-<area href="class_c_s_pill_1_1_u_i_1_1_u_i_text.html" alt="CSPill::UI::UIText" shape="rect" coords="0,56,194,80"/>
+<area href="class_c_s_pill_1_1_u_i_1_1_u_i_text.html" title="Text UI." alt="CSPill::UI::UIText" shape="rect" coords="0,56,194,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -112,6 +112,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa12f107aad783c99207af4b866a18dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a649c57e60347e612cab17d60d0301768"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_component.html">Component</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html#a649c57e60347e612cab17d60d0301768">GetComponent</a> (std::string_view component_name)</td></tr>
 <tr class="separator:a649c57e60347e612cab17d60d0301768"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8beac600357196ca57bda7c89bc51e1d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html#a8beac600357196ca57bda7c89bc51e1d">IsLive</a> () const</td></tr>
+<tr class="separator:a8beac600357196ca57bda7c89bc51e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c1f5288b26b9a709279a8c3b02cefd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_s_pill_1_1_engine_core_1_1_game_object.html#a5c1f5288b26b9a709279a8c3b02cefd6">SetLive</a> (bool live)</td></tr>
+<tr class="separator:a5c1f5288b26b9a709279a8c3b02cefd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -300,6 +304,24 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a8beac600357196ca57bda7c89bc51e1d" name="a8beac600357196ca57bda7c89bc51e1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8beac600357196ca57bda7c89bc51e1d">&#9670;&#160;</a></span>IsLive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CSPill::EngineCore::GameObject::IsLive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is the current object live or not? </p><dl class="section return"><dt>Returns</dt><dd>true if it lives. </dd></dl>
+
+</div>
+</div>
 <a id="aa12f107aad783c99207af4b866a18dc9" name="aa12f107aad783c99207af4b866a18dc9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa12f107aad783c99207af4b866a18dc9">&#9670;&#160;</a></span>RemoveComponent()</h2>
 
@@ -358,6 +380,30 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a5c1f5288b26b9a709279a8c3b02cefd6" name="a5c1f5288b26b9a709279a8c3b02cefd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c1f5288b26b9a709279a8c3b02cefd6">&#9670;&#160;</a></span>SetLive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CSPill::EngineCore::GameObject::SetLive </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>live</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set the live state of the object. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">live</td><td>true or false. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a66de4dab83926abff88400d7a6e08d50" name="a66de4dab83926abff88400d7a6e08d50"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a66de4dab83926abff88400d7a6e08d50">&#9670;&#160;</a></span>Update()</h2>
 
@@ -373,7 +419,12 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Update is called every frame, if the object is enabled. </p>
+<p>Update is called every frame, if the object is enabled. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dt</td><td>float, time elapsed </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
