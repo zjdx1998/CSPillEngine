@@ -306,7 +306,6 @@ engine.AddObject("Flag", flag)
 engine.AddObject("Cliff", cliff)
 engine.AddObject("Cliff2", cliff2)
 engine.AddObject("Cliff3", cliff3)
-engine.AddObject("Enemy", enemy)
 for i in range(0, len(enemies)):
     engine.AddObject("Enemy" + str(i), enemies[i])
 for i in range(0, len(coins)):
