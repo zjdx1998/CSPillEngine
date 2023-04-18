@@ -34,7 +34,7 @@ class CharacterControllerComponent(Core.Component):
                 obj.GetComponent("TransformComponent").position().x = 0
                 return
             obj.GetComponent("TransformComponent").velocity().x = -self.speed
-        elif engine.IsKeyPressed("Up"):
+        elif engine.IsKeyPressed("Space"):
             obj.GetComponent("TransformComponent").velocity().y = self.jump_speed
         else:
             obj.GetComponent("TransformComponent").velocity().x = 0
