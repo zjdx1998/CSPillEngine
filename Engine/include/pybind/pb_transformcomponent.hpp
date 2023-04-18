@@ -17,7 +17,8 @@ void PB_TransformComponent(py::module &m) {
            py::return_value_policy::reference)
       .def("velocity", &TransformComponent::velocity, "Get velocity",
            py::return_value_policy::reference)
-      .def_property("scale", &TransformComponent::GetScale, &TransformComponent::SetScale, "Set Scale");
+      .def_property("scale", &TransformComponent::GetScale,
+                    &TransformComponent::SetScale, "Set Scale");
 }
 
 }  // namespace CSPill::EngineCore

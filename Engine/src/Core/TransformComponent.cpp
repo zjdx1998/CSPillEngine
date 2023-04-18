@@ -19,11 +19,7 @@ TransformComponent::TransformComponent()
   velocity_ = {0, 0};
   scale_ = {1, 1};
 }
-const Math::Vec2D &TransformComponent::GetScale() const {
-  return scale_;
-}
-void TransformComponent::SetScale(const Math::Vec2D &scale) {
-  scale_ = scale;
-}
+const Math::Vec2D &TransformComponent::GetScale() const { return scale_; }
+void TransformComponent::SetScale(const Math::Vec2D &scale) { scale_ = scale; }
 
 }  // namespace CSPill::EngineCore

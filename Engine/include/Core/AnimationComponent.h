@@ -14,12 +14,11 @@ class AnimationComponent : public Component {
   AnimationComponent(AnimationComponent &&) = default;
   void Update(GameObject *object, float dt) override;
   void Render(SDL_Renderer *renderer) override;
-  [[nodiscard]] const std::unordered_map<std::string, std::vector<std::string>> &GetAnimations()
-  const;
+  [[nodiscard]] const std::unordered_map<std::string, std::vector<std::string>>
+      &GetAnimations() const;
   bool AddAnimations(const std::string &name,
                      const std::vector<std::string> &animations);
-  bool AddAnimation(const std::string &name,
-                    const std::string &animation);
+  bool AddAnimation(const std::string &name, const std::string &animation);
   void RemoveAnimation(const std::string &name);
   [[nodiscard]] std::string_view GetCurrentAnimation() const;
   void SetCurrentAnimation(const std::string &name);
@@ -32,7 +31,7 @@ class AnimationComponent : public Component {
   std::unordered_map<std::string, std::vector<std::string>> animations_;
   std::string current_animation_;
   float frame_ = 0;
-  float speed_ = 30; // 30 frames per second;
+  float speed_ = 30;  // 30 frames per second;
   SDL_FRect dst_rect_;
 };
 

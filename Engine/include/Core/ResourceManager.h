@@ -174,14 +174,16 @@ class ResourceManager {
 
   /**
    * Get the active layer of a Scene.
-   * @param tileset_name name of the tileset of the layer, if empty then default is the current active tileset.
+   * @param tileset_name name of the tileset of the layer, if empty then default
+   * is the current active tileset.
    * @return a pointer of layer if the layer is found, otherwise nullptr
    */
   Layer *ActiveLayer(std::string_view tileset_name = "");
 
   /**
    * Get the active Tileset of a Scene.
-   * @param tileset_name name of the tileset, if empty then default is the current active tileset.
+   * @param tileset_name name of the tileset, if empty then default is the
+   * current active tileset.
    * @return a pointer of Tileset if the layer is found, otherwise nullptr
    */
   Tileset *ActiveTileset(std::string_view tileset_name = "");

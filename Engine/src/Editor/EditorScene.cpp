@@ -33,8 +33,8 @@ void UICenterRadioButton(std::string_view label, bool active) {
                       ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
   ImGui::SameLine(ImGui::GetWindowWidth() -
-      ImGui::GetTextLineHeightWithSpacing() -
-      ImGui::GetStyle().ItemInnerSpacing.x);
+                  ImGui::GetTextLineHeightWithSpacing() -
+                  ImGui::GetStyle().ItemInnerSpacing.x);
   ImGui::RadioButton(label.data(), active);
   ImGui::PopStyleVar(2);
 }
@@ -45,8 +45,8 @@ bool UIDeleteButton(std::string_view label) {
                       ImVec2(0, ImGui::GetStyle().ItemSpacing.y));
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
   ImGui::SameLine(ImGui::GetWindowWidth() -
-      ImGui::GetTextLineHeightWithSpacing() -
-      ImGui::GetStyle().ItemInnerSpacing.x - 25);
+                  ImGui::GetTextLineHeightWithSpacing() -
+                  ImGui::GetStyle().ItemInnerSpacing.x - 25);
   if (ImGui::SmallButton(label.data())) {
     return true;
   }
@@ -111,8 +111,8 @@ void SceneUI::Render(SDL_Renderer *renderer) {
             std::pair<int, int> row_and_col(selected_tileset_row,
                                             selected_tileset_col);
             layer->Data()[row * scene->GetCanvasWidth() /
-                tileset->GetTileWidth() +
-                col] =
+                              tileset->GetTileWidth() +
+                          col] =
                 ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col);
             //          std::cout << row << " , " << col << " , " <<
             //          ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col)
@@ -146,7 +146,7 @@ void TileSetEditorUI::Render(SDL_Renderer *renderer) {
 
   if (!ResourceManager::GetInstance().GetActiveTilesetName().empty()) {
     if (auto active_layer = ResourceManager::GetInstance().LoadImage(
-        ResourceManager::GetInstance().GetActiveTilesetName())) {
+            ResourceManager::GetInstance().GetActiveTilesetName())) {
       SDL_Point active_layer_size;
       SDL_QueryTexture(active_layer, nullptr, nullptr, &active_layer_size.x,
                        &active_layer_size.y);
@@ -200,17 +200,18 @@ void TileSetEditorUI::Render(SDL_Renderer *renderer) {
           ImGui::OpenPopup("Tile");
           auto current_brush =
               std::string(tileset->GetName()) + "-cropped-" +
-                  std::to_string(
-                      ::EngineCore::Utils::GetDataFromRowAndCol({selected_tileset_row, selected_tileset_col}));
+              std::to_string(::EngineCore::Utils::GetDataFromRowAndCol(
+                  {selected_tileset_row, selected_tileset_col}));
           SDL_Log("You selected Tile: %s", current_brush.c_str());
         }
       }
       if (ImGui::BeginPopup("Tile", ImGuiWindowFlags_AlwaysAutoResize)) {
         auto current_brush =
             std::string(tileset->GetName()) + "-cropped-" +
-                std::to_string(
-                    ::EngineCore::Utils::GetDataFromRowAndCol({selected_tileset_row, selected_tileset_col}));
-        SDL_Texture *cropped_texture = ResourceManager::GetInstance().QueryTexture(current_brush);
+            std::to_string(::EngineCore::Utils::GetDataFromRowAndCol(
+                {selected_tileset_row, selected_tileset_col}));
+        SDL_Texture *cropped_texture =
+            ResourceManager::GetInstance().QueryTexture(current_brush);
         if (cropped_texture) {
           ImGui::Image(cropped_texture, ImVec2(src_rect_.w, src_rect_.h));
         }
@@ -244,7 +245,7 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
           show_color_picker = !show_color_picker;
         }
         if (show_color_picker) {
-          ImGui::ColorPicker3("Color Picker", (float *) &bkg_color,
+          ImGui::ColorPicker3("Color Picker", (float *)&bkg_color,
                               ImGuiColorEditFlags_None);
         }
         UICenterRadioButton("", is_scene_selected);
@@ -359,7 +360,7 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                 if (ImGui::TreeNode(layer.GetName().data())) {
                   bool is_layer_selected =
                       layer.GetTileset() ==
-                          resource_manager.GetActiveTilesetName();
+                      resource_manager.GetActiveTilesetName();
                   UICenterRadioButton("", is_layer_selected);
                   // show delete button in the same line
                   if (UIDeleteButton(" X ")) {
@@ -392,10 +393,10 @@ void ResourceManagerUI::ResourceManagerRenderSceneLevels() {
                   bool &is_selected =
                       layer_selected_states[layer.GetName().data()];
                   if (ImGui::Selectable(
-                      layer.GetTileset().empty()
-                      ? "N/A"
-                      : layer.GetTileset().data(),
-                      is_selected, ImGuiSelectableFlags_AllowItemOverlap)) {
+                          layer.GetTileset().empty()
+                              ? "N/A"
+                              : layer.GetTileset().data(),
+                          is_selected, ImGuiSelectableFlags_AllowItemOverlap)) {
                     resource_manager.SetActiveTileset(
                         layer.GetTileset().data());
                     is_selected = true;

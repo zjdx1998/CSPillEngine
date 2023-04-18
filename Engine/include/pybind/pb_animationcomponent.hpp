@@ -21,28 +21,21 @@ void PB_AnimationComponent(py::module &m) {
            })
       .def("GetAnimations", &AnimationComponent::GetAnimations,
            "Get all Animations")
-      .def("AddAnimation", &AnimationComponent::AddAnimation,
-           py::arg("name"),
-           py::arg("animation"),
-           "Add a Animation")
-      .def("AddAnimations", &AnimationComponent::AddAnimations,
-           py::arg("name"),
-           py::arg("animations"),
-           "Add animations")
+      .def("AddAnimation", &AnimationComponent::AddAnimation, py::arg("name"),
+           py::arg("animation"), "Add a Animation")
+      .def("AddAnimations", &AnimationComponent::AddAnimations, py::arg("name"),
+           py::arg("animations"), "Add animations")
       .def("RemoveAnimation", &AnimationComponent::RemoveAnimation,
            "Remove a Animation")
       .def("GetCurrentAnimation", &AnimationComponent::GetCurrentAnimation,
            "Get the component's current animation")
       .def("SetCurrentAnimation", &AnimationComponent::SetCurrentAnimation,
            "Set the component's current animation")
-      .def("GetFrame",
-           &AnimationComponent::GetFrame,
+      .def("GetFrame", &AnimationComponent::GetFrame,
            "Get the current animation frame")
-      .def("SetFrame",
-           &AnimationComponent::SetFrame,
+      .def("SetFrame", &AnimationComponent::SetFrame,
            "Set the current animation frame")
-      .def_property("speed",
-                    &AnimationComponent::GetSpeed,
+      .def_property("speed", &AnimationComponent::GetSpeed,
                     &AnimationComponent::SetSpeed,
                     "Get/Set speed of animation, default is 30 FPS");
 }

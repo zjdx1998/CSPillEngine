@@ -9,8 +9,8 @@ namespace CSPill::EngineCore {
 void PB_Scene(py::module &m) {
   py::class_<Scene>(m, "Scene", "Tile map of the game")
       .def(py::init<std::string, int, int>())
-      .def(py::init<std::string, const std::vector<Layer> &, const std::vector<Tileset> &,
-                    int, int>())
+      .def(py::init<std::string, const std::vector<Layer> &,
+                    const std::vector<Tileset> &, int, int>())
       .def("Layers", &Scene::Layers,
            py::return_value_policy::reference_internal,
            "Get the layers contained by Scene.")

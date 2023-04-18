@@ -20,6 +20,7 @@ class TransformComponent : public Component {
   Math::Vec2D &velocity();
   const Math::Vec2D &GetScale() const;
   void SetScale(const Math::Vec2D &scale);
+
  private:
   Math::Vec2D position_;
   Math::Vec2D velocity_;

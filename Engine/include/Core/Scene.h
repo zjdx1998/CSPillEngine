@@ -224,9 +224,9 @@ class Scene {
    * @param canvas_width int, the width of the canvas
    * @param canvas_height int, the height of the canvas
    */
-  Scene(std::string name, const std::vector<Layer> &layers, const std::vector<Tileset> &tile_sets,
-        int canvas_width, int canvas_height,
-        const SDL_Color &bkg_color = {255, 255, 255, 255});
+  Scene(std::string name, const std::vector<Layer> &layers,
+        const std::vector<Tileset> &tile_sets, int canvas_width,
+        int canvas_height, const SDL_Color &bkg_color = {255, 255, 255, 255});
 
   /**
    * Destructor of Scene.
@@ -378,7 +378,7 @@ namespace nlohmann {
 /**
  * \brief JSON parsing helper struct for Layer
  */
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   /**
    * Retrieve the information in JSON object j.
@@ -407,7 +407,7 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
 /**
  * \brief JSON parsing helper struct for Tileset
  */
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   /**
    * Retrieve the information in JSON object j.
@@ -436,7 +436,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
 /**
  * \brief JSON parsing helper struct for Scene
  */
-template<>
+template <>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   /**
    * Retrieve the information in JSON object j.
@@ -452,8 +452,12 @@ struct adl_serializer<CSPill::EngineCore::Scene> {
       color.b = json_color.at("b");
       color.a = json_color.at("a");
     }
-    return {j.at("name"), j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),
-            j.at("canvas").at("height"), color};
+    return {j.at("name"),
+            j.at("layers"),
+            j.at("tilesets"),
+            j.at("canvas").at("width"),
+            j.at("canvas").at("height"),
+            color};
   }
 
   /**
