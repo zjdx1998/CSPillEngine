@@ -21,7 +21,7 @@ void PB_GameObject(py::module &m) {
                       const Math::Vec2D &scale) -> std::unique_ptr<GameObject> {
             return GameObject::Create(position, scale);
           }),
-          py::arg("position"), py::arg("scale"))
+          py::arg("position") = Math::Vec2D(0, 0), py::arg("scale") = Math::Vec2D(1, 1))
       .def("Update", &GameObject::Update,
            "Update is called every frame, if the object is enabled.")
       .def(
