@@ -12,6 +12,7 @@
 #include "SDL_mixer.h"
 #include "SDL_ttf.h"
 #include "Scene.h"
+#include "GameObject.h"
 
 namespace CSPill::EngineCore {
 
@@ -222,6 +223,9 @@ class ResourceManager {
    */
   void ClearTiles();
 
+  [[nodiscard]] GameObject *GetActiveCamera() const;
+  void SetActiveCamera(GameObject *active_camera);
+
  private:
   SDL_Renderer *renderer_;
 
@@ -234,6 +238,7 @@ class ResourceManager {
       scenes_;
   std::unordered_map<std::string, SDL_Texture *> images_;
 
+  GameObject *active_camera_;
   // Editor Only
   std::unordered_map<
       std::string, std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>>

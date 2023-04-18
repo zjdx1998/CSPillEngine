@@ -1,44 +1,47 @@
 import random
 import sys
+
 sys.path.append('../build')
 from PyCSPillEngine import Core, Utils, UI, Physics
 
 # engine through the game
-engine = Core.Engine("Super Mario", 1280, 720)
+engine = Core.Engine("Super Mario", 1280, 750)
 # global area
 score = 0
 level = 1
 gravity = 0.5
+ground_y = 555
 
 
 class CharacterControllerComponent(Core.Component):
     """Controller component for character"""
+
     def __init__(self, name):
         super().__init__(name)
         self.speed = 2
         self.jump_speed = -2
 
     def Update(self, obj, dt):
-        
-        if obj.GetComponent("TransformComponent").position().y >=510:
-                obj.GetComponent("TransformComponent").velocity().y = 0
-                
+
+        if obj.GetComponent("TransformComponent").position().y >= ground_y:
+            obj.GetComponent("TransformComponent").velocity().y = 0
+
         if engine.IsKeyPressed("Right"):
             print("Right")
             obj.GetComponent("TransformComponent").velocity().x = self.speed
         elif engine.IsKeyPressed("Left"):
+            if obj.GetComponent("TransformComponent").position().x <= 0:
+                obj.GetComponent("TransformComponent").position().x = 0
+                return
             obj.GetComponent("TransformComponent").velocity().x = -self.speed
         elif engine.IsKeyPressed("Up"):
             obj.GetComponent("TransformComponent").velocity().y = self.jump_speed
         else:
             obj.GetComponent("TransformComponent").velocity().x = 0
 
-        if(obj.GetComponent("TransformComponent").position().y <=500 and obj.GetComponent("TransformComponent").velocity().y < 10):
+        if (obj.GetComponent("TransformComponent").position().y <= ground_y - 10 and obj.GetComponent(
+                "TransformComponent").velocity().y < 10):
             obj.GetComponent("TransformComponent").velocity().y += gravity
-        
-        
-        
-
 
     pass
 
@@ -50,11 +53,11 @@ engine.SwitchScene(resource_manager.LoadScene("default.scene"))
 Utils.PlayMusic("background_winter.wav")
 
 message_ui = UI.UIText.Create("comic.ttf", "",
-                            Utils.Vec2D(800, 600), Utils.Vec2D(500, 300), 200)
+                              Utils.Vec2D(800, 600), Utils.Vec2D(500, 300), 200)
 
 character = Core.GameObject()
 character.GetComponent("TransformComponent").position().x = 100
-character.GetComponent("TransformComponent").position().y = 510
+character.GetComponent("TransformComponent").position().y = ground_y
 character.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
 
 camera = Core.GameObject()
@@ -77,10 +80,13 @@ character.AddComponent(character_collision_component)
 
 # Pipe game object
 pipe = Core.GameObject()
+
+
 def pipe_collision_callback(obj):
     """Pipe collision callback"""
     obj.GetComponent("TransformComponent").velocity().x = 0
     obj.GetComponent("TransformComponent").velocity().y = 0
+
 
 pip_transform = pipe.GetComponent("TransformComponent")
 pip_transform.position().x = 400
@@ -98,10 +104,13 @@ pipe.AddComponent(pipe_collision_component)
 
 # Enemy game object
 enemy = Core.GameObject()
+
+
 def enemy_collision_callback(obj):
     """Enemy collision callback"""
     Utils.PlayMusic("mario_dead.wav")
     message_ui.SetContent("Failed")
+
 
 enemy_transform = enemy.GetComponent("TransformComponent")
 enemy_transform.position().x = 500
@@ -118,12 +127,15 @@ enemy.AddComponent(enemy_collision_component)
 
 # Coin game object
 coin = Core.GameObject()
+
+
 def coin_collision_callback(obj):
     """Coin collision callback"""
     Utils.PlayMusic("coin_sound.wav")
     global score
     score += random.randint(1, 5)
     score_ui.SetContent("Score: " + str(score))
+
 
 coin_transform = coin.GetComponent("TransformComponent")
 coin_transform.position().x = 200
@@ -142,13 +154,16 @@ coin.AddComponent(coin_collision_component)
 
 # Flag game object
 flag = Core.GameObject()
+
+
 def flag_collision_callback(obj):
     """Flag collision callback"""
     Utils.PlayMusic("world_finished.wav")
     message_ui.SetContent("Success!")
 
+
 flag_transform = flag.GetComponent("TransformComponent")
-flag_transform.position().x = 900
+flag_transform.position().x = 100
 flag_transform.position().y = 510
 
 flag_bounding_box = Utils.RectF()
@@ -161,8 +176,8 @@ flag_collision_component.Register(character)
 flag.AddComponent(flag_collision_component)
 
 camera_component = Core.CameraComponent()
-camera_component.SetViewport(1280, 720)
-camera_component.Bind(character)
+camera_component.SetViewport(1280, 750)
+camera_component.Bind(character, Utils.Vec2D(400, 200))
 camera.AddComponent(camera_component)
 
 score_ui = UI.UIText.Create("comic.ttf", "Score: " + str(score),
@@ -175,10 +190,10 @@ engine.AddObject("Camera", camera)
 engine.AddObject("ScoreUI", score_ui)
 engine.AddObject("LevelUI", level_ui)
 engine.AddObject("MessageUI", message_ui)
-engine.AddObject("Pipe", pipe)
-engine.AddObject("Enemy", enemy)
-engine.AddObject("Coin", coin)
-engine.AddObject("Flag", flag)
+# engine.AddObject("Pipe", pipe)
+# engine.AddObject("Enemy", enemy)
+# engine.AddObject("Coin", coin)
+# engine.AddObject("Flag", flag)
 
 engine.Run(60)
 

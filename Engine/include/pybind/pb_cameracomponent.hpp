@@ -14,7 +14,7 @@ void PB_CameraComponent(py::module &m) {
       .def(py::init<>())
       .def("Update", &CameraComponent::Update, "Update CameraComponent")
       .def("Bind", &CameraComponent::Bind, py::arg("object"),
-           py::arg("offset") = Math::Vec2D{0, 0}, "Bind CameraComponent")
+           py::arg("view_range") = Math::Vec2D{0, 0}, "Bind CameraComponent")
       .def("GetViewport", &CameraComponent::GetViewport, "Get Viewport")
       .def("SetViewport", &CameraComponent::SetViewport, "Set Viewport");
 }

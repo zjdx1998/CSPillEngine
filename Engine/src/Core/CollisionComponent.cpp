@@ -6,6 +6,7 @@
 
 #include "GameObject.h"
 #include "Utils.h"
+#include "TransformComponent.h"
 
 namespace CSPill::EngineCore {
 
@@ -16,9 +17,14 @@ bool CollisionComponent::Collide(const SDL_FRect &A, const SDL_FRect &B) {
 }
 
 void CollisionComponent::Update(GameObject *object, float dt) {
+  if (auto
+      transform = dynamic_cast<TransformComponent *>(object->GetComponent(::EngineCore::Utils::TRANSFORM_COMPONENT))) {
+    bounding_box_.x = transform->position().x;
+    bounding_box_.y = transform->position().y;
+  }
   for (auto obj : registers_) {
     if (auto temp_other =
-            obj->GetComponent(::EngineCore::Utils::COLLISION_COMPONENT)) {
+        obj->GetComponent(::EngineCore::Utils::COLLISION_COMPONENT)) {
       auto other = dynamic_cast<CollisionComponent *>(temp_other);
       if (Collide(this->bounding_box_, other->bounding_box_)) {
         if (callback_) {
@@ -39,7 +45,7 @@ void CollisionComponent::SetBoundingBox(const SDL_FRect &bounding_box) {
   bounding_box_ = bounding_box;
 }
 const std::function<void(GameObject *)> &CollisionComponent::GetCallback()
-    const {
+const {
   return callback_;
 }
 void CollisionComponent::SetCallback(
