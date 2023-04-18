@@ -1,8 +1,8 @@
 # CSPill Engine
 
-[![cpp-linter](https://github.com/Spring23BuildingGameEngines/finalproject-sv-group/actions/workflows/cpplint.yml/badge.svg)](https://github.com/Spring23BuildingGameEngines/finalproject-sv-group/actions/workflows/cpplint.yml)
-[![CI](https://github.com/Spring23BuildingGameEngines/finalproject-sv-group/actions/workflows/compile-linux.yml/badge.svg)](https://github.com/Spring23BuildingGameEngines/finalproject-sv-group/actions/workflows/compile-linux.yml)
-[![Doxygen](https://github.com/Spring23BuildingGameEngines/finalproject-sv-group/actions/workflows/documentation.yml/badge.svg)](https://github.com/Spring23BuildingGameEngines/finalproject-sv-group/actions/workflows/documentation.yml)
+[![cpp-linter](https://github.com/zjdx1998/CSPillEngine/actions/workflows/cpplint.yml/badge.svg)](https://github.com/zjdx1998/CSPillEngine/actions/workflows/cpplint.yml)
+[![CI](https://github.com/zjdx1998/CSPillEngine/actions/workflows/compile-linux.yml/badge.svg)](https://github.com/zjdx1998/CSPillEngine/actions/workflows/compile-linux.yml)
+[![Doxygen](https://github.com/zjdx1998/CSPillEngine/actions/workflows/documentation.yml/badge.svg)](https://github.com/zjdx1998/CSPillEngine/actions/workflows/documentation.yml)
 
 ## Add any additional notes here
 
