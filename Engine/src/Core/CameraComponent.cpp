@@ -15,11 +15,11 @@ void CameraComponent::Update(GameObject *object, float dt) {
   Math::Vec2D velocity = {0, 0};
   if (bind_object_) {
     if (auto transform_bind_object = bind_object_->GetComponent(
-        ::EngineCore::Utils::TRANSFORM_COMPONENT)) {
+            ::EngineCore::Utils::TRANSFORM_COMPONENT)) {
       transform_component->position() =
           dynamic_cast<TransformComponent *>(transform_bind_object)
               ->position() +
-              offset_;
+          offset_;
       velocity = {dynamic_cast<TransformComponent *>(transform_bind_object)
                       ->velocity()
                       .x,
@@ -29,8 +29,8 @@ void CameraComponent::Update(GameObject *object, float dt) {
     }
   }
   float x = viewport_.x, y = viewport_.y;
-  if (transform_component->position().x - x > view_range_.x
-      || transform_component->position().x - x < 0) {
+  if (transform_component->position().x - x > view_range_.x ||
+      transform_component->position().x - x < 0) {
     velocity.x *= 2;
   }
   x = std::fmax(
@@ -42,7 +42,7 @@ void CameraComponent::Update(GameObject *object, float dt) {
 void CameraComponent::Bind(GameObject *object, const Math::Vec2D &view_range) {
   bind_object_ = object;
   if (auto transform = dynamic_cast<TransformComponent *>(
-      object->GetComponent(::EngineCore::Utils::TRANSFORM_COMPONENT))) {
+          object->GetComponent(::EngineCore::Utils::TRANSFORM_COMPONENT))) {
     offset_ = {-transform->position().x, -transform->position().y};
   }
   view_range_ = view_range;
