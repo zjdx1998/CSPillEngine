@@ -311,9 +311,6 @@ score_ui = UI.UIText.Create("comic.ttf", "Score: " + str(score),
 level_ui = UI.UIText.Create("comic.ttf", "Level: 1-" + str(level),
                             Utils.Vec2D(650, 50), Utils.Vec2D(200, 100), 100)
 
-# Add all GameObjects
-engine.AddObject("Character", character)
-engine.AddObject("Camera", camera)
 engine.AddObject("ScoreUI", score_ui)
 engine.AddObject("LevelUI", level_ui)
 engine.AddObject("MessageUI", message_ui)
@@ -333,6 +330,8 @@ for i in range(0, len(enemies)):
     engine.AddObject("Enemy" + str(i), enemies[i])
 for i in range(0, len(coins)):
     engine.AddObject("Coin" + str(i), coins[i])
+engine.AddObject("Character", character)
+engine.AddObject("Camera", camera)
 
 # Start game loop
 engine.Run(60)
