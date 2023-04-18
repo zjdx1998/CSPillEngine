@@ -78,6 +78,17 @@ class GameObject {
    */
   Component *GetComponent(std::string_view component_name);
 
+  /**
+   * Is the current object live or not?
+   * @return true if it lives.
+   */
+  [[nodiscard]] bool IsLive() const;
+  /**
+   * Set the live state of the object.
+   * @param live true or false.
+   */
+  void SetLive(bool live);
+
  protected:
   GameObject() = default;
 
@@ -86,6 +97,7 @@ class GameObject {
   std::unordered_map<std::string_view,
                      std::list<std::unique_ptr<Component>>::iterator>
       component_indices_;
+  bool live_;
 };
 
 }  // namespace CSPill::EngineCore

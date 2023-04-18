@@ -47,5 +47,11 @@ Component *GameObject::GetComponent(std::string_view component_name) {
     return nullptr;
   return component_indices_[component_name]->get();
 }
+bool GameObject::IsLive() const {
+  return live_;
+}
+void GameObject::SetLive(bool live) {
+  live_ = live;
+}
 
 }  // namespace CSPill::EngineCore

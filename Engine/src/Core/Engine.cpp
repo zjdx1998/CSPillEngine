@@ -93,15 +93,15 @@ void Engine::RefreshScene() {
     SDL_Rect dstRect = {0, 0, GetWindowSize().first, GetWindowSize().second};
     if (auto camera = GetObject("Camera")) {
       auto camera_component =
-          (CameraComponent *)(camera->GetComponent("CameraComponent"));
+          (CameraComponent *) (camera->GetComponent("CameraComponent"));
       auto &viewport = camera_component->GetViewport();
       dstRect.x =
-          std::min(std::max(dstRect.x, (int)viewport.x),
+          std::min(std::max(dstRect.x, (int) viewport.x),
                    static_cast<int>(scene_->GetCanvasWidth() - viewport.w));
-      dstRect.y = std::min(std::max(dstRect.y, (int)viewport.y),
+      dstRect.y = std::min(std::max(dstRect.y, (int) viewport.y),
                            static_cast<int>(scene_->GetCanvasHeight()));
-      dstRect.w = std::min(dstRect.w, (int)viewport.w);
-      dstRect.h = std::min(dstRect.h, (int)viewport.h);
+      dstRect.w = std::min(dstRect.w, (int) viewport.w);
+      dstRect.h = std::min(dstRect.h, (int) viewport.h);
     }
     SDL_RenderCopy(renderer_->GetRenderer(), level, &dstRect, nullptr);
   }
@@ -127,14 +127,17 @@ void Engine::Run(int FPS) {
       }
     }
     for (const auto &obj : objects_) {
+      if (!obj.second->IsLive()) {
+        RemoveObject(obj.first);
+      }
       obj.second->Update(dt);
       obj.second->Render(renderer_->GetRenderer());
     }
     SDL_RenderPresent(renderer_->GetRenderer());
     auto end_time = std::chrono::high_resolution_clock::now();
     dt = std::chrono::duration<float, std::chrono::milliseconds::period>(
-             end_time - start_time)
-             .count();
+        end_time - start_time)
+        .count();
     if (dt < 1000.0 / FPS) {
       SDL_Delay(1000.0 / FPS - dt);
     }
@@ -142,7 +145,15 @@ void Engine::Run(int FPS) {
 }
 bool Engine::IsKeyPressed(const std::string &key) {
   return key_pressed_.find(SDL_GetKeyFromName(key.data())) !=
-         key_pressed_.end();
+      key_pressed_.end();
+}
+bool Engine::RemoveObject(const std::string &name) {
+  if (objects_.find(name) != objects_.end()) {
+    objects_[name].reset();
+    objects_.erase(name);
+    return true;
+  }
+  return false;
 }
 
 }  // namespace CSPill::EngineCore
