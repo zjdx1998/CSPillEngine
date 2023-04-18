@@ -297,11 +297,6 @@ engine.AddObject("ScoreUI", score_ui)
 engine.AddObject("LevelUI", level_ui)
 engine.AddObject("MessageUI", message_ui)
 engine.AddObject("Pipe", pipe)
-engine.AddObject("Enemy", enemy)
-for i in range(0, len(enemies)):
-    engine.AddObject("Enemy" + str(i), enemies[i])
-for i in range(0, len(coins)):
-    engine.AddObject("Coin" + str(i), coins[i])
 engine.AddObject("Pipe2", pipe2)
 engine.AddObject("Pipe3", pipe3)
 engine.AddObject("Pipe4", pipe4)
@@ -311,6 +306,11 @@ engine.AddObject("Flag", flag)
 engine.AddObject("Cliff", cliff)
 engine.AddObject("Cliff2", cliff2)
 engine.AddObject("Cliff3", cliff3)
+engine.AddObject("Enemy", enemy)
+for i in range(0, len(enemies)):
+    engine.AddObject("Enemy" + str(i), enemies[i])
+for i in range(0, len(coins)):
+    engine.AddObject("Coin" + str(i), coins[i])
 
 engine.Run(60)
 
