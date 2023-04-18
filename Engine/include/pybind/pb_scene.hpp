@@ -7,6 +7,8 @@ namespace py = pybind11;
 namespace CSPill::EngineCore {
 
 void PB_Scene(py::module &m) {
+  py::class_<Layer>(m, "Layer", "Layer is a basic unit of Scene.")
+      .def("GetData", &Layer::Data, "Get the data of the layer.");
   py::class_<Scene>(m, "Scene", "Tile map of the game")
       .def(py::init<std::string, int, int>())
       .def(py::init<std::string, const std::vector<Layer> &,

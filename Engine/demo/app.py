@@ -64,19 +64,23 @@ class CharacterControllerComponent(Core.Component):
 
     pass
 
-
+# Initiate ResourceManager
 resource_manager = Core.ResourceManager.GetInstance()
 resource_manager.LoadResources(".")
 engine.SwitchScene(resource_manager.LoadScene("default.scene"))
 
+# Playing background music
 Utils.PlayMusic("background_winter.wav")
 
+# Initiate Level number and score UI
 message_ui = UI.UIText.Create("comic.ttf", "",
                               Utils.Vec2D(800, 600), Utils.Vec2D(500, 300), 200)
-
+# Create character object
 character = Core.GameObject(Utils.Vec2D(100, ground_y), Utils.Vec2D(5, 5))
+# Create camera object
 camera = Core.GameObject()
 
+# Configure character
 character.AddComponent(CharacterControllerComponent("ControllerComponent"))
 character_animation_component = Core.AnimationComponent()
 character_animation_component.AddAnimations("walkright",
@@ -88,7 +92,7 @@ character_animation_component.AddAnimations("walkleft",
 character_animation_component.SetCurrentAnimation("walkright")
 character.AddComponent(character_animation_component)
 character_bounding_box = Utils.RectF()
-# TODO: size
+
 character_bounding_box.x = character.GetComponent("TransformComponent").position().x
 character_bounding_box.y = character.GetComponent("TransformComponent").position().y
 character_bounding_box.w = 50
@@ -96,7 +100,7 @@ character_bounding_box.h = 50
 character_collision_component = Physics.CollisionComponent(character_bounding_box)
 character.AddComponent(character_collision_component)
 
-
+# Callback function for cliff
 def cliff_collision_callback(self, obj):
     """Pipe collision callback"""
     global falling
@@ -106,7 +110,7 @@ def cliff_collision_callback(self, obj):
         message_ui.SetContent("Failed")
         falling = True
 
-
+# Helper function to create cliff object
 def create_cliff(position, bounding_width, bounding_height):
     cliff = Core.GameObject(position, Utils.Vec2D(1, 1))
     cliff_bounding_box = Utils.RectF()
@@ -118,7 +122,7 @@ def create_cliff(position, bounding_width, bounding_height):
     cliff.AddComponent(cliff_collision_component)
     return cliff
 
-
+# Create cliffs
 cliff = create_cliff(Utils.Vec2D(68 * 50, ground_y + 40), 100, 100)
 cliff2 = create_cliff(Utils.Vec2D(83 * 50, ground_y + 40), 100, 100)
 cliff3 = create_cliff(Utils.Vec2D(151 * 50, ground_y + 40), 100, 100)
@@ -140,7 +144,7 @@ def pipe_collision_callback(self, obj):
         obj.GetComponent("TransformComponent").position().y = self_pos.y - obj.GetComponent(
             "CollisionComponent").bouding_box.h
 
-
+# Helper function to create pipe object
 def create_pipe(position, bounding_width, bounding_height):
     """Create a pipe object"""
     pipe = Core.GameObject(position, Utils.Vec2D(1, 1))
@@ -155,7 +159,7 @@ def create_pipe(position, bounding_width, bounding_height):
     pipe.AddComponent(pipe_collision_component)
     return pipe
 
-
+# Create pipes
 pipe_height = 50
 pipe_width = 100
 # pipe = Core.GameObject(Utils.Vec2D(29*50, ground_y - 50), Utils.Vec2D(1, 1))
@@ -165,15 +169,18 @@ pipe3 = create_pipe(Utils.Vec2D(47 * 50, ground_y - pipe_height * 3), pipe_width
 pipe4 = create_pipe(Utils.Vec2D(57.5 * 50, ground_y - pipe_height * 3), pipe_width, pipe_height * 4)
 pipe5 = create_pipe(Utils.Vec2D(160.5 * 50, ground_y - pipe_height), pipe_width, pipe_height * 2)
 pipe6 = create_pipe(Utils.Vec2D(176.5 * 50, ground_y - pipe_height), pipe_width, pipe_height * 2)
-blocks = [create_pipe(Utils.Vec2D(16 * 50, ground_y - pipe_height * 3), pipe_width / 2, pipe_height / 2),
-          create_pipe(Utils.Vec2D(950, ground_y - pipe_height * 3), 300, pipe_height / 2),
-          create_pipe(Utils.Vec2D(950, ground_y - pipe_height * 3), 300, pipe_height / 2),
-          create_pipe(Utils.Vec2D(1050, ground_y - pipe_height * 6), 65, pipe_height / 2),
-          create_pipe(Utils.Vec2D(3650, ground_y - pipe_height * 3), 150, pipe_height / 2),
-          create_pipe(Utils.Vec2D(3800, ground_y - pipe_height * 7), 475, pipe_height / 2),
-          create_pipe(Utils.Vec2D(4400, ground_y - pipe_height * 7), 200, pipe_height / 2)]
 
+# Create bricks object
+blocks = []
+# 224 cells per row, 15 rows
+for i in range(0, 2688):
+    tilemap = Core.ResourceManager.GetInstance().LoadScene("default.scene").GetLayers()[0].GetData()
+    if tilemap[i] != -1:
+        row_num = i // 224
+        brk = create_pipe(Utils.Vec2D((i - row_num * 224 - 1) * 50, row_num * 50 - 40), 50, 50)
+        blocks.append(brk)
 
+# Callback function for enemy
 def enemy_collision_callback(self, obj):
     """Enemy collision callback"""
     global score
@@ -192,7 +199,7 @@ def enemy_collision_callback(self, obj):
             message_ui.SetContent("Failed")
             falling = True
 
-
+# Enemy Controller Component
 class EnemyControllerComponent(Core.Component):
     def __init__(self, name):
         super().__init__(name)
@@ -219,8 +226,6 @@ class EnemyControllerComponent(Core.Component):
 enemies = []
 for i in range(0, 10):
     # Enemy game object
-    import random
-
     enemy = Core.GameObject(Utils.Vec2D(random.randint(400, 10000), 585), Utils.Vec2D(1, 1))
 
     enemy_bounding_box = Utils.RectF(0, 0, 66, 66)
@@ -262,7 +267,6 @@ for i in range(0, 20):
         self.live = False
 
 
-    # TODO: size
     coin_bounding_box = Utils.RectF()
     coin_bounding_box.x = coin.GetComponent("TransformComponent").position().x
     coin_bounding_box.y = coin.GetComponent("TransformComponent").position().y
@@ -278,7 +282,7 @@ for i in range(0, 20):
 # Flag game object
 flag = Core.GameObject(Utils.Vec2D(9770, ground_y))
 
-
+# Callback function for flag object
 def flag_collision_callback(self, obj):
     """Flag collision callback"""
     Utils.StopMusic(-1)
@@ -286,7 +290,7 @@ def flag_collision_callback(self, obj):
     message_ui.SetContent("Success!")
     self.live = False
 
-
+# Create flag collision box
 flag_bounding_box = Utils.RectF()
 # TODO: size
 flag_bounding_box.w = 10
@@ -301,11 +305,13 @@ camera_component.SetViewport(1280, 750)
 camera_component.Bind(character, Utils.Vec2D(400, 200))
 camera.AddComponent(camera_component)
 
+# Create UI objects
 score_ui = UI.UIText.Create("comic.ttf", "Score: " + str(score),
                             Utils.Vec2D(1150, 50), Utils.Vec2D(200, 100), 100)
 level_ui = UI.UIText.Create("comic.ttf", "Level: 1-" + str(level),
                             Utils.Vec2D(650, 50), Utils.Vec2D(200, 100), 100)
 
+# Add all GameObjects
 engine.AddObject("Character", character)
 engine.AddObject("Camera", camera)
 engine.AddObject("ScoreUI", score_ui)
@@ -328,6 +334,8 @@ for i in range(0, len(enemies)):
 for i in range(0, len(coins)):
     engine.AddObject("Coin" + str(i), coins[i])
 
+# Start game loop
 engine.Run(60)
 
+# Release all resources
 resource_manager.ReleaseAll()
