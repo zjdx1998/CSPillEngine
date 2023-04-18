@@ -11,6 +11,7 @@ score = 0
 level = 1
 gravity = 0.5
 ground_y = 555
+falling = False
 
 
 class CharacterControllerComponent(Core.Component):
@@ -25,6 +26,10 @@ class CharacterControllerComponent(Core.Component):
         transform = obj.GetComponent("TransformComponent")
         if engine.IsKeyPressed("1"):
             print(transform.position())
+        if falling:
+            transform.velocity().x = 0
+            transform.velocity().y = 0.5
+            return
         if transform.position().y >= ground_y:
             transform.velocity().y = 0
 
@@ -82,26 +87,30 @@ character_bounding_box.h = 50
 character_collision_component = Physics.CollisionComponent(character_bounding_box)
 character.AddComponent(character_collision_component)
 
-ground = Core.GameObject(Utils.Vec2D(0, ground_y), Utils.Vec2D(1, 1))
 
-
-def ground_collision_callback(self, obj):
+def cliff_collision_callback(self, obj):
     """Pipe collision callback"""
-    v_y = obj.GetComponent("TransformComponent").velocity().y
-    pos_y = obj.GetComponent("TransformComponent").position().y
-    height = obj.GetComponent("CollisionComponent").bouding_box.h
-    print("collide " + str(v_y) + " " + str(pos_y) + " " + str(height))
-    obj.GetComponent("TransformComponent").position().y = ground_y - height
-    obj.GetComponent("TransformComponent").velocity().y = 0
+    global falling
+    if not falling:
+        Utils.StopMusic(-1)
+        Utils.PlayMusic("mario_dead.wav")
+        message_ui.SetContent("Failed")
+        falling = True
 
+def create_cliff(position, bounding_width, bounding_height):
+    cliff = Core.GameObject(position, Utils.Vec2D(1, 1))
+    cliff_bounding_box = Utils.RectF()
+    cliff_bounding_box.w = bounding_width
+    cliff_bounding_box.h = bounding_height
+    cliff_collision_component = Physics.CollisionComponent(cliff_bounding_box)
+    cliff_collision_component.callback = cliff_collision_callback
+    cliff_collision_component.Register(character)
+    cliff.AddComponent(cliff_collision_component)
+    return cliff
 
-ground_bounding_box = Utils.RectF()
-ground_bounding_box.w = 68 * 50
-ground_bounding_box.h = 100
-ground_collision_component = Physics.CollisionComponent(ground_bounding_box)
-ground_collision_component.callback = ground_collision_callback
-ground_collision_component.Register(character)
-ground.AddComponent(ground_collision_component)
+cliff = create_cliff(Utils.Vec2D(68 * 50, ground_y + 40), 100, 100)
+cliff2 = create_cliff(Utils.Vec2D(83 * 50, ground_y + 40), 100, 100)
+cliff3 = create_cliff(Utils.Vec2D(151 * 50, ground_y + 40), 100, 100)
 
 # Pipe game object
 def pipe_collision_callback(self, obj):
@@ -289,6 +298,9 @@ engine.AddObject("Pipe4", pipe4)
 engine.AddObject("Pipe5", pipe5)
 engine.AddObject("Pipe6", pipe6)
 engine.AddObject("Flag", flag)
+engine.AddObject("Cliff", cliff)
+engine.AddObject("Cliff2", cliff2)
+engine.AddObject("Cliff3", cliff3)
 
 engine.Run(60)
 
