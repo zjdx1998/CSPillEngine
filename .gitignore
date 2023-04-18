@@ -43,5 +43,4 @@ settings.json
 .DS_Store
 
 # doxygen
-html
 latex
