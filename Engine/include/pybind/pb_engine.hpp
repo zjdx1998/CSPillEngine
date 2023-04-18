@@ -20,12 +20,12 @@ void PB_Engine(py::module &m) {
           [](std::string_view title, int w, int h,
              int x = SDL_WINDOWPOS_CENTERED, int y = SDL_WINDOWPOS_CENTERED,
              Uint32 sdl_init_flags =
-                 SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER,
+             SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER,
              SDL_WindowFlags window_flags = static_cast<SDL_WindowFlags>(
-                 SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI),
+                 SDL_WINDOW_RESIZABLE),
              SDL_RendererFlags renderer_flags = static_cast<SDL_RendererFlags>(
                  SDL_RENDERER_PRESENTVSYNC |
-                 SDL_RENDERER_ACCELERATED)) -> std::unique_ptr<Engine> {
+                     SDL_RENDERER_ACCELERATED)) -> std::unique_ptr<Engine> {
             return Engine::Create(title, w, h, x, y, sdl_init_flags,
                                   window_flags, renderer_flags);
           }))
@@ -34,10 +34,9 @@ void PB_Engine(py::module &m) {
             return Engine::Create(
                 title, w, h, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                 SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER,
-                static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE |
-                                             SDL_WINDOW_ALLOW_HIGHDPI),
+                static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE),
                 static_cast<SDL_RendererFlags>(SDL_RENDERER_PRESENTVSYNC |
-                                               SDL_RENDERER_ACCELERATED));
+                    SDL_RENDERER_ACCELERATED));
           }))
       .def_static("Create", &Engine::Create)
       .def(
