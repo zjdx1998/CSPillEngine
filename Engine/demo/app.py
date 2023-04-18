@@ -23,13 +23,15 @@ class CharacterControllerComponent(Core.Component):
 
     def Update(self, obj, dt):
         transform = obj.GetComponent("TransformComponent")
+        print(transform.position())
         if transform.position().y >= ground_y:
             transform.velocity().y = 0
 
         if engine.IsKeyPressed("Right"):
-            print("Right")
+            obj.GetComponent("AnimationComponent").SetCurrentAnimation("walkright")
             transform.velocity().x = self.speed
         if engine.IsKeyPressed("Left"):
+            obj.GetComponent("AnimationComponent").SetCurrentAnimation("walkleft")
             if transform.position().x <= 0:
                 transform.position().x = 0
                 return
@@ -62,32 +64,65 @@ camera = Core.GameObject()
 
 character.AddComponent(CharacterControllerComponent("ControllerComponent"))
 character_animation_component = Core.AnimationComponent()
-character_animation_component.AddAnimations("default",
+character_animation_component.AddAnimations("walkright",
                                             ["mario-edited.png-cropped-1000", "mario-edited.png-cropped-1001",
                                              "mario-edited.png-cropped-1002", "mario-edited.png-cropped-1003"])
-character_animation_component.SetCurrentAnimation("default")
+character_animation_component.AddAnimations("walkleft",
+                                            ["mario-edited.png-cropped-0", "mario-edited.png-cropped-1",
+                                             "mario-edited.png-cropped-2", "mario-edited.png-cropped-3"])
+character_animation_component.SetCurrentAnimation("walkright")
 character.AddComponent(character_animation_component)
 character_bounding_box = Utils.RectF()
 # TODO: size
 character_bounding_box.x = character.GetComponent("TransformComponent").position().x
 character_bounding_box.y = character.GetComponent("TransformComponent").position().y
-character_bounding_box.w = 10
-character_bounding_box.h = 10
+character_bounding_box.w = 50
+character_bounding_box.h = 50
 character_collision_component = Physics.CollisionComponent(character_bounding_box)
 character.AddComponent(character_collision_component)
+
+ground = Core.GameObject(Utils.Vec2D(0, ground_y), Utils.Vec2D(1, 1))
+
+def ground_collision_callback(obj):
+    """Pipe collision callback"""
+    v_y = obj.GetComponent("TransformComponent").velocity().y
+    pos_y = obj.GetComponent("TransformComponent").position().y
+    height = obj.GetComponent("CollisionComponent").bouding_box.h
+    print("collide " + str(v_y) + " " + str(pos_y) + " " + str(height))
+    obj.GetComponent("TransformComponent").position().y = ground_y - height
+    obj.GetComponent("TransformComponent").velocity().y = 0
+
+ground_bounding_box = Utils.RectF()
+ground_bounding_box.w = 68*50
+ground_bounding_box.h = 100
+ground_collision_component = Physics.CollisionComponent(ground_bounding_box)
+ground_collision_component.callback = ground_collision_callback
+ground_collision_component.Register(character)
+ground.AddComponent(ground_collision_component)
 
 # Pipe game object
 pipe = Core.GameObject(Utils.Vec2D(400, 510))
 
 
+pipe = Core.GameObject(Utils.Vec2D(29*50, ground_y - 100), Utils.Vec2D(5, 5))
+
 def pipe_collision_callback(obj):
     """Pipe collision callback"""
+    v_x = obj.GetComponent("TransformComponent").velocity().x
+    pos_x = obj.GetComponent("TransformComponent").position().x
+    print(str(v_x))
+    print(str(pos_x))
+    if v_x > 0:
+        obj.GetComponent("TransformComponent").position().x -= 10 + obj.GetComponent("CollisionComponent").bouding_box.w
+    elif v_x < 0:
+        obj.GetComponent("TransformComponent").position().x += 10
     obj.GetComponent("TransformComponent").velocity().x = 0
-    obj.GetComponent("TransformComponent").velocity().y = 0
 
-
-# TODO: size
-pipe_bounding_box = Utils.RectF(0, 0, 50, 50)
+pipe_bounding_box = Utils.RectF()
+pipe_bounding_box.x = pipe.GetComponent("TransformComponent").position().x
+pipe_bounding_box.y = pipe.GetComponent("TransformComponent").position().y
+pipe_bounding_box.w = 100
+pipe_bounding_box.h = 100
 pipe_collision_component = Physics.CollisionComponent(pipe_bounding_box)
 pipe_collision_component.callback = pipe_collision_callback
 
@@ -105,7 +140,9 @@ def enemy_collision_callback(obj):
 
 
 # TODO: size
-enemy_bounding_box = Utils.RectF(0, 0, 10, 10)
+enemy_bounding_box = Utils.RectF()
+enemy_bounding_box.w = 50
+enemy_bounding_box.h = 50
 enemy_collision_component = Physics.CollisionComponent(enemy_bounding_box)
 enemy_collision_component.callback = enemy_collision_callback
 enemy_collision_component.Register(character)
@@ -124,8 +161,12 @@ def coin_collision_callback(obj):
 
 
 # TODO: size
-coin_bounding_box = Utils.RectF(coin.GetComponent("TransformComponent").position().x,
-                                coin.GetComponent("TransformComponent").position().y, 10, 10)
+coin_bounding_box = Utils.RectF()
+coin_bounding_box.x = coin.GetComponent("TransformComponent").position().x
+coin_bounding_box.y = coin.GetComponent("TransformComponent").position().y
+coin_bounding_box.w = 10
+coin_bounding_box.h = 10
+
 coin_collision_component = Physics.CollisionComponent(coin_bounding_box)
 coin_collision_component.callback = coin_collision_callback
 coin_collision_component.Register(character)
@@ -165,7 +206,7 @@ engine.AddObject("Camera", camera)
 engine.AddObject("ScoreUI", score_ui)
 engine.AddObject("LevelUI", level_ui)
 engine.AddObject("MessageUI", message_ui)
-# engine.AddObject("Pipe", pipe)
+engine.AddObject("Pipe", pipe)
 # engine.AddObject("Enemy", enemy)
 # engine.AddObject("Coin", coin)
 # engine.AddObject("Flag", flag)
