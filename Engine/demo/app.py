@@ -97,6 +97,7 @@ def cliff_collision_callback(self, obj):
         message_ui.SetContent("Failed")
         falling = True
 
+
 def create_cliff(position, bounding_width, bounding_height):
     cliff = Core.GameObject(position, Utils.Vec2D(1, 1))
     cliff_bounding_box = Utils.RectF()
@@ -108,9 +109,11 @@ def create_cliff(position, bounding_width, bounding_height):
     cliff.AddComponent(cliff_collision_component)
     return cliff
 
+
 cliff = create_cliff(Utils.Vec2D(68 * 50, ground_y + 40), 100, 100)
 cliff2 = create_cliff(Utils.Vec2D(83 * 50, ground_y + 40), 100, 100)
 cliff3 = create_cliff(Utils.Vec2D(151 * 50, ground_y + 40), 100, 100)
+
 
 # Pipe game object
 def pipe_collision_callback(self, obj):
@@ -118,15 +121,20 @@ def pipe_collision_callback(self, obj):
     self_pos = self.GetComponent("TransformComponent").position()
     self_box = self.GetComponent("CollisionComponent").bouding_box
     obj_pos = obj.GetComponent("TransformComponent").position()
-    obj.GetComponent("TransformComponent").velocity().x = 0
-    if obj_pos.x < self_pos.x:
-        obj.GetComponent("TransformComponent").position().x -= 10
-    elif obj_pos.x > self_pos.x + self_box.w - 25:
-        obj.GetComponent("TransformComponent").position().x += 10
-    else:
-        print(str(obj_pos.x) + " " + str(self_pos) + " " + str(self_box.w))
+    obj_vel = obj.GetComponent("TransformComponent").velocity()
+    print(obj.GetComponent("TransformComponent").velocity().x, obj_pos, self_pos)
+    if obj_vel.x > 0 and obj_pos.x < self_pos.x and obj_pos.y > self_pos.y:
+        print("?")
+        obj.GetComponent("TransformComponent").velocity().x = 0
+    elif obj_vel.x < 0 and obj_pos.x > self_pos.x and obj_pos.y > self_pos.y:
+        print("??")
+        obj.GetComponent("TransformComponent").velocity().x = 0
+    elif self_pos.x < obj_pos.x < self_pos.x + self_box.w and obj_pos.y < self_pos.y:
+        print("???")
         obj.GetComponent("TransformComponent").velocity().y = 0
-        obj.GetComponent("TransformComponent").position().y = self_pos.y - obj.GetComponent("CollisionComponent").bouding_box.h
+        obj.GetComponent("TransformComponent").position().y = self_pos.y - obj.GetComponent(
+            "CollisionComponent").bouding_box.h
+
 
 def create_pipe(position, bounding_width, bounding_height):
     """Create a pipe object"""
@@ -142,15 +150,16 @@ def create_pipe(position, bounding_width, bounding_height):
     pipe.AddComponent(pipe_collision_component)
     return pipe
 
+
 pipe_height = 50
 pipe_width = 100
 # pipe = Core.GameObject(Utils.Vec2D(29*50, ground_y - 50), Utils.Vec2D(1, 1))
-pipe = create_pipe(Utils.Vec2D(29*50, ground_y - pipe_height), pipe_width, pipe_height * 2)
-pipe2 = create_pipe(Utils.Vec2D(39*50, ground_y - pipe_height * 2), pipe_width, pipe_height * 3)
-pipe3 = create_pipe(Utils.Vec2D(47*50, ground_y - pipe_height * 3), pipe_width, pipe_height * 4)
-pipe4 = create_pipe(Utils.Vec2D(58*50, ground_y - pipe_height * 3), pipe_width, pipe_height * 4)
-pipe5 = create_pipe(Utils.Vec2D(161*50, ground_y - pipe_height), pipe_width, pipe_height * 2)
-pipe6 = create_pipe(Utils.Vec2D(177*50, ground_y - pipe_height), pipe_width, pipe_height * 2)
+pipe = create_pipe(Utils.Vec2D(28.5 * 50, ground_y - pipe_height), pipe_width, pipe_height * 2)
+pipe2 = create_pipe(Utils.Vec2D(38.5 * 50, ground_y - pipe_height * 2), pipe_width, pipe_height * 3)
+pipe3 = create_pipe(Utils.Vec2D(46.5 * 50, ground_y - pipe_height * 3), pipe_width, pipe_height * 4)
+pipe4 = create_pipe(Utils.Vec2D(57.5 * 50, ground_y - pipe_height * 3), pipe_width, pipe_height * 4)
+pipe5 = create_pipe(Utils.Vec2D(160.5 * 50, ground_y - pipe_height), pipe_width, pipe_height * 2)
+pipe6 = create_pipe(Utils.Vec2D(176.5 * 50, ground_y - pipe_height), pipe_width, pipe_height * 2)
 
 
 def enemy_collision_callback(self, obj):
@@ -219,12 +228,12 @@ for i in range(0, 10):
 # Coin game object
 coins = []
 for i in range(0, 20):
-    coin = Core.GameObject(Utils.Vec2D(random.randint(300, 10000), random.randint(ground_y-300,ground_y)))
+    coin = Core.GameObject(Utils.Vec2D(random.randint(300, 10000), random.randint(ground_y - 300, ground_y)))
 
     coin_animation_component = Core.AnimationComponent()
     coin_animation_component.AddAnimations("coin",
-                                            ["coin_1.png-cropped-0", "coin_2.png-cropped-0",
-                                             "coin_3.png-cropped-0", "coin_4.png-cropped-0"])
+                                           ["coin_1.png-cropped-0", "coin_2.png-cropped-0",
+                                            "coin_3.png-cropped-0", "coin_4.png-cropped-0"])
     coin_animation_component.SetCurrentAnimation("coin")
     coin.AddComponent(coin_animation_component)
 
@@ -251,15 +260,16 @@ for i in range(0, 20):
     coin.AddComponent(coin_collision_component)
     coins.append(coin)
 
-
 # Flag game object
-flag = Core.GameObject(Utils.Vec2D(100, 510))
+flag = Core.GameObject(Utils.Vec2D(9770, ground_y))
 
 
 def flag_collision_callback(self, obj):
     """Flag collision callback"""
+    Utils.StopMusic(-1)
     Utils.PlayMusic("world_finished.wav")
     message_ui.SetContent("Success!")
+    self.live = False
 
 
 flag_bounding_box = Utils.RectF()
