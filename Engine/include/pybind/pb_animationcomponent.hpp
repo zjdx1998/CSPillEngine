@@ -11,29 +11,40 @@ namespace py = pybind11;
 
 namespace CSPill::EngineCore {
 
-void PB_AnimationComponent(py::module& m) {
+void PB_AnimationComponent(py::module &m) {
   py::class_<AnimationComponent, Component>(m, "AnimationComponent")
       .def(py::init<>())
       .def("Update", &AnimationComponent::Update, "Update Animation Component")
       .def("Render",
-           [](GameObject& self, void* temp) {
-             self.Render(static_cast<SDL_Renderer*>(temp));
+           [](GameObject &self, void *temp) {
+             self.Render(static_cast<SDL_Renderer *>(temp));
            })
       .def("GetAnimations", &AnimationComponent::GetAnimations,
            "Get all Animations")
-      .def("AddAnimation", &AnimationComponent::AddAnimation, "Add a Animation")
+      .def("AddAnimation", &AnimationComponent::AddAnimation,
+           py::arg("name"),
+           py::arg("animation"),
+           "Add a Animation")
+      .def("AddAnimations", &AnimationComponent::AddAnimations,
+           py::arg("name"),
+           py::arg("animations"),
+           "Add animations")
       .def("RemoveAnimation", &AnimationComponent::RemoveAnimation,
            "Remove a Animation")
       .def("GetCurrentAnimation", &AnimationComponent::GetCurrentAnimation,
            "Get the component's current animation")
       .def("SetCurrentAnimation", &AnimationComponent::SetCurrentAnimation,
            "Set the component's current animation")
-      .def("GetCurrentAnimationFrame",
-           &AnimationComponent::GetCurrentAnimationFrame,
+      .def("GetFrame",
+           &AnimationComponent::GetFrame,
            "Get the current animation frame")
-      .def("SetCurrentAnimationFrame",
-           &AnimationComponent::SetCurrentAnimationFrame,
-           "Set the current animation frame");
+      .def("SetFrame",
+           &AnimationComponent::SetFrame,
+           "Set the current animation frame")
+      .def_property("speed",
+                    &AnimationComponent::GetSpeed,
+                    &AnimationComponent::SetSpeed,
+                    "Get/Set speed of animation, default is 30 FPS");
 }
 
 }  // namespace CSPill::EngineCore

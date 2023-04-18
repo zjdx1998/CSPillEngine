@@ -78,7 +78,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (extension == ".bmp") {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *bmp_surface =
-                SDL_LoadBMP(directory.path().string().c_str())) {
+            SDL_LoadBMP(directory.path().string().c_str())) {
           SDL_SetColorKey(bmp_surface, SDL_TRUE,
                           SDL_MapRGB(bmp_surface->format, 0, 0, 0));
           images_[filename] =
@@ -89,7 +89,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (::EngineCore::Utils::isIn(extension, ".png", ".jpg", ".tif")) {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *surface =
-                IMG_Load(directory.path().string().c_str())) {
+            IMG_Load(directory.path().string().c_str())) {
           SDL_SetColorKey(surface, SDL_TRUE,
                           SDL_MapRGB(surface->format, 0, 0, 0));
           images_[filename] = SDL_CreateTextureFromSurface(renderer_, surface);
@@ -192,10 +192,11 @@ void ResourceManager::SetActiveTileset(const std::string &active_name) {
   active_tileset_ = active_name;
 }
 
-Tileset *ResourceManager::ActiveTileset() {
-  if (active_tileset_.empty()) return nullptr;
+Tileset *ResourceManager::ActiveTileset(std::string_view tileset_name) {
+  if (tileset_name.empty()) tileset_name = active_tileset_;
+  if (tileset_name.empty()) return nullptr;
   for (auto &i : ActiveScene()->TileSets()) {
-    if (i.GetName() == active_tileset_) return &i;
+    if (i.GetName() == tileset_name) return &i;
   }
   return nullptr;
 }
@@ -204,10 +205,11 @@ std::string ResourceManager::GetActiveTilesetName() const {
   return active_tileset_;
 }
 
-Layer *ResourceManager::ActiveLayer() {
-  if (active_tileset_.empty()) return nullptr;
+Layer *ResourceManager::ActiveLayer(std::string_view tileset_name) {
+  if (tileset_name.empty()) tileset_name = active_tileset_;
+  if (tileset_name.empty()) return nullptr;
   for (auto &i : ActiveScene()->Layers()) {
-    if (i.GetTileset() == active_tileset_) return &i;
+    if (i.GetTileset() == tileset_name) return &i;
   }
   return nullptr;
 }
@@ -221,11 +223,31 @@ void ResourceManager::AddTile(
 SDL_Texture *ResourceManager::QueryTexture(std::string_view name) {
   if (tiles_.find(name.data()) != tiles_.end())
     return tiles_.at(name.data()).get();
+  auto split_pos = name.find(::EngineCore::Utils::IMAGE_SPLIT);
+  auto tileset_name = name.substr(0, split_pos);
+  auto row_and_col_data =
+      std::stoi(std::string(name.substr(split_pos + std::string(::EngineCore::Utils::IMAGE_SPLIT).size())));
+  auto row_and_col = ::EngineCore::Utils::GetRowAndCol(row_and_col_data);
+  if (auto active_layer = ResourceManager::GetInstance().LoadImage(
+      std::string(tileset_name))) {
+    SDL_Texture *cropped_texture = nullptr;
+    if (auto tileset = ActiveTileset(tileset_name)) {
+      SDL_Rect src_rect = {row_and_col.second * tileset->GetTileWidth(),
+                           row_and_col.first * tileset->GetTileHeight(),
+                           tileset->GetTileWidth(), tileset->GetTileHeight()};
+      auto cropped = ::EngineCore::Utils::CropTexture(
+          renderer_, active_layer, src_rect);
+      cropped_texture = cropped.get();
+      ResourceManager::GetInstance().AddTile(name,
+                                             std::move(cropped));
+    }
+    return cropped_texture;
+  }
   return nullptr;
 }
 
 void ResourceManager::ClearTiles() {
-  //  for (const auto &tile : tiles_) SDL_DestroyTexture(tile.second.get());
+  ;
   tiles_.clear();
 }
 

@@ -209,20 +209,22 @@ class Scene {
  public:
   /**
    * Constructor of Scene.
+   * @param name name of this scene.
    * @param canvas_width int, the width of the canvas
    * @param canvas_height int, the height of the canvas
    */
-  Scene(int canvas_width, int canvas_height,
+  Scene(std::string name, int canvas_width, int canvas_height,
         const SDL_Color &bkg_color = {255, 255, 255, 255});
 
   /**
    * Constructor of Scene.
+   * @param name name of this scene.
    * @param layers a vector, which represents a list of layer objects
    * @param tile_sets a vector, which represents a list of Tileset objects
    * @param canvas_width int, the width of the canvas
    * @param canvas_height int, the height of the canvas
    */
-  Scene(const std::vector<Layer> &layers, const std::vector<Tileset> &tile_sets,
+  Scene(std::string name, const std::vector<Layer> &layers, const std::vector<Tileset> &tile_sets,
         int canvas_width, int canvas_height,
         const SDL_Color &bkg_color = {255, 255, 255, 255});
 
@@ -348,7 +350,19 @@ class Scene {
    */
   SDL_Texture *Render(SDL_Renderer *renderer);
 
+  /**
+   * Get Name of this Scene.
+   * @return the name of the scene.
+   */
+  [[nodiscard]] const std::string &GetName() const;
+  /**
+   * Set the name of this Scene.
+   * @param name the name to be renamed.
+   */
+  void SetName(const std::string &name);
+
  private:
+  std::string name_;
   std::vector<Layer> layers_;
   std::vector<Tileset> tile_sets_;
   int canvas_width_;
@@ -364,7 +378,7 @@ namespace nlohmann {
 /**
  * \brief JSON parsing helper struct for Layer
  */
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Layer> {
   /**
    * Retrieve the information in JSON object j.
@@ -393,7 +407,7 @@ struct adl_serializer<CSPill::EngineCore::Layer> {
 /**
  * \brief JSON parsing helper struct for Tileset
  */
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Tileset> {
   /**
    * Retrieve the information in JSON object j.
@@ -422,7 +436,7 @@ struct adl_serializer<CSPill::EngineCore::Tileset> {
 /**
  * \brief JSON parsing helper struct for Scene
  */
-template <>
+template<>
 struct adl_serializer<CSPill::EngineCore::Scene> {
   /**
    * Retrieve the information in JSON object j.
@@ -438,7 +452,7 @@ struct adl_serializer<CSPill::EngineCore::Scene> {
       color.b = json_color.at("b");
       color.a = json_color.at("a");
     }
-    return {j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),
+    return {j.at("name"), j.at("layers"), j.at("tilesets"), j.at("canvas").at("width"),
             j.at("canvas").at("height"), color};
   }
 
@@ -448,6 +462,7 @@ struct adl_serializer<CSPill::EngineCore::Scene> {
    * @param t Scene object requested to be parsed
    */
   static void to_json(json &j, const CSPill::EngineCore::Scene &s) {
+    j["name"] = s.GetName();
     j["layers"] = s.GetLayers();
     j["tilesets"] = s.GetTileSets();
     j["canvas"]["width"] = s.GetCanvasWidth();

@@ -54,14 +54,16 @@ void Tileset::SetTileHeight(int tile_height) { tile_height_ = tile_height; }
 int &Tileset::TileWidth() { return tile_width_; }
 int &Tileset::TileHeight() { return tile_height_; }
 
-Scene::Scene(int canvas_width, int canvas_height, const SDL_Color &bkg_color)
-    : canvas_width_(canvas_width),
+Scene::Scene(std::string name, int canvas_width, int canvas_height, const SDL_Color &bkg_color)
+    : name_(std::move(name)),
+      canvas_width_(canvas_width),
       canvas_height_(canvas_height),
       background_color_(bkg_color) {}
-Scene::Scene(const std::vector<Layer> &layers,
+Scene::Scene(std::string name, const std::vector<Layer> &layers,
              const std::vector<Tileset> &tile_sets, int canvas_width,
              int canvas_height, const SDL_Color &bkg_color)
-    : layers_(layers),
+    : name_(std::move(name)),
+      layers_(layers),
       tile_sets_(tile_sets),
       canvas_width_(canvas_width),
       canvas_height_(canvas_height),
@@ -129,30 +131,21 @@ SDL_Texture *Scene::Render(SDL_Renderer *renderer, Layer *layer,
       std::pair<int, int> row_and_col =
           ::EngineCore::Utils::GetRowAndCol(layer->Data()[i]);
       auto current_brush =
-          std::string(tileset->GetName()) + "-cropped-" +
-          std::to_string(
-              ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
+          std::string(tileset->GetName()) + std::string(::EngineCore::Utils::IMAGE_SPLIT) +
+              std::to_string(
+                  ::EngineCore::Utils::GetDataFromRowAndCol(row_and_col));
       SDL_Rect dst_rect = {col * tileset->GetTileWidth(),
                            row * tileset->GetTileHeight(),
                            tileset->GetTileWidth(), tileset->GetTileHeight()};
-
       if (auto active_layer = ResourceManager::GetInstance().LoadImage(
-              std::string(tileset->GetName()))) {
-        SDL_Texture *cropped_texture = nullptr;
+          std::string(tileset->GetName()))) {
         SDL_Rect src_rect = {row_and_col.second * tileset->GetTileWidth(),
                              row_and_col.first * tileset->GetTileHeight(),
                              tileset->GetTileWidth(), tileset->GetTileHeight()};
-        if (auto query_texture =
-                ResourceManager::GetInstance().QueryTexture(current_brush)) {
-          cropped_texture = query_texture;
-        } else {
-          auto cropped = ::EngineCore::Utils::CropTexture(
-              renderer, active_layer, src_rect);
-          ResourceManager::GetInstance().AddTile(current_brush,
-                                                 std::move(cropped));
-          cropped_texture = cropped.get();
+        SDL_Texture *cropped_texture = ResourceManager::GetInstance().QueryTexture(current_brush);
+        if (cropped_texture) {
+          SDL_RenderCopy(renderer, cropped_texture, nullptr, &dst_rect);
         }
-        SDL_RenderCopy(renderer, cropped_texture, nullptr, &dst_rect);
       }
     }
   }
@@ -179,6 +172,12 @@ void Scene::RemoveLayer(const std::string &name) {
       break;
     }
   }
+}
+const std::string &Scene::GetName() const {
+  return name_;
+}
+void Scene::SetName(const std::string &name) {
+  name_ = name;
 }
 
 }  // namespace CSPill::EngineCore

@@ -17,6 +17,7 @@ constexpr std::string_view TRANSFORM_COMPONENT = "TransformComponent";
 constexpr std::string_view CAMERA_COMPONENT = "CameraComponent";
 constexpr std::string_view COLLISION_COMPONENT = "CollisionComponent";
 constexpr std::string_view ANIMATION_COMPONENT = "AnimationComponent";
+constexpr std::string_view IMAGE_SPLIT = "-cropped-";
 
 /**
  * Get the extension of the file.

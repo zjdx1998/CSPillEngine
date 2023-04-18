@@ -92,7 +92,7 @@ class ResourceManager {
   /**
    * Search for the tile map resource by scene_name. If scene_name is not loaded
    * to the ResourceManager yet, it will log "Not found scene_name" and return a
-   * nullptr. Otherwise return a pointer to Scene, which is a tile map resource
+   * nullptr. Otherwise, return a pointer to Scene, which is a tile map resource
    * that can be displayed.
    * @param scene_name a string, the name of the scene
    * @return a pointer to Scene, if scene_name not found, nullptr is returned
@@ -174,15 +174,17 @@ class ResourceManager {
 
   /**
    * Get the active layer of a Scene.
+   * @param tileset_name name of the tileset of the layer, if empty then default is the current active tileset.
    * @return a pointer of layer if the layer is found, otherwise nullptr
    */
-  Layer *ActiveLayer();
+  Layer *ActiveLayer(std::string_view tileset_name = "");
 
   /**
    * Get the active Tileset of a Scene.
+   * @param tileset_name name of the tileset, if empty then default is the current active tileset.
    * @return a pointer of Tileset if the layer is found, otherwise nullptr
    */
-  Tileset *ActiveTileset();
+  Tileset *ActiveTileset(std::string_view tileset_name = "");
 
   /**
    * Set the active tileset to active_name.

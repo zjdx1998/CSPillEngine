@@ -6,42 +6,58 @@
 
 namespace CSPill::EngineCore {
 
-void AnimationComponent::Update(GameObject* object, float dt) {
-  current_animation_frame_ = dt;
-
-  if (current_animation_frame_ > 10) {
-    current_animation_frame_ = 0;
+void AnimationComponent::Update(GameObject *object, float dt) {
+  frame_ += dt / 1200 * speed_;
+  SDL_Log("%f", frame_);
+  if (auto
+      transform = dynamic_cast<TransformComponent *>(object->GetComponent(::EngineCore::Utils::TRANSFORM_COMPONENT))) {
+    dst_rect_.x = transform->position().x;
+    dst_rect_.y = transform->position().y;
+    dst_rect_ = {transform->position().x, transform->position().y, transform->GetScale().x, transform->GetScale().y};
   }
+}
 
-  mSrc.x = current_animation_frame_ * 75;
-  mSrc.y = 0;
-  mSrc.w = 128;
-  mSrc.h = 128;
-  auto transform_component = (TransformComponent*)(object->GetComponent(
-      ::EngineCore::Utils::TRANSFORM_COMPONENT));
-  Math::Vec2D pos = transform_component->position();
-  mDest.x = pos.x;
-  mDest.y = pos.y;
-  mDest.w = 128;
-  mDest.h = 128;
+void AnimationComponent::Render(SDL_Renderer *renderer) {
+  if (animations_.find(current_animation_) == animations_.end()) return;
+  int frame = static_cast<int>(round(frame_)) % (animations_[current_animation_].size());
+  if (frame_ > animations_[current_animation_].size()) {
+    frame_ -= animations_[current_animation_].size();
+  }
+  if (auto sprite = ResourceManager::GetInstance().QueryTexture(animations_[current_animation_].at(frame))) {
+    int w, h;
+    SDL_QueryTexture(sprite, nullptr, nullptr, &w, &h);
+    dst_rect_.w *= static_cast<float>(w);
+    dst_rect_.h *= static_cast<float>(h);
+    SDL_RenderCopyF(renderer, sprite, nullptr, &dst_rect_);
+  }
 }
-void AnimationComponent::Render(SDL_Renderer* renderer) {
-  std::string query = current_animation_ + "-cropped-" +
-                      std::to_string(current_animation_frame_);
-  SDL_Texture* mTexture = ResourceManager::GetInstance().QueryTexture(query);
-  SDL_RenderCopy(renderer, mTexture, &mSrc, &mDest);
-}
-std::unordered_map<std::string, std::vector<std::string>>
+
+const std::unordered_map<std::string, std::vector<std::string>> &
 AnimationComponent::GetAnimations() const {
   return animations_;
 }
-void AnimationComponent::AddAnimation(
-    const std::string& name, const std::vector<std::string>& animation) {
-  animations_[name] = animation;
+
+bool AnimationComponent::AddAnimation(const std::string &name, const std::string &animation) {
+  if (ResourceManager::GetInstance().QueryTexture(animation)) {
+    if (animations_.find(name) == animations_.end()) {
+      animations_[name] = {};
+    }
+    animations_[name].emplace_back(animation);
+    return true;
+  }
+  return false;
 }
-void AnimationComponent::RemoveAnimation(const std::string& name) {
+
+bool AnimationComponent::AddAnimations(
+    const std::string &name, const std::vector<std::string> &animations) {
+  for (const auto &animation : animations) {
+    if (!AddAnimation(name, animation)) return false;
+  }
+  return true;
+}
+void AnimationComponent::RemoveAnimation(const std::string &name) {
   for (auto it = animations_.begin(); it != animations_.end(); it++) {
-    if (it->first.compare(name)) {
+    if (it->first == name) {
       animations_.erase(it);
       break;
     }
@@ -50,16 +66,22 @@ void AnimationComponent::RemoveAnimation(const std::string& name) {
 std::string_view AnimationComponent::GetCurrentAnimation() const {
   return current_animation_;
 }
-void AnimationComponent::SetCurrentAnimation(const std::string& name) {
+void AnimationComponent::SetCurrentAnimation(const std::string &name) {
   current_animation_ = name;
 }
-int AnimationComponent::GetCurrentAnimationFrame() const {
-  return current_animation_frame_;
+float AnimationComponent::GetFrame() const {
+  return frame_;
 }
-void AnimationComponent::SetCurrentAnimationFrame(int frame) {
-  current_animation_frame_ = frame;
+void AnimationComponent::SetFrame(float frame) {
+  frame_ = frame;
 }
 AnimationComponent::AnimationComponent()
-    : Component(::EngineCore::Utils::ANIMATION_COMPONENT) {}
+    : Component(::EngineCore::Utils::ANIMATION_COMPONENT), dst_rect_({0, 0, 0, 0}) {}
+float AnimationComponent::GetSpeed() const {
+  return speed_;
+}
+void AnimationComponent::SetSpeed(float speed) {
+  AnimationComponent::speed_ = speed;
+}
 
 }  // namespace CSPill::EngineCore
