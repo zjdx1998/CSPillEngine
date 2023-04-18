@@ -21,6 +21,8 @@ class CharacterControllerComponent(Core.Component):
         super().__init__(name)
         self.speed = 2
         self.jump_speed = -2
+        self.jumping = 0
+        self.max_jumping = 300
 
     def Update(self, obj, dt):
         transform = obj.GetComponent("TransformComponent")
@@ -32,6 +34,8 @@ class CharacterControllerComponent(Core.Component):
             return
         if transform.position().y >= ground_y:
             transform.velocity().y = 0
+            transform.position().y = ground_y
+            self.jumping = 0
 
         if engine.IsKeyPressed("Right"):
             obj.GetComponent("AnimationComponent").SetCurrentAnimation("walkright")
@@ -44,14 +48,17 @@ class CharacterControllerComponent(Core.Component):
             transform.velocity().x = -self.speed
         if engine.IsKeyPressed("Space"):
             transform.velocity().y = self.jump_speed
+            self.jumping += self.jump_speed * dt
+            if self.jumping < -self.max_jumping:
+                transform.velocity().y = 0
+        elif self.jumping < 0:
+            self.jumping = min(self.jumping - self.jump_speed * dt, 0)
 
         if not engine.IsKeyPressed("Left") and not engine.IsKeyPressed("Right"):
             transform.velocity().x = 0
 
         if transform.position().y <= ground_y - 10 and transform.velocity().y < 10:
             transform.velocity().y += gravity
-        if transform.position().y > ground_y:
-            transform.position().y = ground_y
 
     pass
 
@@ -207,7 +214,7 @@ for i in range(0, 10):
 
     enemy = Core.GameObject(Utils.Vec2D(random.randint(400, 10000), 585), Utils.Vec2D(1, 1))
 
-    enemy_bounding_box = Utils.RectF(0, 0, 64, 64)
+    enemy_bounding_box = Utils.RectF(0, 0, 66, 66)
     enemy_collision_component = Physics.CollisionComponent(enemy_bounding_box)
     enemy_collision_component.callback = enemy_collision_callback
     enemy_collision_component.Register(character)
