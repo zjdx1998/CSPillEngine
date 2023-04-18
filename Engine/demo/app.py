@@ -122,15 +122,11 @@ def pipe_collision_callback(self, obj):
     self_box = self.GetComponent("CollisionComponent").bouding_box
     obj_pos = obj.GetComponent("TransformComponent").position()
     obj_vel = obj.GetComponent("TransformComponent").velocity()
-    print(obj.GetComponent("TransformComponent").velocity().x, obj_pos, self_pos)
     if obj_vel.x > 0 and obj_pos.x < self_pos.x and obj_pos.y > self_pos.y:
-        print("?")
         obj.GetComponent("TransformComponent").velocity().x = 0
     elif obj_vel.x < 0 and obj_pos.x > self_pos.x and obj_pos.y > self_pos.y:
-        print("??")
         obj.GetComponent("TransformComponent").velocity().x = 0
     elif self_pos.x < obj_pos.x < self_pos.x + self_box.w and obj_pos.y < self_pos.y:
-        print("???")
         obj.GetComponent("TransformComponent").velocity().y = 0
         obj.GetComponent("TransformComponent").position().y = self_pos.y - obj.GetComponent(
             "CollisionComponent").bouding_box.h
@@ -165,17 +161,20 @@ pipe6 = create_pipe(Utils.Vec2D(176.5 * 50, ground_y - pipe_height), pipe_width,
 def enemy_collision_callback(self, obj):
     """Enemy collision callback"""
     global score
+    global falling
     tc = obj.GetComponent("TransformComponent")
-    if tc.position().y < 560:
+    if tc.position().y < ground_y:
         print("You kill a monster!")
         Utils.PlayMusic("1up_collected.wav")
         self.live = False
         score += 1
         score_ui.SetContent("Score: " + str(score))
     else:
-        Utils.StopMusic(-1)
-        Utils.PlayMusic("mario_dead.wav")
-        message_ui.SetContent("Failed")
+        if not falling:
+            Utils.StopMusic(-1)
+            Utils.PlayMusic("mario_dead.wav")
+            message_ui.SetContent("Failed")
+            falling = True
 
 
 class EnemyControllerComponent(Core.Component):
