@@ -73,3 +73,24 @@ file(GLOB SRC_PYBIND src/pybind/*.cpp)
 pybind11_add_module(PyCSPillEngine ${SRC_PYBIND})
 target_include_directories(PyCSPillEngine PRIVATE ${INC_CORE} ${SDL2_INCLUDE_DIRS} ${Python_INCLUDE_DIRS} ${INC_PYBIND})
 target_link_libraries(PyCSPillEngine PRIVATE Core SDL2)
+
+# Install rules
+set(CMAKE_INSTALL_PREFIX "~/CSPillEngine")
+install(TARGETS Editor PyCSPillEngine
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        )
+
+install(TARGETS Core
+        ARCHIVE DESTINATION lib
+        )
+
+install(DIRECTORY include/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h"
+        )
+
+install(DIRECTORY thirdparty/pybind11/include/pybind11/
+        DESTINATION include/pybind11
+        FILES_MATCHING PATTERN "*.h"
+        )

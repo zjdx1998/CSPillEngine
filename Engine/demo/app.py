@@ -23,7 +23,8 @@ class CharacterControllerComponent(Core.Component):
 
     def Update(self, obj, dt):
         transform = obj.GetComponent("TransformComponent")
-        print(transform.position())
+        if engine.IsKeyPressed("1"):
+            print(transform.position())
         if transform.position().y >= ground_y:
             transform.velocity().y = 0
 
@@ -83,7 +84,8 @@ character.AddComponent(character_collision_component)
 
 ground = Core.GameObject(Utils.Vec2D(0, ground_y), Utils.Vec2D(1, 1))
 
-def ground_collision_callback(obj):
+
+def ground_collision_callback(self, obj):
     """Pipe collision callback"""
     v_y = obj.GetComponent("TransformComponent").velocity().y
     pos_y = obj.GetComponent("TransformComponent").position().y
@@ -92,8 +94,9 @@ def ground_collision_callback(obj):
     obj.GetComponent("TransformComponent").position().y = ground_y - height
     obj.GetComponent("TransformComponent").velocity().y = 0
 
+
 ground_bounding_box = Utils.RectF()
-ground_bounding_box.w = 68*50
+ground_bounding_box.w = 68 * 50
 ground_bounding_box.h = 100
 ground_collision_component = Physics.CollisionComponent(ground_bounding_box)
 ground_collision_component.callback = ground_collision_callback
@@ -103,10 +106,10 @@ ground.AddComponent(ground_collision_component)
 # Pipe game object
 pipe = Core.GameObject(Utils.Vec2D(400, 510))
 
+pipe = Core.GameObject(Utils.Vec2D(29 * 50, ground_y - 100), Utils.Vec2D(5, 5))
 
-pipe = Core.GameObject(Utils.Vec2D(29*50, ground_y - 100), Utils.Vec2D(5, 5))
 
-def pipe_collision_callback(obj):
+def pipe_collision_callback(self, obj):
     """Pipe collision callback"""
     v_x = obj.GetComponent("TransformComponent").velocity().x
     pos_x = obj.GetComponent("TransformComponent").position().x
@@ -117,6 +120,7 @@ def pipe_collision_callback(obj):
     elif v_x < 0:
         obj.GetComponent("TransformComponent").position().x += 10
     obj.GetComponent("TransformComponent").velocity().x = 0
+
 
 pipe_bounding_box = Utils.RectF()
 pipe_bounding_box.x = pipe.GetComponent("TransformComponent").position().x
@@ -129,30 +133,66 @@ pipe_collision_component.callback = pipe_collision_callback
 pipe_collision_component.Register(character)
 pipe.AddComponent(pipe_collision_component)
 
-# Enemy game object
-enemy = Core.GameObject(Utils.Vec2D(500, 510))
 
-
-def enemy_collision_callback(obj):
+def enemy_collision_callback(self, obj):
     """Enemy collision callback"""
-    Utils.PlayMusic("mario_dead.wav")
-    message_ui.SetContent("Failed")
+    tc = obj.GetComponent("TransformComponent")
+    if tc.position().y < 550:
+        print("you kill a monster")
+        del self
+    else:
+        Utils.StopMusic(-1)
+        Utils.PlayMusic("mario_dead.wav")
+        message_ui.SetContent("Failed")
 
 
+class EnemyControllerComponent(Core.Component):
+    def __init__(self, name):
+        super().__init__(name)
+        self.velocity = 0.3
+        self.direction = 1
+        self.move = 0
+        self.threshold = 100
+        self.walk = "walkright"
+
+    def Update(self, obj, dt):
+        t = obj.GetComponent("TransformComponent")
+        t.velocity().x = self.velocity
+        self.move += abs(dt * self.velocity)
+        if self.move > self.threshold:
+            self.move = 0
+            self.velocity = self.velocity * -1
+            if self.walk == "walkright":
+                self.walk = "walkleft"
+            else:
+                self.walk = "walkright"
+            obj.GetComponent("AnimationComponent").SetCurrentAnimation(self.walk)
+
+
+# Enemy game object
+enemy = Core.GameObject(Utils.Vec2D(500, 585), Utils.Vec2D(1, 1))
 # TODO: size
-enemy_bounding_box = Utils.RectF()
-enemy_bounding_box.w = 50
-enemy_bounding_box.h = 50
+enemy_bounding_box = Utils.RectF(0, 0, 50, 50)
 enemy_collision_component = Physics.CollisionComponent(enemy_bounding_box)
 enemy_collision_component.callback = enemy_collision_callback
 enemy_collision_component.Register(character)
 enemy.AddComponent(enemy_collision_component)
 
+enemy_animation_component = Core.AnimationComponent()
+enemy_animation_component.AddAnimations("walkright",
+                                        ["enemy_1.png-cropped-0", "enemy_2.png-cropped-0",
+                                         "enemy_3.png-cropped-0", "enemy_4.png-cropped-0"])
+enemy_animation_component.AddAnimations("walkleft",
+                                        ["enemy_left_1.png-cropped-0", "enemy_left_2.png-cropped-0",
+                                         "enemy_left_3.png-cropped-0", "enemy_left_4.png-cropped-0"])
+enemy.AddComponent(enemy_animation_component)
+enemy.AddComponent(EnemyControllerComponent("ControllerComponent"))
+
 # Coin game object
 coin = Core.GameObject(Utils.Vec2D(200, 510))
 
 
-def coin_collision_callback(obj):
+def coin_collision_callback(self, obj):
     """Coin collision callback"""
     Utils.PlayMusic("coin_sound.wav")
     global score
@@ -176,7 +216,7 @@ coin.AddComponent(coin_collision_component)
 flag = Core.GameObject(Utils.Vec2D(100, 510))
 
 
-def flag_collision_callback(obj):
+def flag_collision_callback(self, obj):
     """Flag collision callback"""
     Utils.PlayMusic("world_finished.wav")
     message_ui.SetContent("Success!")
@@ -207,7 +247,7 @@ engine.AddObject("ScoreUI", score_ui)
 engine.AddObject("LevelUI", level_ui)
 engine.AddObject("MessageUI", message_ui)
 engine.AddObject("Pipe", pipe)
-# engine.AddObject("Enemy", enemy)
+engine.AddObject("Enemy", enemy)
 # engine.AddObject("Coin", coin)
 # engine.AddObject("Flag", flag)
 

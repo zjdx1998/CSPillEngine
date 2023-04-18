@@ -48,13 +48,13 @@ class CollisionComponent : public Component {
    * Get callback function.
    * @return callback function
    */
-  [[nodiscard]] const std::function<void(GameObject *)> &GetCallback() const;
+  [[nodiscard]] const std::function<void(GameObject *, GameObject *)> &GetCallback() const;
 
   /**
    * Set callback function.
    * @param callback callback function
    */
-  void SetCallback(const std::function<void(GameObject *)> &callback);
+  void SetCallback(const std::function<void(GameObject *, GameObject *)> &callback);
 
   /**
    * Register a GameObject to Collision Component
@@ -79,7 +79,7 @@ class CollisionComponent : public Component {
  private:
   SDL_FRect bounding_box_;
   std::unordered_set<GameObject *> registers_;
-  std::function<void(GameObject *)> callback_;
+  std::function<void(GameObject *, GameObject *)> callback_;
 };
 
 }  // namespace CSPill::EngineCore
