@@ -16,6 +16,11 @@ void PB_GameObject(py::module &m) {
       m, "GameObject", "Base class for all entities in CSPill Scenes.")
       .def(py::init(
           []() -> std::unique_ptr<GameObject> { return GameObject::Create(); }))
+      .def(py::init(
+          [](const Math::Vec2D &position, const Math::Vec2D &scale) -> std::unique_ptr<GameObject> {
+              return GameObject::Create(position, scale);
+          }),
+          py::arg("position"), py::arg("scale"))
       .def("Update", &GameObject::Update,
            "Update is called every frame, if the object is enabled.")
       .def(
@@ -37,7 +42,10 @@ void PB_GameObject(py::module &m) {
       .def("GetComponent", &GameObject::GetComponent, py::arg("component_name"),
            py::return_value_policy::reference,
            "Get a raw pointer to component based on name.")
-      .def_static("Create", &GameObject::Create,
-                  "Factory function to create an GameObject.");
+      .def_static("Create", py::overload_cast<>(&GameObject::Create),
+                  "Factory function to create an empty GameObject.")
+      .def_static("Create", py::overload_cast<const Math::Vec2D &, const Math::Vec2D &>(&GameObject::Create),
+                  py::arg("position"), py::arg("scale"),
+                  "Factory function to create an GameObject with position and scale.");
 }
 }  // namespace CSPill::EngineCore

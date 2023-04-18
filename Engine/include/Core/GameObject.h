@@ -7,6 +7,7 @@
 
 #include <list>
 #include <unordered_map>
+#include "TinyMath.hpp"
 
 #include "Component.h"
 
@@ -25,6 +26,15 @@ class GameObject {
    * @return a unique pointer to instantiated game object.
    */
   static std::unique_ptr<GameObject> Create();
+
+  /**
+   * Factory function to create an GameObject with position and scale.
+   * 
+   * @param position position of game object
+   * @param scale scale of game object
+   * @return a unique pointer to instantiated game object.
+   */
+  static std::unique_ptr<GameObject> Create(const CSPill::Math::Vec2D &position, const CSPill::Math::Vec2D &scale);
 
   /**
    * Virtual Destructor
