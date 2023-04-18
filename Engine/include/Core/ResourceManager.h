@@ -9,10 +9,10 @@
 #include <unordered_map>
 #include <vector>
 
+#include "GameObject.h"
 #include "SDL_mixer.h"
 #include "SDL_ttf.h"
 #include "Scene.h"
-#include "GameObject.h"
 
 namespace CSPill::EngineCore {
 

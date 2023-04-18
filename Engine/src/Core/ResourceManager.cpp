@@ -8,9 +8,9 @@
 #include <fstream>
 #include <iostream>
 
+#include "GameObject.h"
 #include "SDL_image.h"
 #include "Utils.h"
-#include "GameObject.h"
 
 namespace CSPill::EngineCore {
 
@@ -79,7 +79,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (extension == ".bmp") {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *bmp_surface =
-            SDL_LoadBMP(directory.path().string().c_str())) {
+                SDL_LoadBMP(directory.path().string().c_str())) {
           SDL_SetColorKey(bmp_surface, SDL_TRUE,
                           SDL_MapRGB(bmp_surface->format, 0, 0, 0));
           images_[filename] =
@@ -90,7 +90,7 @@ void ResourceManager::LoadResources(std::string_view folder_path) {
       if (::EngineCore::Utils::isIn(extension, ".png", ".jpg", ".tif")) {
         if (images_.find(filename) != images_.end()) continue;
         if (SDL_Surface *surface =
-            IMG_Load(directory.path().string().c_str())) {
+                IMG_Load(directory.path().string().c_str())) {
           SDL_SetColorKey(surface, SDL_TRUE,
                           SDL_MapRGB(surface->format, 0, 0, 0));
           images_[filename] = SDL_CreateTextureFromSurface(renderer_, surface);
@@ -230,7 +230,7 @@ SDL_Texture *ResourceManager::QueryTexture(std::string_view name) {
       split_pos + std::string(::EngineCore::Utils::IMAGE_SPLIT).size())));
   auto row_and_col = ::EngineCore::Utils::GetRowAndCol(row_and_col_data);
   if (auto active_layer =
-      ResourceManager::GetInstance().LoadImage(std::string(tileset_name))) {
+          ResourceManager::GetInstance().LoadImage(std::string(tileset_name))) {
     SDL_Texture *cropped_texture = nullptr;
     if (auto tileset = ActiveTileset(tileset_name)) {
       SDL_Rect src_rect = {row_and_col.second * tileset->GetTileWidth(),
@@ -268,9 +268,7 @@ ResourceManager::~ResourceManager() {
   Mix_Quit();
   IMG_Quit();
 }
-GameObject *ResourceManager::GetActiveCamera() const {
-  return active_camera_;
-}
+GameObject *ResourceManager::GetActiveCamera() const { return active_camera_; }
 void ResourceManager::SetActiveCamera(GameObject *active_camera) {
   active_camera_ = active_camera;
 }
