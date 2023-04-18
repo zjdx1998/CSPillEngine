@@ -12,13 +12,13 @@ namespace py = pybind11;
 namespace CSPill::EngineCore {
 
 void PB_AnimationComponent(py::module &m) {
-  py::class_<AnimationComponent, Component>(m, "AnimationComponent")
+  py::class_<AnimationComponent, Component>(m, "AnimationComponent", "Animation Component takes care of all the animation made.")
       .def(py::init<>())
       .def("Update", &AnimationComponent::Update, "Update Animation Component")
       .def("Render",
            [](GameObject &self, void *temp) {
              self.Render(static_cast<SDL_Renderer *>(temp));
-           })
+           }, "Render the animation.")
       .def("GetAnimations", &AnimationComponent::GetAnimations,
            "Get all Animations")
       .def("AddAnimation", &AnimationComponent::AddAnimation, py::arg("name"),

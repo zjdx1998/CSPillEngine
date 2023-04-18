@@ -12,9 +12,10 @@ namespace CSPill::Math {
 struct Vec2D;
 struct Matrix3D;
 
-// Vec2D performs vector operations with 3-dimensions
-// The purpose of this class is primarily for 3D graphics
-// applications.
+/** Vec2D performs vector operations with 3-dimensions
+ *  The purpose of this class is primarily for 3D graphics
+ *  applications.
+ */
 struct Vec2D {
   // I'm wrapping all of our member variables in a union.
   // So long as you make sure the byte-size is equivalent, this
@@ -42,20 +43,30 @@ struct Vec2D {
   // https://stackoverflow.com/questions/20828907/the-new-keyword-default-in-c11
   //    Vec2D() = default;
 
-  // The "Real" constructor we want to use.
-  // This initializes the values x,y, and the 'w' value
+  /**
+   * This initializes the values x,y, and the 'w' value
+   * @param _x float, x component
+   * @param _y float, y component
+   * @param _w float, z component
+   */
   Vec2D(float _x = 0, float _y = 0, float _w = 0) : x(_x), y(_y), w(_w) {}
 
-  // Index operator, allowing us to access the individual
-  // x,y components of our vector.
+  /**
+   * Index operator, allowing us to access the individual x,y components of our vector.
+   * @param i the index
+   * @return x,y components of our vector
+   */
   float &operator[](int i) {
     // NOTE: Think about why this works.
     //       There is no code to change here.
     return ((&x)[i]);
   }
 
-  // Index operator, allowing us to access the individual
-  // x,y components of our vector.
+  /**
+   * Index operator, allowing us to access the individual x,y components of our vector.
+   * @param i the index
+   * @return x,y components of our vector
+   */
   const float &operator[](int i) const {
     // NOTE: Think about why this works.
     //       There is no code to change here.
@@ -68,16 +79,23 @@ struct Vec2D {
   // In general, if you need access to private member variables or the 'this'
   // pointer then you must use a member function. Otherwise, I recommend to
   // 'free your functions' and not make them part of the class for maximum use.
-  //
-  // Multiplication Operator
-  // Multiply vector by a uniform-scalar.
+
+  /**
+   * Multiplication Operator
+   * @param s a uniform-scalar
+   * @return Vec2D, Multiplication result
+   */
   Vec2D &operator*=(float s) {
     x *= s;
     y *= s;
     return (*this);
   }
 
-  // Division Operator
+  /**
+   * Division Operator
+   * @param s a uniform-scalar
+   * @return Vec2D, Division result
+   */
   Vec2D &operator/=(float s) {
     if (s == 0.f) s += (1e-6);
     x /= s;
@@ -85,14 +103,22 @@ struct Vec2D {
     return (*this);
   }
 
-  // Addition operator
+  /**
+   * Addition operator
+   * @param v a uniform-scalar
+   * @return Vec2D, Addition result
+   */
   Vec2D &operator+=(const Vec2D &v) {
     x += v.x;
     y += v.y;
     return (*this);
   }
 
-  // Subtraction operator
+  /**
+   * Subtraction operator
+   * @param v a uniform-scalar
+   * @return Vec2D, Subtraction result
+   */
   Vec2D &operator-=(const Vec2D &v) {
     x -= v.x;
     y -= v.y;
@@ -108,64 +134,107 @@ struct Vec2D {
     return out;
   }
 
-  // Compute the dot product of a Vec2D
+  /**
+   * Dot product
+   * @param b Vec2D to be dot product
+   * @return scalar of dot product
+   */
   inline float Dot(const Vec2D &b) { return *this * b; }
 
-  // Test for equality
   // NOTE: Comparing floats is somewhat tricky, meaning that
   //       you will want to take the fabs(lhs.x - lhs.y) < 0.00001
   //       of each component to see if they are 'close enough'
+  /**
+   * equality
+   * @param rhs Vec2D to be compared
+   * @return true if they are equal, false otherwise
+   */
   bool operator==(const Vec2D &rhs) {
     return fabs(x - rhs.x) < 1e-6 && fabs(y - rhs.y) < 1e-6;
   }
 
-  // Multiplication of a vector by a scalar values
+  /**
+   * Multiplication of a vector by a scalar values
+   * @param s a uniform-scalar
+   * @return Vec2D, Multiplication result
+   */
   inline Vec2D operator*(float s) { return {x * s, y * s, w}; }
 
-  // Division of a vector by a scalar value.
+  /**
+   * Division of a vector by a scalar value.
+   * @param s a uniform-scalar
+   * @return Vec2D, Division result
+   */
   inline Vec2D operator/(float s) const {
     if (s == 0.f) s += 1e-6;
     return {x / s, y / s, w};
   }
 
-  // Return the magnitude of a vector
+  /**
+   * Get the magnitude of a vector
+   * @return float, the magnitude of a vector
+   */
   inline float Magnitude() { return sqrt(x * x + y * y); }
 
-  // Add two vectors together
+  /**
+   * Add two vectors together
+   * @param b Vec2D to be added
+   * @return Vec2D, addition result
+   */
   inline Vec2D operator+(const Vec2D &b) const {
     if (w == 1 && b.w == 1)
       throw std::invalid_argument("Two points can't be added.");
     return {x + b.x, y + b.y, fmax(w, b.w)};
   }
 
-  // Subtract two vectors
+  /**
+   * Subtract two vectors
+   * @param b Vec2D to be added
+   * @return Vec2D, subtraction result
+   */
   inline Vec2D operator-(const Vec2D &b) const {
     if (w == 1 && b.w == 1)
       throw std::invalid_argument("Two points can't be subtracted.");
     return {x - b.x, y - b.y, fmax(w, b.w)};
   }
 
-  // Vector Projection
+  /**
+   * Vector Projection
+   * @param b Vec2D to be projected
+   * @return Projection Vec2D
+   */
   inline Vec2D Project(Vec2D b) { return b * (this->Dot(b) / b.Dot(b)); }
 
-  // Set a vectors magnitude to 1
   // Note: This is NOT generating a normal vector
+  /**
+   * Set a vectors magnitude to 1
+   * @return Vec2D has magnitude of 1
+   */
   inline Vec2D Normalize() { return *this / this->Magnitude(); }
 
   // a x b (read: 'a crossed b')
   // With a 3D vector we would yield another perpendicular cross product
   // For 2D cross product, this will yield a scalar.
   // You should write this to yield a scalar value.
+  /**
+   * Cross product of two vectors.
+   * @param b Vec2D to be cross product
+   * @return Vec2D, product result
+   */
   inline float CrossProduct(const Vec2D &b) { return x * b.y - y * b.x; }
 };
 
-// Matrix 3D represents 3x3 matrices in Math
+/**
+ * Matrix 3D represents 3x3 matrices in Math
+ */
 struct Matrix3D {
  private:
   float n[3][3];  // Store each value of the matrix
 
  public:
-  // Initializes to a identity matrix by default
+  /**
+   * Constructor of Matrix3D
+   */
   Matrix3D() {
     n[0][0] = 1;
     n[0][1] = 0;
@@ -179,6 +248,9 @@ struct Matrix3D {
   }
 
   // Matrix constructor with 9 scalar values.
+  /**
+   * Constructor of Matrix3D
+   */
   Matrix3D(float n00, float n01, float n02, float n10, float n11, float n12,
            float n20, float n21, float n22) {
     n[0][0] = n00;
@@ -193,6 +265,9 @@ struct Matrix3D {
   }
 
   // Matrix constructor from three vectors.
+  /**
+   * Constructor of Matrix3D
+   */
   Matrix3D(const Vec2D &a, const Vec2D &b, const Vec2D &c) {
     n[0][0] = a.x;
     n[0][1] = a.y;
@@ -205,18 +280,37 @@ struct Matrix3D {
     n[2][2] = c.w;
   }
 
-  // Index operator with two dimensions
   // Example: M(1,1) returns row 1 and column 1 of matrix M.
+  /**
+   * Index operator with two dimensions.
+   * @param i col number
+   * @param j row number
+   * @return float, target value
+   */
   float &operator()(int i, int j) { return (n[j][i]); }
 
   // Index operator with two dimensions
   // Example: M(1,1) returns row 1 and column 1 of matrix M.
+  /**
+   * Index operator with two dimensions.
+   * @param i col number
+   * @param j row number
+   * @return float, target value
+   */
   const float &operator()(int i, int j) const { return (n[j][i]); }
 
-  // Return a row from a matrix as a vector.
+  /**
+   * Return a row from a matrix as a vector.
+   * @param j jth row
+   * @return a row from a matrix as a vector.
+   */
   Vec2D &operator[](int j) { return (*reinterpret_cast<Vec2D *>(n[j])); }
 
-  // Return a row from a matrix as a vector.
+  /**
+   * Return a row from a matrix as a vector.
+   * @param j jth row
+   * @return a row from a matrix as a vector.
+   */
   const Vec2D &operator[](int j) const {
     return (*reinterpret_cast<const Vec2D *>(n[j]));
   }
@@ -230,6 +324,11 @@ struct Matrix3D {
     return out;
   }
 
+  /**
+   * Check if two matrices are equal.
+   * @param m matrix to be compared
+   * @return true if they are equal, false otherwise
+   */
   bool operator==(const Matrix3D &m) {
     for (int i = 0; i < 3; i++)
       for (int j = 0; j < 3; j++)
@@ -237,7 +336,11 @@ struct Matrix3D {
     return true;
   }
 
-  // Matrix Multiplication
+  /**
+   * Matrix Multiplication
+   * @param B matrix to be multiplied
+   * @return Matrix3D, multiplication result
+   */
   Matrix3D operator*(const Matrix3D &B) {
     Matrix3D result;
     for (int i = 0; i < 3; i++)
@@ -248,7 +351,11 @@ struct Matrix3D {
     return result;
   }
 
-  // Matrix multiply by a vector
+  /**
+   * Matrix multiply by a vector
+   * @param v Vec2D to be multiplied
+   * @return Vec2D, multiplication result
+   */
   Vec2D operator*(const Vec2D &v) {
     Vec2D res;
     for (int i = 0; i < 3; i++)

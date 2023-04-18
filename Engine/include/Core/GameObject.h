@@ -49,6 +49,7 @@ class GameObject {
 
   /**
    * Update is called every frame, if the object is enabled.
+   * @param dt float, time elapsed
    */
   void Update(float dt);
 

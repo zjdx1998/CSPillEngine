@@ -16,7 +16,7 @@ namespace py = pybind11;
 namespace CSPill::EngineCore {
 
 void PB_CollisionComponent(py::module &m) {
-  py::class_<CollisionComponent, Component>(m, "CollisionComponent")
+  py::class_<CollisionComponent, Component>(m, "CollisionComponent", "Collision Component handles all the physics of the game.")
       .def(py::init<const SDL_FRect &>(), py::arg("bounding_box"))
       .def_property("bouding_box", &CollisionComponent::GetBoundingBox,
                     &CollisionComponent::SetBoundingBox)
