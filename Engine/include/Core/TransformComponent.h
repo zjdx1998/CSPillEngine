@@ -10,58 +10,58 @@
 
 namespace CSPill::EngineCore {
 
+/**
+ * \brief Transform Component
+ *
+ * Transform Component takes care of all objects' displacement.
+ */
+class TransformComponent : public Component {
+ public:
   /**
-   * \brief Transform Component
-   *
-   * Transform Component takes care of all objects' displacement.
+   * Constructor of TransformComponent.
    */
-  class TransformComponent : public Component {
-  public:
-    /**
-     * Constructor of TransformComponent.
-     */
-    explicit TransformComponent();
+  explicit TransformComponent();
 
-    TransformComponent(TransformComponent &&) = default;
+  TransformComponent(TransformComponent &&) = default;
 
-    ~TransformComponent() override = default;
+  ~TransformComponent() override = default;
 
-    /**
-     * Update the target GameObject by dt time.
-     * @param object GameObject that is needed to be updated
-     * @param dt float, time elapsed
-     */
-    void Update(GameObject *object, float dt) override;
+  /**
+   * Update the target GameObject by dt time.
+   * @param object GameObject that is needed to be updated
+   * @param dt float, time elapsed
+   */
+  void Update(GameObject *object, float dt) override;
 
-    /**
-     * Get the position.
-     * @return Vec2D, which represents x and y location
-     */
-    Math::Vec2D &position();
+  /**
+   * Get the position.
+   * @return Vec2D, which represents x and y location
+   */
+  Math::Vec2D &position();
 
-    /**
-     * Get the velocity.
-     * @return Vec2D, which represents x and y velocity
-     */
-    Math::Vec2D &velocity();
+  /**
+   * Get the velocity.
+   * @return Vec2D, which represents x and y velocity
+   */
+  Math::Vec2D &velocity();
 
-    /**
-     * Get the scala.
-     * @return Vec2D, which represents x and y coordinate
-     */
-    const Math::Vec2D &GetScale() const;
+  /**
+   * Get the scala.
+   * @return Vec2D, which represents x and y coordinate
+   */
+  const Math::Vec2D &GetScale() const;
 
-    /**
-     * Set the scala.
-     * @param scale Vec2D, which represents x and y coordinate
-     */
-    void SetScale(const Math::Vec2D &scale);
+  /**
+   * Set the scala.
+   * @param scale Vec2D, which represents x and y coordinate
+   */
+  void SetScale(const Math::Vec2D &scale);
 
-  private:
-    Math::Vec2D position_;
-    Math::Vec2D velocity_;
-    Math::Vec2D scale_;
-  };
+ private:
+  Math::Vec2D position_;
+  Math::Vec2D velocity_;
+  Math::Vec2D scale_;
+};
 
 }  // namespace CSPill::EngineCore
 

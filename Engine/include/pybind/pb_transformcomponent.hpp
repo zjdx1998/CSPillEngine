@@ -10,7 +10,9 @@ namespace py = pybind11;
 namespace CSPill::EngineCore {
 
 void PB_TransformComponent(py::module &m) {
-  py::class_<TransformComponent, Component>(m, "TransformComponent", "Transform Component takes care of all objects' displacement.")
+  py::class_<TransformComponent, Component>(
+      m, "TransformComponent",
+      "Transform Component takes care of all objects' displacement.")
       .def(py::init<>())
       .def("Update", &TransformComponent::Update, "Update TransformComponent")
       .def("position", &TransformComponent::position, "Get position",

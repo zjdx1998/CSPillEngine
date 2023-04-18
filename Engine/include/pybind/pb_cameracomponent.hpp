@@ -10,7 +10,9 @@ namespace py = pybind11;
 namespace CSPill::EngineCore {
 
 void PB_CameraComponent(py::module &m) {
-  py::class_<CameraComponent, Component>(m, "CameraComponent", "Camera component controls the area that user can see.")
+  py::class_<CameraComponent, Component>(
+      m, "CameraComponent",
+      "Camera component controls the area that user can see.")
       .def(py::init<>())
       .def("Update", &CameraComponent::Update, "Update CameraComponent")
       .def("Bind", &CameraComponent::Bind, py::arg("object"),

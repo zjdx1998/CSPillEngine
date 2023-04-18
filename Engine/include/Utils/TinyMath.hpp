@@ -52,7 +52,8 @@ struct Vec2D {
   Vec2D(float _x = 0, float _y = 0, float _w = 0) : x(_x), y(_y), w(_w) {}
 
   /**
-   * Index operator, allowing us to access the individual x,y components of our vector.
+   * Index operator, allowing us to access the individual x,y components of our
+   * vector.
    * @param i the index
    * @return x,y components of our vector
    */
@@ -63,7 +64,8 @@ struct Vec2D {
   }
 
   /**
-   * Index operator, allowing us to access the individual x,y components of our vector.
+   * Index operator, allowing us to access the individual x,y components of our
+   * vector.
    * @param i the index
    * @return x,y components of our vector
    */
