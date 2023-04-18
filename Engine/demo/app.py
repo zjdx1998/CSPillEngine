@@ -31,6 +31,8 @@ class CharacterControllerComponent(Core.Component):
         if falling:
             transform.velocity().x = 0
             transform.velocity().y = 0.5
+            if transform.position().y > 1200:
+                exit(0)
             return
         if transform.position().y >= ground_y:
             transform.velocity().y = 0
