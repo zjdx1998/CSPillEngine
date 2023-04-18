@@ -164,6 +164,13 @@ pipe4 = create_pipe(Utils.Vec2D(57.5 * 50, ground_y - pipe_height * 3), pipe_wid
 pipe5 = create_pipe(Utils.Vec2D(160.5 * 50, ground_y - pipe_height), pipe_width, pipe_height * 2)
 pipe6 = create_pipe(Utils.Vec2D(176.5 * 50, ground_y - pipe_height), pipe_width, pipe_height * 2)
 
+block1 = create_pipe(Utils.Vec2D(16 * 50, ground_y - pipe_height * 3), pipe_width / 2, pipe_height / 2)
+block2 = create_pipe(Utils.Vec2D(950, ground_y - pipe_height * 3), 300, pipe_height / 2)
+block3 = create_pipe(Utils.Vec2D(1050, ground_y - pipe_height * 6), 65, pipe_height / 2)
+
+block4 = create_pipe(Utils.Vec2D(3650, ground_y - pipe_height * 3), 150, pipe_height / 2)
+block5 = create_pipe(Utils.Vec2D(3800, ground_y - pipe_height * 7), 475, pipe_height / 2)
+
 
 def enemy_collision_callback(self, obj):
     """Enemy collision callback"""
@@ -316,6 +323,12 @@ for i in range(0, len(enemies)):
     engine.AddObject("Enemy" + str(i), enemies[i])
 for i in range(0, len(coins)):
     engine.AddObject("Coin" + str(i), coins[i])
+engine.AddObject("Block1", block1)
+engine.AddObject("Block2", block2)
+engine.AddObject("Block3", block3)
+engine.AddObject("Block4", block4)
+engine.AddObject("Block5", block5)
+
 
 engine.Run(60)
 
