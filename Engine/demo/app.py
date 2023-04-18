@@ -1,4 +1,6 @@
 import random
+import sys
+sys.path.append('../build')
 from PyCSPillEngine import Core, Utils, UI, Physics
 
 # engine through the game
@@ -6,6 +8,7 @@ engine = Core.Engine("Super Mario", 1280, 720)
 # global area
 score = 0
 level = 1
+gravity = 0.5
 
 
 class CharacterControllerComponent(Core.Component):
@@ -13,15 +16,29 @@ class CharacterControllerComponent(Core.Component):
     def __init__(self, name):
         super().__init__(name)
         self.speed = 2
+        self.jump_speed = -2
 
     def Update(self, obj, dt):
+        
+        if obj.GetComponent("TransformComponent").position().y >=510:
+                obj.GetComponent("TransformComponent").velocity().y = 0
+                
         if engine.IsKeyPressed("Right"):
             print("Right")
             obj.GetComponent("TransformComponent").velocity().x = self.speed
         elif engine.IsKeyPressed("Left"):
             obj.GetComponent("TransformComponent").velocity().x = -self.speed
+        elif engine.IsKeyPressed("Up"):
+            obj.GetComponent("TransformComponent").velocity().y = self.jump_speed
         else:
             obj.GetComponent("TransformComponent").velocity().x = 0
+
+        if(obj.GetComponent("TransformComponent").position().y <=500 and obj.GetComponent("TransformComponent").velocity().y < 10):
+            obj.GetComponent("TransformComponent").velocity().y += gravity
+        
+        
+        
+
 
     pass
 
@@ -39,6 +56,7 @@ character = Core.GameObject()
 character.GetComponent("TransformComponent").position().x = 100
 character.GetComponent("TransformComponent").position().y = 510
 character.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
+
 camera = Core.GameObject()
 
 character.AddComponent(CharacterControllerComponent("ControllerComponent"))
