@@ -44,7 +44,8 @@ void PB_GameObject(py::module &m) {
       .def("GetComponent", &GameObject::GetComponent, py::arg("component_name"),
            py::return_value_policy::reference,
            "Get a raw pointer to component based on name.")
-      .def_property("live", &GameObject::IsLive, &GameObject::SetLive, "Set if current object is dying or live")
+      .def_property("live", &GameObject::IsLive, &GameObject::SetLive,
+                    "Set if current object is dying or live")
       .def_static("Create", py::overload_cast<>(&GameObject::Create),
                   "Factory function to create an empty GameObject.")
       .def_static(
