@@ -48,13 +48,15 @@ class CollisionComponent : public Component {
    * Get callback function.
    * @return callback function
    */
-  [[nodiscard]] const std::function<void(GameObject *, GameObject *)> &GetCallback() const;
+  [[nodiscard]] const std::function<void(GameObject *, GameObject *)>
+      &GetCallback() const;
 
   /**
    * Set callback function.
    * @param callback callback function
    */
-  void SetCallback(const std::function<void(GameObject *, GameObject *)> &callback);
+  void SetCallback(
+      const std::function<void(GameObject *, GameObject *)> &callback);
 
   /**
    * Register a GameObject to Collision Component
