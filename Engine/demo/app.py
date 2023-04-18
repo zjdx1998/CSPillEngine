@@ -139,7 +139,7 @@ def enemy_collision_callback(self, obj):
     tc = obj.GetComponent("TransformComponent")
     if tc.position().y < 550:
         print("you kill a monster")
-
+        self.live = False
     else:
         Utils.StopMusic(-1)
         Utils.PlayMusic("mario_dead.wav")

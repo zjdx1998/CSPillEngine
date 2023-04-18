@@ -97,7 +97,7 @@ class GameObject {
   std::unordered_map<std::string_view,
                      std::list<std::unique_ptr<Component>>::iterator>
       component_indices_;
-  bool live_;
+  bool live_ = true;
 };
 
 }  // namespace CSPill::EngineCore
