@@ -29,6 +29,8 @@ class CharacterControllerComponent(Core.Component):
         self.max_jumping = 300
 
     def Update(self, obj, dt):
+        if dt > 10:
+            dt = 10
         transform = obj.GetComponent("TransformComponent")
         #obj.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
         if engine.IsKeyPressed("1"):
