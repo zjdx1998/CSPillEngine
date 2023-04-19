@@ -2,6 +2,11 @@
 set root_folder=build
 set dll_folder=build
 
+if exist build (
+  echo Deleting existing build directory...
+  rd /s /q build
+)
+
 if not exist "%dll_folder%" (
   echo DLL folder not found.
   pause
@@ -21,11 +26,6 @@ for /r "%dll_folder%" %%i in (*.dll) do (
 )
 
 echo DLL files copied successfully to %root_folder%.
-
-if exist build (
-  echo Deleting existing build directory...
-  rd /s /q build
-)
 
 set CMAKE_COMMAND=cmake
 
