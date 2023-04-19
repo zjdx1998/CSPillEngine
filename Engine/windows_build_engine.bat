@@ -7,6 +7,17 @@ if exist build (
   rd /s /q build
 )
 
+set CMAKE_COMMAND=cmake
+
+echo Creating build directory...
+mkdir build
+
+echo Running CMake...
+%CMAKE_COMMAND% -S . -B build
+
+echo Building project...
+%CMAKE_COMMAND% --build build
+
 if not exist "%dll_folder%" (
   echo DLL folder not found.
   pause
@@ -27,16 +38,6 @@ for /r "%dll_folder%" %%i in (*.dll) do (
 
 echo DLL files copied successfully to %root_folder%.
 
-set CMAKE_COMMAND=cmake
-
-echo Creating build directory...
-mkdir build
-
-echo Running CMake...
-%CMAKE_COMMAND% -S . -B build
-
-echo Building project...
-%CMAKE_COMMAND% --build build
 echo Start Engine
 cd build
 .\Editor.exe ../demo
