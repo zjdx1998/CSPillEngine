@@ -1,4 +1,6 @@
 import random
+import time
+import _thread
 import sys
 
 sys.path.append('../build')
@@ -12,6 +14,8 @@ level = 1
 gravity = 0.5
 ground_y = 555
 falling = False
+scale = False
+
 
 
 class CharacterControllerComponent(Core.Component):
@@ -26,6 +30,7 @@ class CharacterControllerComponent(Core.Component):
 
     def Update(self, obj, dt):
         transform = obj.GetComponent("TransformComponent")
+        #obj.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
         if engine.IsKeyPressed("1"):
             print(transform.position())
         if falling:
@@ -34,10 +39,16 @@ class CharacterControllerComponent(Core.Component):
             if transform.position().y > 1200:
                 exit(0)
             return
-        if transform.position().y >= ground_y:
-            transform.velocity().y = 0
-            transform.position().y = ground_y
-            self.jumping = 0
+        if not scale:
+            if transform.position().y >= ground_y:
+                transform.velocity().y = 0
+                transform.position().y = ground_y
+                self.jumping = 0
+        else:
+            if transform.position().y >= ground_y -100:
+                transform.velocity().y = 0
+                transform.position().y = ground_y - 100
+                self.jumping = 0
 
         if engine.IsKeyPressed("Right"):
             obj.GetComponent("AnimationComponent").SetCurrentAnimation("walkright")
@@ -59,8 +70,12 @@ class CharacterControllerComponent(Core.Component):
         if not engine.IsKeyPressed("Left") and not engine.IsKeyPressed("Right"):
             transform.velocity().x = 0
 
-        if transform.position().y <= ground_y - 10 and transform.velocity().y < 10:
-            transform.velocity().y += gravity
+        if not scale: 
+            if transform.position().y <= ground_y - 10 and transform.velocity().y < 10:
+                transform.velocity().y += gravity
+        if scale:
+            if transform.position().y <= ground_y  -200 and transform.velocity().y < 10:
+                transform.velocity().y += gravity
 
     pass
 
@@ -300,6 +315,53 @@ flag_collision_component.callback = flag_collision_callback
 flag_collision_component.Register(character)
 flag.AddComponent(flag_collision_component)
 
+#mushroom game object
+mushrooms = []
+def scale_out(threadName, delay, obj):
+    time.sleep(delay)
+    obj.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
+    global scale
+    scale = False
+
+
+for i in range(0, 8):
+    mushroom = Core.GameObject(Utils.Vec2D(random.randint(300, 10000), ground_y+40),Utils.Vec2D(1, 1))
+
+    mushroom_animation_component = Core.AnimationComponent()
+    mushroom_animation_component.AddAnimations("mushroom",
+                                           ["mushroom_1.png-cropped-0", "mushroom_2.png-cropped-0"])
+    mushroom_animation_component.SetCurrentAnimation("mushroom")
+    mushroom.AddComponent(mushroom_animation_component)
+
+
+    def mushroom_collision_callback(self, obj):
+        """Coin collision callback"""
+        Utils.PlayMusic("bonus_collected.wav")
+        global scale
+        scale = True
+        obj.GetComponent("TransformComponent").scale = Utils.Vec2D(10, 10)
+        obj.GetComponent("TransformComponent").position().y = ground_y - 100
+     
+        try:
+            _thread.start_new_thread(scale_out, ("Thread-1", 5, obj))
+        except:
+            print ("Error:unable to start thread")
+        
+        self.live = False
+
+
+    mushroom_bounding_box = Utils.RectF()
+    mushroom_bounding_box.x = coin.GetComponent("TransformComponent").position().x
+    mushroom_bounding_box.y = coin.GetComponent("TransformComponent").position().y
+    mushroom_bounding_box.w = 10
+    mushroom_bounding_box.h = 10
+
+    mushroom_collision_component = Physics.CollisionComponent(mushroom_bounding_box)
+    mushroom_collision_component.callback = mushroom_collision_callback
+    mushroom_collision_component.Register(character)
+    mushroom.AddComponent(mushroom_collision_component)
+    mushrooms.append(mushroom)
+
 camera_component = Core.CameraComponent()
 camera_component.SetViewport(1280, 750)
 camera_component.Bind(character, Utils.Vec2D(400, 200))
@@ -330,6 +392,8 @@ for i in range(0, len(enemies)):
     engine.AddObject("Enemy" + str(i), enemies[i])
 for i in range(0, len(coins)):
     engine.AddObject("Coin" + str(i), coins[i])
+for i in range(0, len(mushrooms)):
+    engine.AddObject("Mushroom" + str(i), mushrooms[i])
 engine.AddObject("Character", character)
 engine.AddObject("Camera", camera)
 
