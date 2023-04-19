@@ -40,5 +40,5 @@ echo DLL files copied successfully to %root_folder%.
 
 echo Start Engine
 cd build
-.\Editor.exe ../demo
+.\CSPillEditor.exe ../demo
 pause
