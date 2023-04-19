@@ -17,7 +17,6 @@ falling = False
 scale = False
 
 
-
 class CharacterControllerComponent(Core.Component):
     """Controller component for character"""
 
@@ -32,7 +31,7 @@ class CharacterControllerComponent(Core.Component):
         if dt > 10:
             dt = 10
         transform = obj.GetComponent("TransformComponent")
-        #obj.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
+        # obj.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
         if engine.IsKeyPressed("1"):
             print(transform.position())
         if falling:
@@ -47,7 +46,7 @@ class CharacterControllerComponent(Core.Component):
                 transform.position().y = ground_y
                 self.jumping = 0
         else:
-            if transform.position().y >= ground_y -100:
+            if transform.position().y >= ground_y - 100:
                 transform.velocity().y = 0
                 transform.position().y = ground_y - 100
                 self.jumping = 0
@@ -72,14 +71,15 @@ class CharacterControllerComponent(Core.Component):
         if not engine.IsKeyPressed("Left") and not engine.IsKeyPressed("Right"):
             transform.velocity().x = 0
 
-        if not scale: 
+        if not scale:
             if transform.position().y <= ground_y - 10 and transform.velocity().y < 10:
                 transform.velocity().y += gravity
         if scale:
-            if transform.position().y <= ground_y  -200 and transform.velocity().y < 10:
+            if transform.position().y <= ground_y - 200 and transform.velocity().y < 10:
                 transform.velocity().y += gravity
 
     pass
+
 
 # Initiate ResourceManager
 resource_manager = Core.ResourceManager.GetInstance()
@@ -117,6 +117,7 @@ character_bounding_box.h = 50
 character_collision_component = Physics.CollisionComponent(character_bounding_box)
 character.AddComponent(character_collision_component)
 
+
 # Callback function for cliff
 def cliff_collision_callback(self, obj):
     """Pipe collision callback"""
@@ -126,6 +127,7 @@ def cliff_collision_callback(self, obj):
         Utils.PlayMusic("mario_dead.wav")
         message_ui.SetContent("Failed")
         falling = True
+
 
 # Helper function to create cliff object
 def create_cliff(position, bounding_width, bounding_height):
@@ -138,6 +140,7 @@ def create_cliff(position, bounding_width, bounding_height):
     cliff_collision_component.Register(character)
     cliff.AddComponent(cliff_collision_component)
     return cliff
+
 
 # Create cliffs
 cliff = create_cliff(Utils.Vec2D(68 * 50, ground_y + 40), 100, 100)
@@ -161,6 +164,7 @@ def pipe_collision_callback(self, obj):
         obj.GetComponent("TransformComponent").position().y = self_pos.y - obj.GetComponent(
             "CollisionComponent").bouding_box.h
 
+
 # Helper function to create pipe object
 def create_pipe(position, bounding_width, bounding_height):
     """Create a pipe object"""
@@ -175,6 +179,7 @@ def create_pipe(position, bounding_width, bounding_height):
     pipe_collision_component.Register(character)
     pipe.AddComponent(pipe_collision_component)
     return pipe
+
 
 # Create pipes
 pipe_height = 50
@@ -197,6 +202,7 @@ for i in range(0, 2688):
         brk = create_pipe(Utils.Vec2D((i - row_num * 224 - 1) * 50, row_num * 50 - 40), 50, 50)
         blocks.append(brk)
 
+
 # Callback function for enemy
 def enemy_collision_callback(self, obj):
     """Enemy collision callback"""
@@ -215,6 +221,7 @@ def enemy_collision_callback(self, obj):
             Utils.PlayMusic("mario_dead.wav")
             message_ui.SetContent("Failed")
             falling = True
+
 
 # Enemy Controller Component
 class EnemyControllerComponent(Core.Component):
@@ -299,6 +306,7 @@ for i in range(0, 20):
 # Flag game object
 flag = Core.GameObject(Utils.Vec2D(9770, ground_y))
 
+
 # Callback function for flag object
 def flag_collision_callback(self, obj):
     """Flag collision callback"""
@@ -306,6 +314,7 @@ def flag_collision_callback(self, obj):
     Utils.PlayMusic("world_finished.wav")
     message_ui.SetContent("Success!")
     self.live = False
+
 
 # Create flag collision box
 flag_bounding_box = Utils.RectF()
@@ -317,8 +326,10 @@ flag_collision_component.callback = flag_collision_callback
 flag_collision_component.Register(character)
 flag.AddComponent(flag_collision_component)
 
-#mushroom game object
+# mushroom game object
 mushrooms = []
+
+
 def scale_out(threadName, delay, obj):
     time.sleep(delay)
     obj.GetComponent("TransformComponent").scale = Utils.Vec2D(5, 5)
@@ -326,12 +337,12 @@ def scale_out(threadName, delay, obj):
     scale = False
 
 
-for i in range(0, 8):
-    mushroom = Core.GameObject(Utils.Vec2D(random.randint(300, 10000), ground_y+40),Utils.Vec2D(1, 1))
+for i in range(0, 2):
+    mushroom = Core.GameObject(Utils.Vec2D(random.randint(300, 10000), ground_y + 40), Utils.Vec2D(1, 1))
 
     mushroom_animation_component = Core.AnimationComponent()
     mushroom_animation_component.AddAnimations("mushroom",
-                                           ["mushroom_1.png-cropped-0", "mushroom_2.png-cropped-0"])
+                                               ["mushroom_1.png-cropped-0", "mushroom_2.png-cropped-0"])
     mushroom_animation_component.SetCurrentAnimation("mushroom")
     mushroom.AddComponent(mushroom_animation_component)
 
@@ -343,12 +354,12 @@ for i in range(0, 8):
         scale = True
         obj.GetComponent("TransformComponent").scale = Utils.Vec2D(10, 10)
         obj.GetComponent("TransformComponent").position().y = ground_y - 100
-     
+
         try:
             _thread.start_new_thread(scale_out, ("Thread-1", 5, obj))
         except:
-            print ("Error:unable to start thread")
-        
+            print("Error:unable to start thread")
+
         self.live = False
 
 

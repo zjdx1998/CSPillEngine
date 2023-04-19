@@ -3,6 +3,7 @@
 
 <head>
     <title>CSPillEngine</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn.iconscout.com/icon/free/png-256/pill-1919732-1620243.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -31,7 +32,7 @@
 <body class="background-section p-3 m-3">
 <nav class="navbar navbar-expand-lg bg-dark fixed-top" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">CSPillEngine</a>
+        <a class="navbar-brand" href="#">&#128138;CSPillEngine</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -49,7 +50,7 @@
     </div>
 </nav>
 <div class="container mt-4 p-3 mb-2 bg-secondary text-white bg-opacity-75">
-    <h1 class="text-center">CSPillEngine</h1>
+    <h1 class="text-center">&#128138;CSPillEngine</h1>
     <section id="team-members" class="py-5">
         <div class="container">
             <h2 class="text-center">Team Members</h2>
@@ -71,7 +72,7 @@
                 <div class="col-md-3">
                     <div class="card bg-light text-white bg-opacity-10">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Jiandong (Jeromy) Zhang</h5>
+                            <h5 class="card-title text-center">Jiandong(Jeromy) Zhang</h5>
                         </div>
                     </div>
                 </div>
@@ -86,7 +87,7 @@
         </div>
     </section>
 
-    <h3 class="text-white mt-4" id="video">Video Trailer</h3>
+    <h2 class="text-white mt-4" id="video">Video Trailer</h2>
     <div class="row mt-4">
         <div class="col-md-12 ratio ratio-16x9">
             <iframe width="1065" height="608" src="https://www.youtube.com/embed/qOkeDgO4S4A"
@@ -95,7 +96,7 @@
                     allowfullscreen></iframe>
         </div>
     </div>
-    <h3 class="text-white mt-5" id="screenshot">Screenshots</h3>
+    <h2 class="text-white mt-5" id="screenshot">Screenshots</h2>
     <div class="row mt-3">
         <div class="col-md-4">
             <a href="./images/filebrowser.png" target="_blank">
@@ -134,7 +135,7 @@
     </div>
     <div class="row mt-5">
         <div class="col-md-12">
-            <h3 class="text-white" id="arc">Engine Architecture</h3>
+            <h2 class="text-white" id="arc">Engine Architecture</h2>
             <a href="https://cdn.mos.cms.futurecdn.net/zVeM5xa3bJMRyxzCZSG35V-1200-80.jpg.webp" target="_blank">
                 <img src="images/CSPillEngine.png"
                      alt="Screenshot 3" class="img-fluid mt-3">
@@ -143,16 +144,68 @@
     </div>
     <div class="row mt-5">
         <div class="col-md-12">
-            <h3 class="text-white" id="download">Download</h3>
+            <h2 class="text-white" id="download">Download</h2>
             <p class="mt-3">You can download the binary of our game engine by clicking <a
                     href="https://github.com/zjdx1998/CSPillEngine/releases" target="_blank">here</a>. The binary is
                 available
                 for Windows, macOS, and Linux platforms.</p>
+            <h4>Instructions for Running</h4>
+            Please find the binary of game engine / game with platform specified in the link above. If neither of the
+            given platforms matches yours, plese follow the instructions below.
+            <hr/>
+            <h5>CMake - Preferred</h5>
+            <code class="language-html">
+                cd Engine
+                <br/>
+                cmake -S . -B build && cmake --build build --target install
+                <br/>
+                #windows
+                <br/>
+                set PYTHONPATH=~\PyCSPillEngine;%PYTHONPATH%
+                <br/>
+                set DYLD_FALLBACK_LIBRARY_PATH=~\CSPillEngine\lib
+                <br/>
+                #mac/linux
+                <br/>
+                DYLD_FALLBACK_LIBRARY_PATH=~/CSPillEngine/lib
+                <br/>
+                export PYTHONPATH=~/PyCSPillEngine:$PYTHONPATH
+                <br/>
+                cd demo
+                <br/>
+                python demo.py
+            </code>
+            <hr/>
+            <h5> Python Install </h5>
+            <code>
+                # make sure you're under root folder of this repo.
+                python3 -m pip install .
+            </code>
+            <hr/>
+            <h5> pip - unstable </h5>
+            <code>
+                pip install PyCSPillEngine==0.0.1b0 (or latest)
+                cd Engine/demo
+                python app.py
+            </code>
+            <hr/>
+            <h5> Windows Only - bat </h5>
+            <code>
+                cd Engine
+                .\windows_build_engine.bat
+                cd build
+                .\CSPillEditor.exe ..\demo
+                # click on run
+            </code>
+            <hr/>
+            <h5> Clion (Recommended) or Manual </h5>
+            Load the root folder in Clion, click reload cmake project. Select CSPillEditor to run the engine.
         </div>
+
     </div>
     <div class="row mt-5" id="post-mortem">
         <div class="col-md-12">
-            <h3 class="text-white">Post Mortem</h3>
+            <h2 class="text-white">Post Mortem</h2>
             <p class="mt-3">Upon reflecting on our game engine project, we believe there are several areas that
                 could benefit from
                 further improvement if we had another 8 weeks to work on it. Firstly, we could create more levels

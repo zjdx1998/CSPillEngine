@@ -59,10 +59,10 @@ list(APPEND EDITOR_SRCS ${SRC_IMGUI})
 list(APPEND EDITOR_SRCS ${SRC_IMGUI_BACKEND})
 list(APPEND EDITOR_SRCS ${SRC_IMGUI_FILE_DIALOG})
 
-add_executable(Editor ${EDITOR_SRCS})
-target_include_directories(Editor PUBLIC ${INCLUDE_DIRS})
-add_dependencies(Editor SDL2 nlohmann_json)
-target_link_libraries(Editor SDL2 nlohmann_json Core SDL2_image)
+add_executable(CSPillEditor ${EDITOR_SRCS})
+target_include_directories(CSPillEditor PUBLIC ${INCLUDE_DIRS})
+add_dependencies(CSPillEditor SDL2 nlohmann_json)
+target_link_libraries(CSPillEditor SDL2 nlohmann_json Core SDL2_image)
 
 # Pybind11
 add_subdirectory(thirdparty/pybind11)
@@ -75,8 +75,8 @@ target_include_directories(PyCSPillEngine PRIVATE ${INC_CORE} ${SDL2_INCLUDE_DIR
 target_link_libraries(PyCSPillEngine PRIVATE Core SDL2)
 
 # Install rules
-set(CMAKE_INSTALL_PREFIX "~/CSPillEngine")
-install(TARGETS Editor PyCSPillEngine
+set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/CSPillEngine")
+install(TARGETS CSPillEditor PyCSPillEngine
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         )
@@ -88,6 +88,44 @@ install(TARGETS Core
 install(DIRECTORY include/
         DESTINATION include
         FILES_MATCHING PATTERN "*.h"
+        )
+
+install(DIRECTORY thirdparty/pybind11/include/pybind11/
+        DESTINATION include/pybind11
+        FILES_MATCHING PATTERN "*.h"
+        )
+
+install(TARGETS SDL2 SDL2_image SDL2_mixer SDL2_ttf nlohmann_json
+        EXPORT ${PROJECT_NAME}Targets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+        )
+
+install(DIRECTORY thirdparty/SDL/include/
+        DESTINATION include
+        )
+
+install(DIRECTORY thirdparty/SDL_mixer/external/libogg/include/ogg
+        thirdparty/SDL_mixer/external/libvorbis/include/vorbis
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h"
+        )
+
+install(DIRECTORY thirdparty/SDL_ttf/include/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h"
+        )
+
+install(DIRECTORY thirdparty/SDL_image/include/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h"
+        )
+
+install(DIRECTORY thirdparty/json/include/nlohmann/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.hpp"
         )
 
 install(DIRECTORY thirdparty/pybind11/include/pybind11/
